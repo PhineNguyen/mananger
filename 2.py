@@ -74,26 +74,32 @@ def get_customers():
     conn.close()
     return customers
 
+
 # Chạy chương trình mẫu
 if __name__ == "__main__":
     # Khởi tạo database và bảng
     initialize_database()
     
+    while True: 
     # Thêm khách hàng
-    add_customer(
-        name="Nguyen Van A",
-        phone="0123456789",
-        email="nguyenvana@example.com",
-        address="123 Đường ABC, Hà Nội"
-    )
+        print("\nNhập thông tin khách hàng (nhấn'1' để dừng):")
+        name = input("Nhập tên khách hàng: ")
+        if name =="1":
+            break
+        phone = input("Nhập Số Điện Thoại: ")
+        email = input("Nhập email: ")
+        address = input("Nhập địa chỉ: ")
     
+
     # Thêm đơn hàng cho khách hàng
-    add_order(
-        customer_id=1,  # ID của khách hàng
-        order_date="2024-10-30",
-        total_amount=1500000,
-        status="Pending"
-    )
+        customer_id = int(input("Nhập ID khách hàng cho đơn hàng: "))
+        order_date = input("Nhập ngày đặt hàng (VD: 2024-10-30): ")
+        total_amount = float(input("Nhập tổng số tiền: "))
+        status = input("Nhập trạng thái đơn hàng (Pending/Completed): ")
+    
+    # Thêm đơn hàng cho khách hàng    
+    add_customer = (name, phone, email, address)
+    add_order(customer_id, order_date, total_amount, status)
     
     # Lấy danh sách khách hàng và in ra
     customers = get_customers()
