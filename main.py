@@ -2,7 +2,7 @@ import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from tkinter import messagebox
 from tkinter import ttk as tk
-#test
+#change2
 # Hàm để thêm đối tác mới
 def add_partner():
     messagebox.showinfo("Thêm đối tác", "Chức năng thêm đối tác giao hàng")
