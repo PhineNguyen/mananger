@@ -11,11 +11,14 @@ def create_don_hang_tab(notebook):
     search_entry.insert(0, "tìm kiếm theo sản phẩm")
     search_entry.grid(row=0, column=0, padx=5, pady=5, sticky=W)
 
-    add_order_button = ttk.Button(frame_don_hang, text="Thêm đơn", bootstyle="secondary")
+    add_order_button = ttk.Button(frame_don_hang, text="Tìm kiếm", bootstyle="secondary")
     add_order_button.grid(row=0, column=1, padx=5, pady=5, sticky=W)
 
+    add_order_button = ttk.Button(frame_don_hang, text="Thêm đơn", bootstyle="secondary")
+    add_order_button.grid(row=0, column=2, padx=5, pady=5, sticky=W)
+
     latest_button = ttk.Button(frame_don_hang, text="Mới nhất", bootstyle="secondary")
-    latest_button.grid(row=0, column=2, padx=5, pady=5, sticky=W)
+    latest_button.grid(row=0, column=3, padx=5, pady=5, sticky=W)
 
     # Tạo bảng với các cột phù hợp
     columns = ["Mã", "Tên sản phẩm", "ngày", "Tên khách hàng", "SDT", "Số lượng", "Thành tiền"]
