@@ -60,8 +60,7 @@ def delete_product(ma_san_pham):
     conn.commit()
     conn.close()
     print(f"Sản phẩm với mã {ma_san_pham} đã bị xóa.")
-    
-# Tạo cửa sổ chính
+# Tạo cửa sổ llllll
 window = Window(themename ="flatly")
 window.title("management application")
 window.geometry("800x800")
