@@ -62,8 +62,8 @@ def delete_product(ma_san_pham):
     print(f"Sản phẩm với mã {ma_san_pham} đã bị xóa.")
     
 # Tạo cửa sổ chính
-window = Window(themename="flatly")
-window.title("Management application")
+window = Window(themename ="flatly")
+window.title("management application")
 window.geometry("800x800")
 
 # Gọi hàm để tạo bảng khi chạy chương trình
