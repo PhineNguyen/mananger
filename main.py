@@ -16,7 +16,7 @@ notebook.pack(fill=BOTH, expand=TRUE)
 
 # Add tabs to the notebook
 create_san_pham_tab(notebook)
-create_don_hang_tab(notebook)
+create_don_hang_tab(notebook,app)
 create_thong_ke_tab(notebook)
 create_khach_hang_tab(notebook)
 
