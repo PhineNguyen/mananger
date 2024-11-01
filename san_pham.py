@@ -2,7 +2,7 @@ import sqlite3
 import tkinter as tk
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
-
+#sua phan san pham
 def create_table():
     # Kết nối tới cơ sở dữ liệu
     conn = sqlite3.connect('sanpham.db')
