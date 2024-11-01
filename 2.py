@@ -1,13 +1,10 @@
 import sqlite3
-import tkinter as tk
-from tkinter import filedialog
 
-# Kết nối đến database và tạo bảng nếu chưa tồn tại
+# Khởi tạo database và tạo bảng nếu chưa tồn tại
 def initialize_database():
     conn = sqlite3.connect('shop_database.db')
     cursor = conn.cursor()
     
-    # Xóa bảng cũ nếu có và tạo lại
     cursor.execute("DROP TABLE IF EXISTS Customers")
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS Customers (
@@ -19,7 +16,6 @@ def initialize_database():
         )
     ''')
     
-    # Tạo bảng Orders với khóa ngoại tham chiếu đến Customers
     cursor.execute(''' 
         CREATE TABLE IF NOT EXISTS Orders (
             order_id INTEGER PRIMARY KEY,
@@ -49,7 +45,7 @@ def add_customer(name, phone, email, address):
     conn.close()
     print("Khách hàng đã được thêm thành công.")
 
-# Thêm đơn hàng cho khách hàng vào bảng Orders
+# Thêm đơn hàng vào bảng Orders
 def add_order(customer_id, order_date, total_amount, status):
     conn = sqlite3.connect('shop_database.db')
     cursor = conn.cursor()
@@ -63,46 +59,45 @@ def add_order(customer_id, order_date, total_amount, status):
     conn.close()
     print("Đơn hàng đã được thêm thành công.")
 
-# Lấy danh sách khách hàng
-def get_customers():
-    conn = sqlite3.connect('shop_database.db')
-    cursor = conn.cursor()
-    
-    cursor.execute('SELECT * FROM Customers')
-    customers = cursor.fetchall()
-    
-    conn.close()
-    return customers
-
-
-# Chạy chương trình mẫu
+# Chạy chương trình
 if __name__ == "__main__":
-    # Khởi tạo database và bảng
     initialize_database()
     
-    while True: 
-    # Thêm khách hàng
-        print("\nNhập thông tin khách hàng (nhấn'1' để dừng):")
-        name = input("Nhập tên khách hàng: ")
-        if name =="1":
+    while True:
+        print("\nChọn một trong các lựa chọn sau:")
+        print("1. Nhập thông tin khách hàng")
+        print("2. Thêm đơn hàng cho khách hàng")
+        print("3. Thoát")
+        
+        choice = input("Lựa chọn của bạn: ")
+        
+        if choice == "1":
+            while True:
+                print("\nNhập thông tin khách hàng (nhấn '1' để dừng):")
+                name = input("Nhập tên khách hàng: ")
+                if name == "1":
+                    break
+                phone = input("Nhập Số Điện Thoại: ")
+                email = input("Nhập email: ")
+                address = input("Nhập địa chỉ: ")
+                
+                add_customer(name, phone, email, address)
+        
+        elif choice == "2":
+            while True:
+                print("\nNhập thông tin đơn hàng (nhấn '1' để dừng):")
+                customer_id = input("Nhập ID khách hàng cho đơn hàng: ")
+                if customer_id == "1":
+                    break
+                order_date = input("Nhập ngày đặt hàng (VD: 2024-10-30): ")
+                total_amount = float(input("Nhập tổng số tiền: "))
+                status = input("Nhập trạng thái đơn hàng (Pending/Completed): ")
+                
+                add_order(int(customer_id), order_date, total_amount, status)
+        
+        elif choice == "3":
+            print("Thoát chương trình.")
             break
-        phone = input("Nhập Số Điện Thoại: ")
-        email = input("Nhập email: ")
-        address = input("Nhập địa chỉ: ")
-    
-
-    # Thêm đơn hàng cho khách hàng
-        customer_id = int(input("Nhập ID khách hàng cho đơn hàng: "))
-        order_date = input("Nhập ngày đặt hàng (VD: 2024-10-30): ")
-        total_amount = float(input("Nhập tổng số tiền: "))
-        status = input("Nhập trạng thái đơn hàng (Pending/Completed): ")
-    
-    # Thêm đơn hàng cho khách hàng    
-    add_customer = (name, phone, email, address)
-    add_order(customer_id, order_date, total_amount, status)
-    
-    # Lấy danh sách khách hàng và in ra
-    customers = get_customers()
-    print("Danh sách khách hàng:")
-    for customer in customers:
-        print(customer)
+        
+        else:
+            print("Lựa chọn không hợp lệ. Vui lòng chọn lại.")
