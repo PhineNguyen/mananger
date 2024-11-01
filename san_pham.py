@@ -26,8 +26,22 @@ def create_table():
 
 # Hàm thêm sản phẩm vào CSDL
 def add_product(ten_san_pham, so_luong, gia_tien):
-    print(f"Thêm sản phẩm: {ten_san_pham}, Số lượng: {so_luong}, Giá tiền: {gia_tien}")
+    # Lưu sản phẩm vào CSDL (bạn có thể bỏ qua nếu không cần)
+    conn = sqlite3.connect('sanpham.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO SanPham (Tên_sản_phẩm, Số_lượng, Giá_Tiền) VALUES (?, ?, ?)
+    ''', (ten_san_pham, so_luong, gia_tien))
+    conn.commit()
+    conn.close()
 
+    # Cập nhật danh sách đơn hàng trên canvas
+    update_order_list(ten_san_pham, so_luong, gia_tien)
+
+# Hàm cập nhật danh sách đơn hàng
+def update_order_list(ten_san_pham, so_luong, gia_tien):
+    order_text = f"{ten_san_pham: <100} {so_luong: <110} {gia_tien: <110} \n"
+    order_list.insert(tk.END, order_text)  # Thêm thông tin đơn hàng vào listbox
 
 # Hàm để xử lý khi nhấn nút thêm sản phẩm trong giao diện
 def submit_product():
@@ -58,6 +72,7 @@ canvas1=tk.Canvas(window, bg="#B1C6B4", width=2000, height=200)
 canvas1.config(bg="#B1C6B4")
 canvas1.pack()
 
+
 canvas2 = tk.Canvas(window, bg="#B1C6B4",width=515,height= 835)
 canvas2.config(bg="#B1C6B4")
 canvas2.place(x=1400, y=205)
@@ -66,8 +81,6 @@ canvas3 = tk.Canvas(window, bg="#B1C6B4",width=1390,height =835)
 canvas3.config(bg="#B1C6B4")
 canvas3.place(x=4,y=205)
 
-# Nhập liệu từ người dùng qua giao diện
-# Tạo Label và Entry cho tên sản phẩm
 label_product_name = tk.Label(canvas2, text="Tên sản phẩm", bg="#B1C6B4")
 canvas2.create_window(220,50, window=label_product_name)
 
@@ -92,7 +105,17 @@ canvas2.create_window(220, 290, window=entry_price)  # Điều chỉnh vị trí
 btn_add_product = tk.Button(canvas2, text="Thêm sản phẩm", command=submit_product)
 canvas2.create_window(220, 330, window=btn_add_product)  # Điều chỉnh vị trí
 
-# Nhập liệu qua dòng lệnh
+#creat Label
+
+order_list = tk.Listbox(canvas3, width = 138, height= 34)
+order_list.place(x=2,y=1)
+
+#tiêu đề cho ListBox
+header_text=f"{'Tên sản phẩm': <100} {'Số lượng': <90}  {'Giá tiền': <100}"
+order_list.insert(tk.END, header_text)
+
+order_list.insert(tk.END,'-'*1000) #Tạo dòng phân cách
+
 i = 1
 while True:
     print("\nNhập thông tin qua dòng lệnh hoặc bấm Enter để dừng")
