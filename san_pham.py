@@ -1,9 +1,7 @@
 import sqlite3 
 import tkinter as tk
 import ttkbootstrap as ttk
-from ttkbootstrap import Style, Window
 from ttkbootstrap.constants import *
-from tkinter import PhotoImage
 
 def create_table():
     # Kết nối tới cơ sở dữ liệu
@@ -11,18 +9,18 @@ def create_table():
     cursor = conn.cursor()
 
     # Tạo bảng
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS KhachHang (
-        Mã_sản_phẩm INTEGER PRIMARY KEY AUTOINCREMENT,
-        Tên_sản_phẩm TEXT NOT NULL,
-        Số_lượng INTEGER NOT NULL,
-        Giá_Tiền REAL NOT NULL
-    )
+    cursor.execute(''' 
+    CREATE TABLE IF NOT EXISTS KhachHang ( 
+        Mã_sản_phẩm INTEGER PRIMARY KEY AUTOINCREMENT, 
+        Tên_sản_phẩm TEXT NOT NULL, 
+        Số_lượng INTEGER NOT NULL, 
+        Giá_Tiền REAL NOT NULL 
+    ) 
     ''')
 
     conn.commit()
     conn.close()
-    print("Bảng khách hàng đã được tạo.")
+    print("Bảng sản phẩm đã được tạo.")
 
 def add_product(ten_san_pham, so_luong, gia_tien):
     # Kết nối tới cơ sở dữ liệu
@@ -30,9 +28,9 @@ def add_product(ten_san_pham, so_luong, gia_tien):
     cursor = conn.cursor()
     
     # Thêm sản phẩm vào bảng
-    cursor.execute('''
-    INSERT INTO KhachHang (Tên_sản_phẩm, Số_lượng, Giá_Tiền)
-    VALUES (?, ?, ?)
+    cursor.execute(''' 
+    INSERT INTO KhachHang (Tên_sản_phẩm, Số_lượng, Giá_Tiền) 
+    VALUES (?, ?, ?) 
     ''', (ten_san_pham, so_luong, gia_tien))
 
     conn.commit()
@@ -60,35 +58,35 @@ def delete_product(ma_san_pham):
     conn.commit()
     conn.close()
     print(f"Sản phẩm với mã {ma_san_pham} đã bị xóa.")
-# Tạo cửa sổ llllll
-window = Window(themename ="flatly")
-window.title("management application")
-window.geometry("800x800")
+
+def create_san_pham_tab(notebook):
+    frame_san_pham = ttk.Frame(notebook)
+    notebook.add(frame_san_pham, text="SẢN PHẨM")
+
+    # Tạo các thành phần giao diện
+    label_product_name = tk.Label(frame_san_pham, text="Tên sản phẩm:")
+    label_product_name.pack(pady=5)
+
+    global entry_product_name  # Để truy cập trong các hàm khác
+    entry_product_name = tk.Entry(frame_san_pham)
+    entry_product_name.pack(pady=5)
+
+    label_quantity = tk.Label(frame_san_pham, text="Số lượng:")
+    label_quantity.pack(pady=5)
+
+    global entry_quantity  # Để truy cập trong các hàm khác
+    entry_quantity = tk.Entry(frame_san_pham)
+    entry_quantity.pack(pady=5)
+
+    label_price = tk.Label(frame_san_pham, text="Giá tiền:")
+    label_price.pack(pady=5)
+
+    global entry_price  # Để truy cập trong các hàm khác
+    entry_price = tk.Entry(frame_san_pham)
+    entry_price.pack(pady=5)
+
+    btn_add_product = tk.Button(frame_san_pham, text="Thêm sản phẩm", command=on_add_product)
+    btn_add_product.pack(pady=20)
 
 # Gọi hàm để tạo bảng khi chạy chương trình
 create_table()
-
-# Tạo các thành phần giao diện
-label_product_name = tk.Label(window, text="Tên sản phẩm:")
-label_product_name.pack(pady=5)
-
-entry_product_name = tk.Entry(window)
-entry_product_name.pack(pady=5)
-
-label_quantity = tk.Label(window, text="Số lượng:")
-label_quantity.pack(pady=5)
-
-entry_quantity = tk.Entry(window)
-entry_quantity.pack(pady=5)
-
-label_price = tk.Label(window, text="Giá tiền:")
-label_price.pack(pady=5)
-
-entry_price = tk.Entry(window)
-entry_price.pack(pady=5)
-
-btn_add_product = tk.Button(window, text="Thêm sản phẩm", command=on_add_product)
-btn_add_product.pack(pady=20)
-
-# Chạy vòng lặp chính
-window.mainloop()
