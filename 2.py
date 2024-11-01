@@ -14,14 +14,18 @@ window.configure(background="#EAE7D6")
 #Thành phần giao diện 
 #bảng trên cùng
 canvas1 = tk.Canvas(window, bg="#B1C6B4", width=2000, height=200)
+canvas1.config(bg="#B1C6B4")
 canvas1.pack()
 
 #Bảng ngoài bìa 
 canvas2 = tk.Canvas(window, bg="#B1C6B4",width=515,height= 835)
+canvas2.config(bg="#B1C6B4")
+
 canvas2.place(x=1400, y=205)
 
 #Bảng ở trung tâm
 canvas3 = tk.Canvas(window, bg="#B1C6B4",width=1390,height =835)
+canvas3.config(bg="#B1C6B4")
 canvas3.place(x=4,y=205)
 
 #Các ô chức năng
