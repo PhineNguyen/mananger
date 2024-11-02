@@ -117,6 +117,7 @@ def create_khach_hang_tab(notebook, app):
 
     frame_khach_hang = ttk.Frame(notebook)
     notebook.add(frame_khach_hang, text="KHÁCH HÀNG")
+    
 
     search_entry = ttk.Entry(frame_khach_hang, bootstyle="secondary", width=30)
     search_entry.insert(0, "tìm kiếm theo tên khách hàng")
