@@ -1,7 +1,6 @@
 import sqlite3
 import tkinter as tk
 import ttkbootstrap as ttk
-from ttkbootstrap import Style, Window
 from ttkbootstrap.constants import *
 
 # Hàm tạo bảng trong CSDL
@@ -26,7 +25,7 @@ def create_table():
 
 # Hàm thêm sản phẩm vào CSDL
 def add_product(ten_san_pham, so_luong, gia_tien):
-    # Lưu sản phẩm vào CSDL (bạn có thể bỏ qua nếu không cần)
+    # Lưu sản phẩm vào CSDL
     conn = sqlite3.connect('sanpham.db')
     cursor = conn.cursor()
     cursor.execute('''
@@ -35,7 +34,7 @@ def add_product(ten_san_pham, so_luong, gia_tien):
     conn.commit()
     conn.close()
 
-    # Cập nhật danh sách đơn hàng trên canvas
+    # Cập nhật danh sách đơn hàng trên listbox
     update_order_list(ten_san_pham, so_luong, gia_tien)
 
 # Hàm cập nhật danh sách đơn hàng
@@ -55,79 +54,60 @@ def submit_product():
         # Xóa thông tin sau khi thêm
         entry_product_name.delete(0, tk.END)
         entry_quantity.delete(0, tk.END)
-        entry_price.delete(0, tk.END)
+        entry_price.delete(0, tk.END())
     else:
         print("Vui lòng nhập đầy đủ thông tin hợp lệ.")
 
+# Hàm tạo tab quản lý sản phẩm
+def create_san_pham_tab(notebook):
+    global entry_product_name, entry_quantity, entry_price, order_list
 
-# Giao diện người dùng
-window = Window(themename="flatly")
-window.title("Quản lý sản phẩm")
-window.geometry("400x300")
+    # Tạo tab sản phẩm
+    tab = ttk.Frame(notebook)
+    notebook.add(tab, text="Quản lý Sản Phẩm")
 
-# Tạo bảng khi khởi động chương trình
-create_table()
-#tạo canvas
-canvas1=tk.Canvas(window, bg="#B1C6B4", width=2000, height=200)
-canvas1.config(bg="#B1C6B4")
-canvas1.pack()
+    # Tạo bảng khi khởi động chương trình
+    create_table()
 
+    # Tạo canvas và các widget trên tab
+    canvas2 = tk.Canvas(tab, bg="#B1C6B4", width=600, height=1040)
+    canvas2.config(bg="#B1C6B4")
+    canvas2.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
-canvas2 = tk.Canvas(window, bg="#B1C6B4",width=515,height= 835)
-canvas2.config(bg="#B1C6B4")
-canvas2.place(x=1400, y=205)
+    canvas3 = tk.Canvas(tab, bg="#B1C6B4", width=1400, height=1040)
+    canvas3.config(bg="#B1C6B4")
+    canvas3.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-canvas3 = tk.Canvas(window, bg="#B1C6B4",width=1390,height =835)
-canvas3.config(bg="#B1C6B4")
-canvas3.place(x=4,y=205)
+    # Nhãn và ô nhập cho tên sản phẩm
+    label_product_name = tk.Label(canvas2, text="Tên sản phẩm", bg="#B1C6B4")
+    canvas2.create_window(220, 50, window=label_product_name)
 
-label_product_name = tk.Label(canvas2, text="Tên sản phẩm", bg="#B1C6B4")
-canvas2.create_window(220,50, window=label_product_name)
+    entry_product_name = tk.Entry(canvas2)
+    canvas2.create_window(220, 90, window=entry_product_name)
 
-entry_product_name = tk.Entry(canvas2)
-canvas2.create_window(220, 90, window=entry_product_name)  # Điều chỉnh vị trí
+    # Nhãn và ô nhập cho số lượng
+    label_quantity = tk.Label(canvas2, text="Số lượng", bg="#B1C6B4")
+    canvas2.create_window(220, 150, window=label_quantity)
 
-# Tạo Label và Entry cho số lượng
-label_quantity = tk.Label(canvas2, text="Số lượng", bg="#B1C6B4")
-canvas2.create_window(220, 150, window=label_quantity)  # Điều chỉnh vị trí
+    entry_quantity = tk.Entry(canvas2)
+    canvas2.create_window(220, 190, window=entry_quantity)
 
-entry_quantity = tk.Entry(canvas2)
-canvas2.create_window(220, 190, window=entry_quantity)  # Điều chỉnh vị trí
+    # Nhãn và ô nhập cho giá tiền
+    label_price = tk.Label(canvas2, text="Giá tiền", bg="#B1C6B4")
+    canvas2.create_window(220, 250, window=label_price)
 
-# Tạo Label và Entry cho giá tiền
-label_price = tk.Label(canvas2, text="Giá tiền", bg="#B1C6B4")
-canvas2.create_window(220, 250, window=label_price)  # Điều chỉnh vị trí
+    entry_price = tk.Entry(canvas2)
+    canvas2.create_window(220, 290, window=entry_price)
 
-entry_price = tk.Entry(canvas2)
-canvas2.create_window(220, 290, window=entry_price)  # Điều chỉnh vị trí
+    # Nút thêm sản phẩm
+    btn_add_product = tk.Button(canvas2, text="Thêm sản phẩm", command=submit_product)
+    canvas2.create_window(220, 330, window=btn_add_product)
 
-# Nút Thêm sản phẩm
-btn_add_product = tk.Button(canvas2, text="Thêm sản phẩm", command=submit_product)
-canvas2.create_window(220, 330, window=btn_add_product)  # Điều chỉnh vị trí
+    # Tạo ListBox để hiển thị danh sách sản phẩm
+    order_list = tk.Listbox(canvas3, width=140, height=45)
+    order_list.pack()
 
-#creat Label
-
-order_list = tk.Listbox(canvas3, width = 138, height= 34)
-order_list.place(x=2,y=1)
-
-#tiêu đề cho ListBox
-header_text=f"{'Tên sản phẩm': <100} {'Số lượng': <90}  {'Giá tiền': <100}"
-order_list.insert(tk.END, header_text)
-
-order_list.insert(tk.END,'-'*1000) #Tạo dòng phân cách
-
-i = 1
-while True:
-    print("\nNhập thông tin qua dòng lệnh hoặc bấm Enter để dừng")
-    ten_san_pham = str(input("Nhập tên sản phẩm: "))
-    
-    if not ten_san_pham:
-        break
-    
-    so_luong = int(input("Nhập số lượng: "))
-    gia_tien = float(input("Nhập giá tiền: "))
-    add_product(ten_san_pham, so_luong, gia_tien)
-    i+=1
-
-# Chạy vòng lặp chính của giao diện
-    window.mainloop()
+    # Tiêu đề cho ListBox
+    header_text = f"{'Tên sản phẩm': <100} {'Số lượng': <90}  {'Giá tiền': <100}"
+    order_list.insert(tk.END, header_text)
+    order_list.insert(tk.END, '-'*1000)  # Tạo dòng phân cách
