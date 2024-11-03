@@ -21,12 +21,13 @@ style.map("TNotebook.Tab",
 notebook = ttk.Notebook(app, style="TNotebook")  # Áp dụng style chuẩn TNotebook
 notebook.pack(fill=BOTH, expand=TRUE)
 
-# Thêm các tab vào notebook
+# Add tabs to the notebook
 create_san_pham_tab(notebook)
-create_don_hang_tab(notebook, app)
+create_don_hang_tab(notebook,app)
+create_thong_ke_tab(notebook)
 create_khach_hang_tab(notebook, app)
 create_thong_ke_tab(notebook)
 
 
-# Khởi chạy ứng dụng
+# Start the application
 app.mainloop()
