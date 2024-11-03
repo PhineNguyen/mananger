@@ -49,7 +49,7 @@ def create_san_pham_tab(notebook, app):
     product_table.grid(row=2, column=0, columnspan=5, padx=5, pady=5, sticky="nsew")
 
     product_table.column("Mã", width=80, anchor="center")
-    product_table.column("Tên sản phẩm", width=150, anchor="w")
+    product_table.column("Tên sản phẩm", width=150, anchor="center")
     product_table.column("Giá", width=80, anchor="center")
     product_table.column("Số Lượng", width=80, anchor="center")
 
