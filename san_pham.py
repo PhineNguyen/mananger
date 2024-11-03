@@ -11,13 +11,13 @@ sample_products = [
 
 def button_click(button_name, app):
     if button_name == "Tìm kiếm":
-        search_product(app)  # Truyền app vào search_order
+        search_product()
     elif button_name == "Thêm":
         add_product(app)
     elif button_name == "Sửa":
         edit_product(app)
     elif button_name == "Xóa":
-        delete_product(app)
+        delete_product()
 
 def create_san_pham_tab(notebook, app):
     global product_table, product_search_entry
@@ -48,15 +48,34 @@ def create_san_pham_tab(notebook, app):
     product_table = ttk.Treeview(frame_product, columns=columns, show="headings", bootstyle="secondary")
     product_table.grid(row=2, column=0, columnspan=5, padx=5, pady=5, sticky="nsew")
 
+    product_table.column("Mã", width=80, anchor="center")
+    product_table.column("Tên sản phẩm", width=150, anchor="w")
+    product_table.column("Giá", width=80, anchor="center")
+    product_table.column("Số Lượng", width=80, anchor="center")
+
     for col in columns:
         product_table.heading(col, text=col)
-        product_table.column(col, width=100)
 
+    # Thay đổi màu nền cho các hàng để tạo hiệu ứng ngăn cách
     for row in sample_products:
         product_table.insert("", "end", values=row)
-
+    
+    
     frame_product.grid_rowconfigure(2, weight=1)
     frame_product.grid_columnconfigure(0, weight=1)
+
+    update_row_colors()
+
+def update_row_colors():
+    # Đổi màu nền cho các hàng
+    for index, item in enumerate(product_table.get_children()):
+        if index % 2 == 0:
+            product_table.item(item, tags=('evenrow',))
+        else:
+            product_table.item(item, tags=('oddrow',))
+
+    product_table.tag_configure('evenrow', background='#f0f0f0')
+    product_table.tag_configure('oddrow', background='white')
 
 def search_product():
     search_value = product_search_entry.get().lower()
@@ -90,6 +109,7 @@ def add_product(app):
 
         product_table.insert("", "end", values=new_product)
         sample_products.append(new_product)
+        update_row_colors()  # Cập nhật màu hàng
         add_window.destroy()
 
     add_button = ttk.Button(add_window, text="Thêm", bootstyle="secondary", command=submit_product)
@@ -130,6 +150,7 @@ def edit_product(app):
                 sample_products[index] = updated_product
                 break
 
+        update_row_colors()  # Cập nhật màu hàng
         edit_window.destroy()
 
     save_button = ttk.Button(edit_window, text="Lưu", bootstyle="secondary", command=submit_edit)
@@ -139,5 +160,20 @@ def delete_product():
     selected_item = product_table.selection()
     if selected_item:
         product_table.delete(selected_item)
+        update_row_colors()  # Cập nhật màu hàng
     else:
         messagebox.showwarning("Cảnh báo", "Vui lòng chọn sản phẩm để xóa.")
+
+def main():
+    app = ttk.Window(themename="superhero")
+    app.title("Quản Lý Sản Phẩm")
+
+    notebook = ttk.Notebook(app)
+    notebook.pack(expand=True, fill=BOTH)
+
+    create_san_pham_tab(notebook, app)
+
+    app.mainloop()
+
+if __name__ == "__main__":
+    main()

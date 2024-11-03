@@ -19,7 +19,7 @@ create_san_pham_tab(notebook,app)
 create_don_hang_tab(notebook,app)
 create_thong_ke_tab(notebook)
 create_khach_hang_tab(notebook, app)
-create_thong_ke_tab(notebook)
+
 
 
 # Khởi chạy ứng dụng
