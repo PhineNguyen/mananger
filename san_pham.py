@@ -29,24 +29,24 @@ def create_san_pham_tab(notebook, app):
     frame_product = ttk.Frame(notebook)
     notebook.add(frame_product, text="SẢN PHẨM")
 
-    product_search_entry = ttk.Entry(frame_product, bootstyle="secondary", width=30)
+    product_search_entry = ttk.Entry(frame_product, bootstyle="superhero", width=30)
     product_search_entry.insert(0, "Tìm kiếm theo tên sản phẩm")
     product_search_entry.grid(row=0, column=0, padx=5, pady=5, sticky=W)
 
-    search_button = ttk.Button(frame_product, text="Tìm kiếm", bootstyle="secondary", command=search_product)
+    search_button = ttk.Button(frame_product, text="Tìm kiếm", bootstyle="superhero", command=search_product)
     search_button.grid(row=0, column=1, padx=5, pady=5, sticky=W)
 
-    add_product_button = ttk.Button(frame_product, text="Thêm sản phẩm", bootstyle="secondary", command=lambda: add_product(app))
+    add_product_button = ttk.Button(frame_product, text="Thêm sản phẩm", bootstyle="superhero", command=lambda: add_product(app))
     add_product_button.grid(row=0, column=2, padx=5, pady=5, sticky=W)
 
-    edit_product_button = ttk.Button(frame_product, text="Sửa", bootstyle="secondary", command=lambda: edit_product(app))
+    edit_product_button = ttk.Button(frame_product, text="Sửa", bootstyle="superhero", command=lambda: edit_product(app))
     edit_product_button.grid(row=0, column=3, padx=5, pady=5, sticky=W)
 
-    delete_product_button = ttk.Button(frame_product, text="Xóa", bootstyle="secondary", command=delete_product)
+    delete_product_button = ttk.Button(frame_product, text="Xóa", bootstyle="superhero", command=delete_product)
     delete_product_button.grid(row=0, column=4, padx=5, pady=5, sticky=W)
 
     columns = ["ID Sản Phẩm", "Tên Sản Phẩm", "Giá VND", "Số Lượng Tồn Kho", "Mô Tả", "Nhóm Sản Phẩm"]
-    product_table = ttk.Treeview(frame_product, columns=columns, show="headings", bootstyle="secondary")
+    product_table = ttk.Treeview(frame_product, columns=columns, show="headings", bootstyle="superhero")
     product_table.grid(row=2, column=0, columnspan=5, padx=5, pady=5, sticky="nsew")
 
     for col in columns:
@@ -92,7 +92,7 @@ def add_product(app):
     for i, field in enumerate(fields):
         label = ttk.Label(add_window, text=field)
         label.grid(row=i, column=0, padx=10, pady=5)
-        entry = ttk.Entry(add_window, bootstyle="secondary", width=30)
+        entry = ttk.Entry(add_window, bootstyle="superhero", width=30)
         entry.grid(row=i, column=1, padx=10, pady=5)
         entries[field] = entry
 
@@ -107,7 +107,7 @@ def add_product(app):
         refresh_product_table()
         add_window.destroy()
 
-    add_button = ttk.Button(add_window, text="Thêm", bootstyle="secondary", command=submit_product)
+    add_button = ttk.Button(add_window, text="Thêm", bootstyle="superhero", command=submit_product)
     add_button.grid(row=len(fields), column=0, columnspan=2, padx=10, pady=10)
 
 def edit_product(app):
@@ -126,7 +126,7 @@ def edit_product(app):
     for i, field in enumerate(fields):
         label = ttk.Label(edit_window, text=field)
         label.grid(row=i, column=0, padx=10, pady=5)
-        entry = ttk.Entry(edit_window, bootstyle="secondary", width=30)
+        entry = ttk.Entry(edit_window, bootstyle="superhero", width=30)
         entry.grid(row=i, column=1, padx=10, pady=5)
         entry.insert(0, product_data[i])
         entries[field] = entry
@@ -148,7 +148,7 @@ def edit_product(app):
         refresh_product_table()  # Refresh to ensure data consistency
         edit_window.destroy()
 
-    save_button = ttk.Button(edit_window, text="Lưu", bootstyle="secondary", command=submit_edit)
+    save_button = ttk.Button(edit_window, text="Lưu", bootstyle="superhero", command=submit_edit)
     save_button.grid(row=len(fields), column=0, columnspan=2, padx=10, pady=10)
 
 def delete_product():

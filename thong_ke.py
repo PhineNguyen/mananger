@@ -18,7 +18,13 @@ def create_thong_ke_tab(notebook):
     stats_frame.pack(padx=20, pady=10, fill=X)
 
     # Tính toán tổng tiền thu được
-    total_revenue = sum(int(order[6].replace('.', '').replace(',', '')) * int(order[5]) for order in sample_data)
+    # Giả sử rằng 'order[5]' là giá trị số lượng, và bạn muốn tính tổng doanh thu cho các phương thức thanh toán cụ thể
+    total_revenue = sum(
+    int(order[6].replace('.', '').replace(',', '')) * int(order[5])
+    for order in sample_data
+    if order[6].replace('.', '').replace(',', '').isdigit() and order[5].isdigit()
+)
+
 
     # Hiển thị thông tin
     ttk.Label(
