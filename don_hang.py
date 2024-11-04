@@ -161,6 +161,6 @@ def delete_order():
         messagebox.showwarning("Cảnh báo", "Vui lòng chọn đơn hàng để xóa.")
 
 # Main application setup   
-sample_data.extend(read_csv('D:/mananger/orders.csv'))
+sample_data.extend(read_csv('orders.csv'))
 if __name__ == "__main__":
       pass

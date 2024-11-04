@@ -162,7 +162,7 @@ def delete_product():
         messagebox.showwarning("Cảnh báo", "Vui lòng chọn một sản phẩm để xóa.")
 
 
-sample_products = read_csv('D:/mananger/products.csv')
+sample_products = read_csv('products.csv')
 if __name__ == "__main__":
     # Không cần khởi tạo lại app ở đây
     pass
