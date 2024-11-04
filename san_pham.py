@@ -1,13 +1,17 @@
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 import tkinter.messagebox as messagebox
+import pandas as pd
 
-# Dữ liệu mẫu sản phẩm
-sample_products = [
-    ("001", "Bút bi", "5.000", "5"),
-    ("002", "Vở viết", "10.000", "25"),
-    ("003", "Thước kẻ", "2.000", "30"),
-]
+sample_products = []
+
+def read_csv(file_path):
+    try:
+        df = pd.read_csv(file_path)
+        return df.values.tolist()
+    except Exception as e:
+        messagebox.showerror("Lỗi", f"Không thể đọc file: {e}")
+        return []
 
 def button_click(button_name, app):
     if button_name == "Tìm kiếm":
@@ -22,11 +26,9 @@ def button_click(button_name, app):
 def create_san_pham_tab(notebook, app):
     global product_table, product_search_entry
 
-    # Tạo frame sản phẩm
     frame_product = ttk.Frame(notebook)
     notebook.add(frame_product, text="SẢN PHẨM")
 
-    # Tạo ô tìm kiếm và các nút chức năng
     product_search_entry = ttk.Entry(frame_product, bootstyle="secondary", width=30)
     product_search_entry.insert(0, "Tìm kiếm theo tên sản phẩm")
     product_search_entry.grid(row=0, column=0, padx=5, pady=5, sticky=W)
@@ -43,31 +45,26 @@ def create_san_pham_tab(notebook, app):
     delete_product_button = ttk.Button(frame_product, text="Xóa", bootstyle="secondary", command=delete_product)
     delete_product_button.grid(row=0, column=4, padx=5, pady=5, sticky=W)
 
-    # Cấu hình bảng hiển thị sản phẩm
-    columns = ["Mã", "Tên sản phẩm", "Giá", "Số Lượng"]
+    columns = ["ID Sản Phẩm", "Tên Sản Phẩm", "Giá VND", "Số Lượng Tồn Kho", "Mô Tả", "Nhóm Sản Phẩm"]
     product_table = ttk.Treeview(frame_product, columns=columns, show="headings", bootstyle="secondary")
     product_table.grid(row=2, column=0, columnspan=5, padx=5, pady=5, sticky="nsew")
-
-    product_table.column("Mã", width=80, anchor="center")
-    product_table.column("Tên sản phẩm", width=150, anchor="center")
-    product_table.column("Giá", width=80, anchor="center")
-    product_table.column("Số Lượng", width=80, anchor="center")
 
     for col in columns:
         product_table.heading(col, text=col)
 
-    # Thay đổi màu nền cho các hàng để tạo hiệu ứng ngăn cách
-    for row in sample_products:
-        product_table.insert("", "end", values=row)
-    
-    
+    refresh_product_table()  # Initial load from sample_products
+
     frame_product.grid_rowconfigure(2, weight=1)
     frame_product.grid_columnconfigure(0, weight=1)
 
+def refresh_product_table():
+    for row in product_table.get_children():
+        product_table.delete(row)
+    for product in sample_products:
+        product_table.insert("", "end", values=product)
     update_row_colors()
 
 def update_row_colors():
-    # Đổi màu nền cho các hàng
     for index, item in enumerate(product_table.get_children()):
         if index % 2 == 0:
             product_table.item(item, tags=('evenrow',))
@@ -79,8 +76,7 @@ def update_row_colors():
 
 def search_product():
     search_value = product_search_entry.get().lower()
-    for row in product_table.get_children():
-        product_table.delete(row)
+    refresh_product_table()  # Refresh to show all before filtering
 
     for product in sample_products:
         if search_value in product[1].lower():
@@ -90,7 +86,7 @@ def add_product(app):
     add_window = ttk.Toplevel(app)
     add_window.title("Thêm Sản Phẩm")
 
-    fields = ["Mã", "Tên sản phẩm", "Giá", "Số Lượng"]
+    fields = ["ID Sản Phẩm", "Tên sản Phẩm", "Giá VND", "Số Lượng Tồn Kho", "Mô Tả", "Nhóm Sản Phẩm"]
     entries = {}
 
     for i, field in enumerate(fields):
@@ -107,9 +103,8 @@ def add_product(app):
             messagebox.showerror("Lỗi", "Vui lòng không để trống các trường.")
             return
 
-        product_table.insert("", "end", values=new_product)
         sample_products.append(new_product)
-        update_row_colors()  # Cập nhật màu hàng
+        refresh_product_table()
         add_window.destroy()
 
     add_button = ttk.Button(add_window, text="Thêm", bootstyle="secondary", command=submit_product)
@@ -125,7 +120,7 @@ def edit_product(app):
     edit_window = ttk.Toplevel(app)
     edit_window.title("Sửa Sản Phẩm")
 
-    fields = ["Mã", "Tên sản phẩm", "Giá", "Số Lượng"]
+    fields = ["ID Sản Phẩm", "Tên sản Phẩm", "Giá VND", "Số Lượng Tồn Kho", "Mô Tả", "Nhóm Sản Phẩm"]
     entries = {}
 
     for i, field in enumerate(fields):
@@ -150,7 +145,7 @@ def edit_product(app):
                 sample_products[index] = updated_product
                 break
 
-        update_row_colors()  # Cập nhật màu hàng
+        refresh_product_table()  # Refresh to ensure data consistency
         edit_window.destroy()
 
     save_button = ttk.Button(edit_window, text="Lưu", bootstyle="secondary", command=submit_edit)
@@ -159,21 +154,15 @@ def edit_product(app):
 def delete_product():
     selected_item = product_table.selection()
     if selected_item:
+        product_id = product_table.item(selected_item)["values"][0]
+        sample_products[:] = [p for p in sample_products if p[0] != product_id]  # Remove from sample_products
         product_table.delete(selected_item)
-        update_row_colors()  # Cập nhật màu hàng
+        update_row_colors()  # Update row colors after deletion
     else:
-        messagebox.showwarning("Cảnh báo", "Vui lòng chọn sản phẩm để xóa.")
+        messagebox.showwarning("Cảnh báo", "Vui lòng chọn một sản phẩm để xóa.")
 
-def main():
-    app = ttk.Window(themename="superhero")
-    app.title("Quản Lý Sản Phẩm")
 
-    notebook = ttk.Notebook(app)
-    notebook.pack(expand=True, fill=BOTH)
-
-    create_san_pham_tab(notebook, app)
-
-    app.mainloop()
-
+sample_products = read_csv('D:/mananger/products.csv')
 if __name__ == "__main__":
-    main()
+    # Không cần khởi tạo lại app ở đây
+    pass
