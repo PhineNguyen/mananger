@@ -14,7 +14,7 @@ app.geometry("800x500")
 style = ttk.Style()
 style.configure("TNotebook.Tab", padding=[101, 5], font=('Helvetica', 14), background="#5bc0de")#, foreground="white")  # Màu nền và chữ của tab
 style.map("TNotebook.Tab",
-          background=[('selected', '#20c997'), ('!selected', '#B1C6B4')],  # Màu nền khi tab được chọn và không được chọn
+          background=[('selected', '#ADD8E6'), ('!selected', '#B1C6B4')],  # Màu nền khi tab được chọn và không được chọn
           foreground=[('selected', 'white'), ('!selected', 'black')])  # Màu chữ khi tab được chọn và không được chọn
 
 # Tạo notebook với style tùy chỉnh

@@ -1,13 +1,16 @@
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 import tkinter.messagebox as messagebox  # Import messagebox từ tkinter
-
+import pandas as pd 
 # Dữ liệu mẫu
-sample_customers = [
-    ("001", "Túy", "1/1/1995", "Nam", "123 Đường A", "0123"),
-    ("002", "Minh", "5/6/1990", "Nữ", "456 Đường B", "0456"),
-    ("003", "Hùng", "12/12/1985", "Nam", "789 Đường C", "0789"),
-]
+sample_customers = []
+def read_csv(file_path):
+    try:
+        df = pd.read_csv(file_path)
+        return df.values.tolist()
+    except Exception as e:
+        messagebox.showerror("Lỗi", f"Không thể đọc file: {e}")
+        return []
 
 def button_click(button_name, app):
     if button_name == "Tìm kiếm":
@@ -45,9 +48,10 @@ def add_customer(app):
     for i, field in enumerate(fields):
         label = ttk.Label(add_window, text=field)
         label.grid(row=i, column=0, padx=10, pady=5)
-        entry = ttk.Entry(add_window, bootstyle="secondary", width=30)
+        entry = ttk.Entry(add_window, bootstyle="superhero", width=30)
         entry.grid(row=i, column=1, padx=10, pady=5)
         entries[field] = entry
+        
 
     def submit_customer():
         new_customer = tuple(entries[field].get().strip() for field in fields)
@@ -58,11 +62,29 @@ def add_customer(app):
             customer_table.insert("", "end", values=new_customer)
             sample_customers.append(new_customer)
             add_window.destroy()
+            
         except ValueError as e:
             messagebox.showerror("Lỗi", str(e))
 
-    add_button = ttk.Button(add_window, text="Thêm", bootstyle="secondary", command=submit_customer)
+    add_button = ttk.Button(add_window, text="Thêm", bootstyle="superhero", command=submit_customer)
     add_button.grid(row=len(fields), column=0, columnspan=2, padx=10, pady=10)
+
+def refresh_customers_table():
+    for row in customer_table.get_children():
+        customer_table.delete(row)
+    for product in sample_customers:
+        customer_table.insert("", "end", values=product)
+    update_row_colors()
+
+def update_row_colors():
+    for index, item in enumerate(customer_table.get_children()):
+        if index % 2 == 0:
+            customer_table.item(item, tags=('evenrow',))
+        else:
+            customer_table.item(item, tags=('oddrow',))
+
+    customer_table.tag_configure('evenrow', background='#f0f0f0')
+    customer_table.tag_configure('oddrow', background='white')
 
 def edit_customer(app):
     selected_item = customer_table.selection()
@@ -80,7 +102,7 @@ def edit_customer(app):
     for i, field in enumerate(fields):
         label = ttk.Label(edit_window, text=field)
         label.grid(row=i, column=0, padx=10, pady=5)
-        entry = ttk.Entry(edit_window, bootstyle="secondary", width=30)
+        entry = ttk.Entry(edit_window, bootstyle="superhero", width=30)
         entry.grid(row=i, column=1, padx=10, pady=5)
         entry.insert(0, customer_data[i])
         entries[field] = entry
@@ -102,7 +124,7 @@ def edit_customer(app):
         except ValueError as e:
             messagebox.showerror("Lỗi", str(e))
 
-    save_button = ttk.Button(edit_window, text="Lưu", bootstyle="secondary", command=submit_edit)
+    save_button = ttk.Button(edit_window, text="Lưu", bootstyle="superhero", command=submit_edit)
     save_button.grid(row=len(fields), column=0, columnspan=2, padx=10, pady=10)
 
 def delete_customer():
@@ -119,41 +141,49 @@ def create_khach_hang_tab(notebook, app):
     notebook.add(frame_khach_hang, text="KHÁCH HÀNG")
     
 
-    search_entry = ttk.Entry(frame_khach_hang, bootstyle="secondary", width=30)
-    search_entry.insert(0, "tìm kiếm theo tên khách hàng")
+    search_entry = ttk.Entry(frame_khach_hang, bootstyle="superhero", width=30)
+    search_entry.insert(0, "Tìm kiếm theo tên khách hàng")
     search_entry.grid(row=0, column=0, padx=5, pady=5, sticky=W)
-
-    search_button = ttk.Button(frame_khach_hang, text="Tìm kiếm", bootstyle="secondary",
+    search_entry.bind("<FocusIn>", lambda event: search_entry.delete(0, 'end') if search_entry.get() == "Tìm kiếm theo tên khách hàng" else None)
+    search_button = ttk.Button(frame_khach_hang, text="Tìm kiếm", bootstyle="superhero",
                                command=lambda: button_click("Tìm kiếm", app))
     search_button.grid(row=0, column=1, padx=5, pady=5, sticky=W)
-
-    add_customer_button = ttk.Button(frame_khach_hang, text="Thêm khách hàng", bootstyle="secondary",
+   
+    
+    add_customer_button = ttk.Button(frame_khach_hang, text="Thêm khách hàng", bootstyle="superhero",
                                      command=lambda: button_click("Thêm khách hàng", app))
     add_customer_button.grid(row=0, column=2, padx=5, pady=5, sticky=W)
 
-    edit_button = ttk.Button(frame_khach_hang, text="Sửa", bootstyle="secondary",
+    edit_button = ttk.Button(frame_khach_hang, text="Sửa", bootstyle="superhero",
                              command=lambda: button_click("Sửa", app))
     edit_button.grid(row=0, column=3, padx=5, pady=5, sticky=W)
 
-    delete_button = ttk.Button(frame_khach_hang, text="Xóa", bootstyle="secondary",
+    delete_button = ttk.Button(frame_khach_hang, text="Xóa", bootstyle="superhero",
                                command=delete_customer)
     delete_button.grid(row=0, column=4, padx=5, pady=5, sticky=W)
 
-    latest_button = ttk.Button(frame_khach_hang, text="Mới nhất", bootstyle="secondary",
+    latest_button = ttk.Button(frame_khach_hang, text="Mới nhất", bootstyle="superhero",
                                command=lambda: button_click("Mới nhất", app))
     latest_button.grid(row=0, column=5, padx=5, pady=5, sticky=W)
 
     columns = ["Mã khách hàng", "Tên khách hàng", "Ngày sinh", "Giới tính", "Địa chỉ", "SDT"]
 
-    customer_table = ttk.Treeview(frame_khach_hang, columns=columns, show="headings", bootstyle="secondary")
+    customer_table = ttk.Treeview(frame_khach_hang, columns=columns, show="headings", bootstyle="superhero")
     customer_table.grid(row=2, column=0, columnspan=len(columns), padx=5, pady=5, sticky="nsew")
 
     for col in columns:
         customer_table.heading(col, text=col)
         customer_table.column(col, width=100)
-
+        if col == "Mã khách hàng" or col == "Giới tính":
+            customer_table.column(col,anchor='center') 
+        else:
+            customer_table.column(col, anchor='w')
     for row in sample_customers:
         customer_table.insert("", "end", values=row)
 
     frame_khach_hang.grid_rowconfigure(2, weight=1)
     frame_khach_hang.grid_columnconfigure(0, weight=1)
+
+    refresh_customers_table()
+sample_customers.extend(read_csv('customers.csv'))
+

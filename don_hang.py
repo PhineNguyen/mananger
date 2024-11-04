@@ -33,7 +33,8 @@ def create_don_hang_tab(notebook, app):
     search_entry = ttk.Entry(frame_order, bootstyle="superhero", width=30)
     search_entry.insert(0, "Tìm kiếm theo sản phẩm")
     search_entry.grid(row=0, column=0, padx=5, pady=5, sticky=W)
-
+    search_entry.bind("<FocusIn>", lambda event: search_entry.delete(0, 'end') if search_entry.get() == "Tìm kiếm theo sản phẩm" else None)
+    
     search_button = ttk.Button(frame_order, text="Tìm kiếm", bootstyle="superhero", command=lambda: button_click("Tìm kiếm", app))
     search_button.grid(row=0, column=1, padx=5, pady=5, sticky=W)
 
@@ -52,6 +53,18 @@ def create_don_hang_tab(notebook, app):
 
     for col in columns:
         order_table.heading(col, text=col)
+        order_table.heading(col, text=col)
+
+        if col == "Trạng Thái Đơn Hàng" or col =="Phương Thức Thanh Toán" or col == "Danh Sách Sản Phẩm":
+            order_table.column(col,anchor='w') #căn trái cho tên sp
+        else:
+            order_table.column(col, anchor='center')#căn giữa cho các cột khác
+            
+
+
+
+
+
 
     refresh_order_table()  # Load initial data from sample_data
 
