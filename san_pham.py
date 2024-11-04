@@ -2,6 +2,9 @@ import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 import tkinter.messagebox as messagebox
 import pandas as pd
+from tkinter import PhotoImage
+import tkinter as tk
+from PIL import Image, ImageTk 
 
 sample_products = []
 
@@ -13,17 +16,15 @@ def read_csv(file_path):
         messagebox.showerror("Lỗi", f"Không thể đọc file: {e}")
         return []
     
-
-
 def button_click(button_name, app):
-    if button_name == "Tìm kiếm":
-        search_product()
-    elif button_name == "Thêm":
-        add_product(app)
-    elif button_name == "Sửa":
-        edit_product(app)
-    elif button_name == "Xóa":
-        delete_product()
+     if button_name == "Tìm kiếm":
+         search_product()
+     elif button_name == "Thêm":
+         add_product(app)
+     elif button_name == "Sửa":
+         edit_product(app)
+     elif button_name == "Xóa":
+         delete_product()
 
 def create_san_pham_tab(notebook, app):
     global product_table, product_search_entry
@@ -36,6 +37,7 @@ def create_san_pham_tab(notebook, app):
     product_search_entry.grid(row=0, column=0, padx=5, pady=5, sticky=W)
     # Thêm sự kiện focus_in để xóa nội dung khi nhấn vào ô tìm kiếm
     product_search_entry.bind("<FocusIn>", lambda event: product_search_entry.delete(0, 'end') if product_search_entry.get() == "Tìm kiếm theo tên sản phẩm" else None)
+
 
     search_button = ttk.Button(frame_product, text="Tìm kiếm", bootstyle="superhero", command=search_product)
     search_button.grid(row=0, column=1, padx=5, pady=5, sticky=W)
@@ -55,7 +57,7 @@ def create_san_pham_tab(notebook, app):
 
     for col in columns:
         product_table.heading(col, text=col)
-        if col == "Tên Sản Phẩm":
+        if col == "Tên Sản Phẩm" or col =="Mô Tả":
             product_table.column(col,anchor='w') #căn trái cho tên sp
         else:
             product_table.column(col, anchor='center')#căn giữa cho các cột khác
@@ -172,7 +174,7 @@ def delete_product():
 
 sample_products = read_csv('products.csv')
 
-sample_products = read_csv('D:/mananger/products.csv')
+sample_products = read_csv('products.csv')
 if __name__ == "__main__":
     # Không cần khởi tạo lại app ở đây
     pass

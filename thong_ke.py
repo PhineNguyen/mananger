@@ -1,51 +1,67 @@
-import ttkbootstrap as ttk
-from ttkbootstrap.constants import *
-from don_hang import sample_data  # Giả sử sample_data đã được cập nhật để chứa thông tin cần thiết
+import pandas as pd
+import matplotlib.pyplot as plt
+from tkinter import ttk
+from tkinter import Frame
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-def create_thong_ke_tab(notebook):
-    frame_thong_ke = ttk.Frame(notebook)
-    notebook.add(frame_thong_ke, text="THỐNG KÊ")
+def create_thong_ke_tab(notebook, app):
+    tab = ttk.Frame(notebook)
+    notebook.add(tab, text="Thống Kê")
+    
+    try:
+        # Đọc dữ liệu từ các file CSV
+        customers_df = pd.read_csv('customers.csv', encoding='utf-8-sig')
+        products_df = pd.read_csv('products.csv', encoding='utf-8-sig')
+        orders_df = pd.read_csv('orders.csv', encoding='utf-8-sig')
+    except FileNotFoundError as e:
+        print(f"Không tìm thấy file: {e}")
+        return
 
-    title_label = ttk.Label(
-        frame_thong_ke, 
-        text="Quản Lý Thống Kê", 
-        bootstyle="primary-inverse", 
-        font=("Helvetica", 18, "bold")
-    )
-    title_label.pack(pady=20)
+    # Khung chứa biểu đồ
+    chart_frame = Frame(tab)
+    chart_frame.pack(fill='both', expand=True)
 
-    stats_frame = ttk.Frame(frame_thong_ke, padding=20, bootstyle="info")
-    stats_frame.pack(padx=20, pady=10, fill=X)
+    # Biểu đồ thống kê số lượng sản phẩm theo nhóm
+    def plot_product_count_by_category():
+        product_counts = products_df['Nhóm Sản Phẩm'].value_counts()
+        fig, ax = plt.subplots(figsize=(6, 4))
+        product_counts.plot(kind='bar', ax=ax, color='#5bc0de')
+        ax.set_title("Số lượng sản phẩm theo nhóm")
+        ax.set_xlabel("Nhóm Sản Phẩm")
+        ax.set_ylabel("Số lượng")
+        plt.tight_layout()
+        canvas = FigureCanvasTkAgg(fig, master=chart_frame)
+        canvas.draw()
+        canvas.get_tk_widget().pack(fill='both', expand=True)
 
-    # Tính toán tổng tiền thu được
-    # Giả sử rằng 'order[5]' là giá trị số lượng, và bạn muốn tính tổng doanh thu cho các phương thức thanh toán cụ thể
-    total_revenue = sum(
-    int(order[6].replace('.', '').replace(',', '')) * int(order[5])
-    for order in sample_data
-    if order[6].replace('.', '').replace(',', '').isdigit() and order[5].isdigit()
-)
+    # Biểu đồ giá trị đơn hàng trung bình
+    def plot_average_order_value():
+        avg_order_value = orders_df['Tổng Giá Trị Đơn Hàng'].mean()
+        fig, ax = plt.subplots(figsize=(6, 4))
+        ax.bar(['Trung bình giá trị đơn hàng'], [avg_order_value], color='#20c997')
+        ax.set_title("Giá trị đơn hàng trung bình")
+        ax.set_ylabel("VND")
+        plt.tight_layout()
+        canvas = FigureCanvasTkAgg(fig, master=chart_frame)
+        canvas.draw()
+        canvas.get_tk_widget().pack(fill='both', expand=True)
+
+    # Biểu đồ phương thức thanh toán phổ biến
+    def plot_payment_methods():
+        payment_counts = orders_df['Phương Thức Thanh Toán'].value_counts()
+        fig, ax = plt.subplots(figsize=(6, 4))
+        payment_counts.plot(kind='pie', autopct='%1.1f%%', startangle=140, ax=ax, colors=['#5bc0de', '#20c997', '#B1C6B4'])
+        ax.set_ylabel('')
+        ax.set_title("Tỉ lệ phương thức thanh toán")
+        plt.tight_layout()
+        canvas = FigureCanvasTkAgg(fig, master=chart_frame)
+        canvas.draw()
+        canvas.get_tk_widget().pack(fill='both', expand=True)
+
+    # Vẽ các biểu đồ
+    plot_product_count_by_category()
+    #plot_average_order_value()
+    plot_payment_methods()
+    
 
 
-    # Hiển thị thông tin
-    ttk.Label(
-        stats_frame, 
-        text="Tổng số tiền đã thu:", 
-        font=("Helvetica", 12), 
-        bootstyle="info"
-    ).grid(row=0, column=0, sticky=W, padx=5, pady=5)
-    ttk.Label(
-        stats_frame, 
-        text=f"{total_revenue:,} VND", 
-        font=("Helvetica", 12, "bold"), 
-        bootstyle="success"
-    ).grid(row=0, column=1, sticky=W, padx=5, pady=5)
-
-    # Hiển thị tên khách hàng và mã đơn hàng
-    ttk.Label(stats_frame, text="Danh sách đơn hàng:", font=("Helvetica", 12, "bold")).grid(row=1, column=0, sticky=W, padx=5, pady=10, columnspan=2)
-
-    for i, order in enumerate(sample_data, start=2):  # Bắt đầu từ hàng thứ 2
-        customer_name = order[1]  # Tên khách hàng
-        order_id = order[0]       # Mã đơn hàng
-        ttk.Label(stats_frame, text=f"Khách hàng: {customer_name}, Mã đơn hàng: {order_id}", font=("Helvetica", 12)).grid(row=i, column=0, sticky=W, padx=5, pady=5)
-
-    ttk.Label(frame_thong_ke, text="").pack(pady=10)
