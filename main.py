@@ -25,7 +25,7 @@ notebook.pack(fill=BOTH, expand=TRUE)
 create_san_pham_tab(notebook,app)
 create_don_hang_tab(notebook,app)
 create_khach_hang_tab(notebook, app)
-create_thong_ke_tab(notebook)
+create_thong_ke_tab(notebook, app)
 
 
 # Start the application
