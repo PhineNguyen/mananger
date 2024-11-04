@@ -165,7 +165,7 @@ def delete_product():
 
 sample_products = read_csv('products.csv')
 
-sample_products = read_csv('D:/mananger/products.csv')
+sample_products = read_csv('products.csv')
 if __name__ == "__main__":
     # Không cần khởi tạo lại app ở đây
     pass
