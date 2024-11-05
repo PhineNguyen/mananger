@@ -38,8 +38,14 @@ def create_san_pham_tab(notebook, app):
     # Thêm sự kiện focus_in để xóa nội dung khi nhấn vào ô tìm kiếm
     product_search_entry.bind("<FocusIn>", lambda event: product_search_entry.delete(0, 'end') if product_search_entry.get() == "Tìm kiếm theo tên sản phẩm" else None)
 
+    # Sử dụng PIL để mở và thay đổi kích thước ảnh
+    image = Image.open("icon/search.png")
+    image = image.resize((20, 20), Image.LANCZOS)
+    search_icon = ImageTk.PhotoImage(image)
 
-    search_button = ttk.Button(frame_product, text="Tìm kiếm", bootstyle="superhero", command=search_product)
+    # Gán ảnh vào nút tìm kiếm và giữ tham chiếu
+    frame_product.search_icon = search_icon  # Giữ tham chiếu để tránh thu hồi bộ nhớ
+    search_button = ttk.Button(frame_product, text="Tìm kiếm", bootstyle="superhero", image=search_icon, compound=LEFT, command=search_product)
     search_button.grid(row=0, column=1, padx=5, pady=5, sticky=W)
 
     add_product_button = ttk.Button(frame_product, text="Thêm sản phẩm", bootstyle="superhero", command=lambda: add_product(app))
