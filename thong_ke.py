@@ -45,31 +45,27 @@ def create_thong_ke_tab(notebook, app):
     def plot_product_count_by_category(frame, width, height):
         product_counts = products_df['Nhóm Sản Phẩm'].value_counts()
         # Tăng chiều cao bằng cách nhân hệ số vào height (chẳng hạn tăng gấp đôi)
-        fig, ax = plt.subplots(figsize=(width / 100, height / 150))  # Nhân height với 1.5 để tăng chiều cao
+        fig, ax = plt.subplots(figsize=(width / 100, height / 150), constrained_layout=True)  # Sử dụng constrained_layout=True
         product_counts.plot(kind='bar', ax=ax, color='#5bc0de')
         ax.set_title("Số lượng sản phẩm theo nhóm")
         ax.set_xlabel("Nhóm Sản Phẩm")
         ax.set_ylabel("Số lượng")
-        plt.tight_layout()
         canvas = FigureCanvasTkAgg(fig, master=frame)
         canvas.draw()
         canvas.get_tk_widget().pack(fill='both', expand=True)
         plt.close(fig)  # Đóng biểu đồ sau khi vẽ
-
 
     # Biểu đồ phương thức thanh toán phổ biến
     def plot_payment_methods(frame, width, height):
         payment_counts = orders_df['Phương Thức Thanh Toán'].value_counts()
-        fig, ax = plt.subplots(figsize=(width / 100, height / 200))
+        fig, ax = plt.subplots(figsize=(width / 100, height / 200), constrained_layout=True)  # Sử dụng constrained_layout=True
         payment_counts.plot(kind='pie', autopct='%1.1f%%', startangle=140, ax=ax, colors=['#5bc0de', '#20c997', '#B1C6B4'])
         ax.set_ylabel('')
         ax.set_title("Tỉ lệ phương thức thanh toán")
-        plt.tight_layout()
         canvas = FigureCanvasTkAgg(fig, master=frame)
         canvas.draw()
         canvas.get_tk_widget().pack(fill='both', expand=True)
         plt.close(fig)  # Đóng biểu đồ sau khi vẽ
-
 
     # Gọi update_charts khi cửa sổ thay đổi kích thước
     chart_frame.bind("<Configure>", update_charts)
