@@ -57,21 +57,22 @@ def create_don_hang_tab(notebook, app):
     
     search_entry.bind("<FocusIn>", lambda event: search_entry.delete(0, 'end') if search_entry.get() == "Tìm kiếm theo sản phẩm" else None)
 
-    search_button = ttk.Button(frame_order, text="Tìm kiếm", bootstyle="superhero", image=search_icon, compound=LEFT, command=lambda: button_click("Tìm kiếm", app))
+    search_button = ttk.Button(frame_order, text="Tìm kiếm", bootstyle="superhero", image=search_icon, compound=LEFT, cursor="hand2", command=lambda: button_click("Tìm kiếm", app))
     search_button.grid(row=0, column=1, padx=5, pady=5, sticky=W)
     frame_order.search_icon = search_icon  # Keep a reference to the image to avoid garbage collection
 
-    add_order_button = ttk.Button(frame_order, text="Thêm đơn", bootstyle="superhero",image=multiple_icon,compound=LEFT, command= search_order, cursor="hand2")
+    add_order_button = ttk.Button(frame_order, text="Thêm đơn", bootstyle="superhero", image=multiple_icon, compound=LEFT, command=lambda: button_click("Thêm đơn", app), cursor="hand2")
     add_order_button.grid(row=0, column=2, padx=5, pady=5, sticky=W)
     frame_order.multiple_icon = multiple_icon
 
-    edit_order_button = ttk.Button(frame_order, text="Sửa", bootstyle="superhero",image=wrenchalt_icon, compound=LEFT ,command=lambda: button_click("Sửa", app))
+    edit_order_button = ttk.Button(frame_order, text="Sửa", bootstyle="superhero", image=wrenchalt_icon, compound=LEFT, command=lambda: button_click("Sửa", app), cursor="hand2")
     edit_order_button.grid(row=0, column=3, padx=5, pady=5, sticky=W)
     frame_order.wrenchalt_icon = wrenchalt_icon
 
-    delete_order_button = ttk.Button (frame_order, text="Xóa", bootstyle="superhero",image=trash_icon, compound=LEFT, command=delete_order)
+    delete_order_button = ttk.Button(frame_order, text="Xóa", bootstyle="superhero", image=trash_icon, compound=LEFT, command=delete_order, cursor="hand2")
     delete_order_button.grid(row=0, column=4, padx=5, pady=5, sticky=W)
     frame_order.trash_icon = trash_icon
+
 
     columns = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
     order_table = ttk.Treeview(frame_order, columns=columns, show="headings", bootstyle="superhero")
