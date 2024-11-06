@@ -56,8 +56,8 @@ def create_san_pham_tab(notebook, app):
     # Thêm sự kiện focus_in để xóa nội dung khi nhấn vào ô tìm kiếm
     product_search_entry.bind("<FocusIn>", lambda event: product_search_entry.delete(0, 'end') if product_search_entry.get() == "Tìm kiếm theo tên sản phẩm" else None)
 
-    # Nút tìm kiếm
-    search_button = ttk.Button(frame_product, text="Tìm kiếm", bootstyle="superhero", image=search_icon, compound=LEFT, command=lambda: button_click("Tìm kiếm", app), cursor="hand2")
+
+    search_button = ttk.Button(frame_product, text="Tìm kiếm", bootstyle="superhero",image=search_icon,compound= LEFT ,command=search_product)
     search_button.grid(row=0, column=1, padx=5, pady=5, sticky=W)
     frame_product.search_icon = search_icon
 
