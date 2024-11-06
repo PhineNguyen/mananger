@@ -5,29 +5,29 @@ from don_hang import create_don_hang_tab
 from thong_ke import create_thong_ke_tab
 from khach_hang import create_khach_hang_tab
 from PIL import Image, ImageTk
+from tkinter import PhotoImage
+
+
+def change_window_icon(app, icon_path):
+    """Hàm thay đổi icon của cửa sổ"""
+    try:
+        icon = PhotoImage(file="masterplan.png")  # Đảm bảo file icon tồn tại
+        app.iconphoto(False, icon)
+    except Exception as e:
+        print(f"Không thể thay đổi icon của cửa sổ: {e}")
 
 def main():
     # Khởi tạo cửa sổ chính
     app = ttk.Window(themename="minty")
     app.geometry("800x500")
+    app.title("Store Manager")  # Đặt tên ban đầu cho cửa sổ
 
-    # Load the icon image
-    masterplan_icon = Image.open("D:/mananger/icon/masterplan.png")
-    masterplan_icon = masterplan_icon.resize((30, 30), Image.LANCZOS)
-    masterplan_icon = ImageTk.PhotoImage(masterplan_icon)
+    change_window_icon(app, "store_icon.png")  # Đảm bảo file store_icon.png có trong thư mục
+
 
     # Create a frame for the title area at the top
     title_frame = ttk.Frame(app)
     title_frame.pack(side=TOP, fill=X, padx=10, pady=10)
-
-    # Create a label for the icon
-    icon_label = ttk.Label(title_frame, image=masterplan_icon)
-    icon_label.image = masterplan_icon  # Keep a reference to avoid garbage collection
-    icon_label.pack(side=LEFT)
-
-    # Create a label for the title text
-    title_label = ttk.Label(title_frame, text="Store Manager", font=('Helvetica', 16))
-    title_label.pack(side=LEFT, padx=(10, 0))
 
     # Tạo style cho tab
     style = ttk.Style()
