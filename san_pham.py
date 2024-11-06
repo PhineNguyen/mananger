@@ -2,8 +2,6 @@ import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 import tkinter.messagebox as messagebox
 import pandas as pd
-from tkinter import PhotoImage
-import tkinter as tk
 from PIL import Image, ImageTk
 from tkinter import StringVar
 
@@ -57,9 +55,10 @@ def create_san_pham_tab(notebook, app):
     product_search_entry.bind("<FocusIn>", lambda event: product_search_entry.delete(0, 'end') if product_search_entry.get() == "Tìm kiếm theo tên sản phẩm" else None)
 
 
-    search_button = ttk.Button(frame_product, text="Tìm kiếm", bootstyle="superhero",image=search_icon,compound= LEFT ,command=search_product)
+    search_button = ttk.Button(frame_product, text="Tìm kiếm", bootstyle="superhero",image=search_icon,compound= LEFT ,command=search_product, cursor="hand2")
     search_button.grid(row=0, column=1, padx=5, pady=5, sticky=W)
     frame_product.search_icon = search_icon
+    
 
     # Gán chức năng cho phím Enter
     product_search_entry.bind("<Return>", lambda event: button_click("Tìm kiếm", app))
@@ -115,14 +114,15 @@ def update_row_colors():
 
 def search_product():
     search_value = product_search_entry.get().lower()
-    refresh_product_table()  # Làm mới bảng trước để đảm bảo không còn sản phẩm nào
-
+    for row in product_table.get_children():  # Làm mới bảng trước để đảm bảo không còn sản phẩm nào
+        product_table.delete(row)
+        
     matched_products = [product for product in sample_products if search_value in product[1].lower()]
     
     for product in matched_products:
         product_table.insert("", "end", values=product)  # Thêm chỉ sản phẩm khớp vào bảng
 
-
+    update_row_colors()
 def add_product(app):
     add_window = ttk.Toplevel(app)
     add_window.title("Thêm Sản Phẩm")

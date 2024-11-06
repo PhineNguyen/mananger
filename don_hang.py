@@ -3,6 +3,7 @@ from ttkbootstrap.constants import *
 import tkinter.messagebox as messagebox
 import pandas as pd
 from PIL import Image, ImageTk
+from tkinter import StringVar
 
 # Sample data
 sample_data = []
@@ -48,18 +49,19 @@ def create_don_hang_tab(notebook, app):
     image4 = image4.resize((20,20), Image.LANCZOS)
     trash_icon = ImageTk.PhotoImage(image4)
     
-   
+    search_value = StringVar()
     
-    search_entry = ttk.Entry(frame_order, bootstyle="superhero", width=30)
+    search_entry = ttk.Entry(frame_order, bootstyle="superhero", width=30, textvariable= search_value)
     search_entry.insert(0, "Tìm kiếm theo sản phẩm")
     search_entry.grid(row=0, column=0, padx=5, pady=5, sticky=W)
+    
     search_entry.bind("<FocusIn>", lambda event: search_entry.delete(0, 'end') if search_entry.get() == "Tìm kiếm theo sản phẩm" else None)
 
     search_button = ttk.Button(frame_order, text="Tìm kiếm", bootstyle="superhero", image=search_icon, compound=LEFT, command=lambda: button_click("Tìm kiếm", app))
     search_button.grid(row=0, column=1, padx=5, pady=5, sticky=W)
     frame_order.search_icon = search_icon  # Keep a reference to the image to avoid garbage collection
 
-    add_order_button = ttk.Button(frame_order, text="Thêm đơn", bootstyle="superhero",image=multiple_icon,compound=LEFT, command=lambda: button_click("Thêm đơn", app))
+    add_order_button = ttk.Button(frame_order, text="Thêm đơn", bootstyle="superhero",image=multiple_icon,compound=LEFT, command= search_order, cursor="hand2")
     add_order_button.grid(row=0, column=2, padx=5, pady=5, sticky=W)
     frame_order.multiple_icon = multiple_icon
 
@@ -106,11 +108,20 @@ def update_row_colors():
 
 def search_order():
     search_value = search_entry.get().lower()
-    refresh_order_table()  # Refresh to show all before filtering
+    
+    # Clear the table to prepare for showing only matching results
+    for row in order_table.get_children():
+        order_table.delete(row)
+    
+    # Filter and display only the matching orders
+    matched_orders = [order for order in sample_data if search_value in order[3].lower()]
+    
+    for order in matched_orders:
+        order_table.insert("", "end", values=order)
+    
+    # Update row colors for consistency in appearance
+    update_row_colors()
 
-    for order in sample_data:
-        if search_value in order[3].lower():  # Assuming column 3 is the "Danh Sách Sản Phẩm"
-            order_table.insert("", "end", values=order)
 
 def add_order(app):
     add_window = ttk.Toplevel(app)
