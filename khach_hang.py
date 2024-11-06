@@ -2,6 +2,7 @@ import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 import tkinter.messagebox as messagebox  # Import messagebox từ tkinter
 import pandas as pd 
+from PIL import Image, ImageTk
 # Dữ liệu mẫu
 sample_customers = []
 def read_csv(file_path):
@@ -140,32 +141,53 @@ def create_khach_hang_tab(notebook, app):
     frame_khach_hang = ttk.Frame(notebook)
     notebook.add(frame_khach_hang, text="KHÁCH HÀNG")
     
+    image = Image.open("icon/search.png")
+    image = image.resize((20, 20), Image.LANCZOS)
+    search_icon = ImageTk.PhotoImage(image)
+
+    image2 = Image.open("icon/multiple.png")
+    image2 = image2.resize((20, 20), Image.LANCZOS)
+    multiple_icon = ImageTk.PhotoImage(image2)
+
+    image3 = Image.open("icon/wrenchalt.png")
+    image3 = image3.resize((20, 20), Image.LANCZOS)
+    wrenchalt_icon = ImageTk.PhotoImage(image3)
+
+    image4 = Image.open("icon/trash.png")
+    image4 = image4.resize((20,20), Image.LANCZOS)
+    trash_icon = ImageTk.PhotoImage(image4)
+    
+    image5 = Image.open("icon/arrowup.png")
+    image5 = image5.resize((20,20), Image.LANCZOS)
+    arrowup_icon = ImageTk.PhotoImage(image5)
+    
+    
+    
 
     search_entry = ttk.Entry(frame_khach_hang, bootstyle="superhero", width=30)
     search_entry.insert(0, "Tìm kiếm theo tên khách hàng")
     search_entry.grid(row=0, column=0, padx=5, pady=5, sticky=W)
     search_entry.bind("<FocusIn>", lambda event: search_entry.delete(0, 'end') if search_entry.get() == "Tìm kiếm theo tên khách hàng" else None)
-    search_button = ttk.Button(frame_khach_hang, text="Tìm kiếm", bootstyle="superhero",
-                               command=lambda: button_click("Tìm kiếm", app))
+    search_button = ttk.Button(frame_khach_hang, text="Tìm kiếm", bootstyle="superhero",image=search_icon,compound=LEFT ,command=lambda: button_click("Tìm kiếm", app))
     search_button.grid(row=0, column=1, padx=5, pady=5, sticky=W)
-   
+    frame_khach_hang.search_icon = search_icon
     
-    add_customer_button = ttk.Button(frame_khach_hang, text="Thêm khách hàng", bootstyle="superhero",
-                                     command=lambda: button_click("Thêm khách hàng", app))
+    add_customer_button = ttk.Button(frame_khach_hang, text="Thêm khách hàng", bootstyle="superhero",image=multiple_icon,compound=LEFT,command=lambda: button_click("Thêm khách hàng", app))
     add_customer_button.grid(row=0, column=2, padx=5, pady=5, sticky=W)
-
-    edit_button = ttk.Button(frame_khach_hang, text="Sửa", bootstyle="superhero",
-                             command=lambda: button_click("Sửa", app))
+    frame_khach_hang.multiple_icon = multiple_icon
+ 
+    edit_button = ttk.Button(frame_khach_hang, text="Sửa", bootstyle="superhero",image= wrenchalt_icon,compound=LEFT,command=lambda: button_click("Sửa", app))
     edit_button.grid(row=0, column=3, padx=5, pady=5, sticky=W)
+    frame_khach_hang.wrenchalt_icon = wrenchalt_icon
 
-    delete_button = ttk.Button(frame_khach_hang, text="Xóa", bootstyle="superhero",
-                               command=delete_customer)
+    delete_button = ttk.Button(frame_khach_hang, text="Xóa", bootstyle="superhero",image=trash_icon ,compound=LEFT, command=delete_customer)
     delete_button.grid(row=0, column=4, padx=5, pady=5, sticky=W)
-
-    latest_button = ttk.Button(frame_khach_hang, text="Mới nhất", bootstyle="superhero",
-                               command=lambda: button_click("Mới nhất", app))
+    frame_khach_hang.trash_icon = trash_icon
+    
+    latest_button = ttk.Button(frame_khach_hang, text="Mới nhất", bootstyle="superhero",image=arrowup_icon ,compound=LEFT,command=lambda: button_click("Mới nhất", app))
     latest_button.grid(row=0, column=5, padx=5, pady=5, sticky=W)
-
+    frame_khach_hang.arrowup_icon = arrowup_icon
+    
     columns = ["Mã khách hàng", "Tên khách hàng", "Ngày sinh", "Giới tính", "Địa chỉ", "SDT"]
 
     customer_table = ttk.Treeview(frame_khach_hang, columns=columns, show="headings", bootstyle="superhero")

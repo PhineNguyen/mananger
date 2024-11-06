@@ -2,6 +2,7 @@ import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 import tkinter.messagebox as messagebox
 import pandas as pd
+from PIL import Image, ImageTk
 
 # Sample data
 sample_data = []
@@ -29,23 +30,46 @@ def create_don_hang_tab(notebook, app):
 
     frame_order = ttk.Frame(notebook)
     notebook.add(frame_order, text="ĐƠN HÀNG")
+    #insert image
+   
+    image = Image.open("icon/search.png")
+    image = image.resize((20, 20), Image.LANCZOS)
+    search_icon = ImageTk.PhotoImage(image)
 
+    image2 = Image.open("icon/multiple.png")
+    image2 = image2.resize((20, 20), Image.LANCZOS)
+    multiple_icon = ImageTk.PhotoImage(image2)
+
+    image3 = Image.open("icon/wrenchalt.png")
+    image3 = image3.resize((20, 20), Image.LANCZOS)
+    wrenchalt_icon = ImageTk.PhotoImage(image3)
+
+    image4 = Image.open("icon/trash.png")
+    image4 = image4.resize((20,20), Image.LANCZOS)
+    trash_icon = ImageTk.PhotoImage(image4)
+    
+   
+    
     search_entry = ttk.Entry(frame_order, bootstyle="superhero", width=30)
     search_entry.insert(0, "Tìm kiếm theo sản phẩm")
     search_entry.grid(row=0, column=0, padx=5, pady=5, sticky=W)
     search_entry.bind("<FocusIn>", lambda event: search_entry.delete(0, 'end') if search_entry.get() == "Tìm kiếm theo sản phẩm" else None)
-    
-    search_button = ttk.Button(frame_order, text="Tìm kiếm", bootstyle="superhero", command=lambda: button_click("Tìm kiếm", app))
+
+    search_button = ttk.Button(frame_order, text="Tìm kiếm", bootstyle="superhero", image=search_icon, compound=LEFT, command=lambda: button_click("Tìm kiếm", app))
     search_button.grid(row=0, column=1, padx=5, pady=5, sticky=W)
+    frame_order.search_icon = search_icon  # Keep a reference to the image to avoid garbage collection
 
-    add_order_button = ttk.Button(frame_order, text="Thêm đơn", bootstyle="superhero", command=lambda: button_click("Thêm đơn", app))
+    add_order_button = ttk.Button(frame_order, text="Thêm đơn", bootstyle="superhero",image=multiple_icon,compound=LEFT, command=lambda: button_click("Thêm đơn", app))
     add_order_button.grid(row=0, column=2, padx=5, pady=5, sticky=W)
+    frame_order.multiple_icon = multiple_icon
 
-    edit_order_button = ttk.Button(frame_order, text="Sửa", bootstyle="superhero", command=lambda: button_click("Sửa", app))
+    edit_order_button = ttk.Button(frame_order, text="Sửa", bootstyle="superhero",image=wrenchalt_icon, compound=LEFT ,command=lambda: button_click("Sửa", app))
     edit_order_button.grid(row=0, column=3, padx=5, pady=5, sticky=W)
+    frame_order.wrenchalt_icon = wrenchalt_icon
 
-    delete_order_button = ttk.Button(frame_order, text="Xóa", bootstyle="superhero", command=delete_order)
+    delete_order_button = ttk.Button (frame_order, text="Xóa", bootstyle="superhero",image=trash_icon, compound=LEFT, command=delete_order)
     delete_order_button.grid(row=0, column=4, padx=5, pady=5, sticky=W)
+    frame_order.trash_icon = trash_icon
 
     columns = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
     order_table = ttk.Treeview(frame_order, columns=columns, show="headings", bootstyle="superhero")
@@ -53,18 +77,10 @@ def create_don_hang_tab(notebook, app):
 
     for col in columns:
         order_table.heading(col, text=col)
-        order_table.heading(col, text=col)
-
-        if col == "Trạng Thái Đơn Hàng" or col =="Phương Thức Thanh Toán" or col == "Danh Sách Sản Phẩm":
-            order_table.column(col,anchor='w') #căn trái cho tên sp
+        if col == "Trạng Thái Đơn Hàng" or col == "Phương Thức Thanh Toán" or col == "Danh Sách Sản Phẩm":
+            order_table.column(col, anchor='w')  # Align left for specific columns
         else:
-            order_table.column(col, anchor='center')#căn giữa cho các cột khác
-            
-
-
-
-
-
+            order_table.column(col, anchor='center')  # Center-align other columns
 
     refresh_order_table()  # Load initial data from sample_data
 
@@ -165,15 +181,19 @@ def edit_order(app):
     save_button.grid(row=len(fields), column=0, columnspan=2, padx=10, pady=10)
 
 def delete_order():
-    selected_item = order_table.selection()
-    if selected_item:
-        order_table.delete(selected_item)
-        index = order_table.index(selected_item)
-        sample_data.pop(index)  # Remove from sample_data
+    selected_items = order_table.selection()
+    if selected_items:
+        for selected_item in selected_items:
+            index = order_table.index(selected_item)
+            order_table.delete(selected_item)
+            sample_data.pop(index)  # Xóa khỏi sample_data
+
+        # Cập nhật lại bảng để đồng bộ màu sắc các hàng
+        refresh_order_table()
     else:
         messagebox.showwarning("Cảnh báo", "Vui lòng chọn đơn hàng để xóa.")
 
-# Main application setup   
 sample_data.extend(read_csv('orders.csv'))
 if __name__ == "__main__":
-      pass
+    pass  
+
