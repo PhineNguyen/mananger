@@ -145,21 +145,17 @@ def edit_customer(app):
 
 def delete_customer():
     selected_item = customer_table.selection()
-    if selected_item:
-        customer_data = customer_table.item(selected_item)["values"]
-        customer_id = customer_data[0]
-        
-        # Xóa khách hàng khỏi Treeview
-        customer_table.delete(selected_item)
-        
-        # Xóa khách hàng khỏi sample_customers
-        sample_customers[:] = [customer for customer in sample_customers if customer[0] != customer_id]
-        
-        # Ghi lại thay đổi vào CSV
-        save_to_csv('customers.csv')
-    else:
-        messagebox.showwarning("Cảnh báo", "Vui lòng chọn khách hàng để xóa.")
+    if not selected_item:
+        messagebox.showwarning("Cảnh báo", "Vui lòng chọn sản phẩm cần xóa.")
+        return
 
+    confirm = messagebox.askyesno("Xác nhận", "Bạn có chắc chắn muốn xóa sản phẩm này?")
+    if confirm:
+        selected_index = customer_table.index(selected_item)
+        del sample_customers[selected_index]
+
+        refresh_customers_table()
+        save_to_csv('customers.csv')
 def create_khach_hang_tab(notebook, app):
     global search_entry, customer_table
 

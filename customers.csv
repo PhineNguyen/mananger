@@ -1,11 +1,8 @@
-﻿ID Khách Hàng,Tên Khách Hàng,Địa Chỉ,Số Điện Thoại,Email,Lịch Sử Mua Hàng
-1,Nguyễn Văn A,"123 Đường 1, Quận 1, TP.HCM",0123456789,a@example.com,"Đơn hàng 1, Đơn hàng 2"
-2,Trần Thị B,"456 Đường 2, Quận 2, TP.HCM",0987654321,b@example.com,Đơn hàng 3
-3,Lê Văn C,"789 Đường 3, Quận 3, TP.HCM",0912345678,c@example.com,"Đơn hàng 4, Đơn hàng 5"
-4,Phạm Thị D,"101 Đường 4, Quận 4, TP.HCM",0901234567,d@example.com,Đơn hàng 6
-5,Nguyễn Văn E,"112 Đường 5, Quận 5, TP.HCM",0934567890,e@example.com,Đơn hàng 7
-6,Trần Văn F,"131 Đường 6, Quận 6, TP.HCM",0945678901,f@example.com,"Đơn hàng 8, Đơn hàng 9"
-7,Lê Thị G,"415 Đường 7, Quận 7, TP.HCM",0956789012,g@example.com,Đơn hàng 10
-8,Phạm Văn H,"161 Đường 8, Quận 8, TP.HCM",0967890123,h@example.com,Đơn hàng 11
-9,Nguyễn Thị I,"718 Đường 9, Quận 9, TP.HCM",0978901234,i@example.com,"Đơn hàng 12, Đơn hàng 13"
-10,Trần Văn J,"192 Đường 10, Quận 10, TP.HCM",0989012345,j@example.com,Đơn hàng 14
+ID Khách Hàng,Tên Khách Hàng,Địa Chỉ,Số Điện Thoại,Email,Lịch Sử Mua Hàng
+2,Trần Thị B,"456 Đường 2, Quận 2, TP.HCM",987654321,b@example.com,Đơn hàng 3
+3,Lê Văn C,"789 Đường 3, Quận 3, TP.HCM",912345678,c@example.com,"Đơn hàng 4, Đơn hàng 5"
+4,Phạm Thị D,"101 Đường 4, Quận 4, TP.HCM",901234567,d@example.com,Đơn hàng 6
+5,Nguyễn Văn E,"112 Đường 5, Quận 5, TP.HCM",934567890,e@example.com,Đơn hàng 7
+6,Trần Văn F,"131 Đường 6, Quận 6, TP.HCM",945678901,f@example.com,"Đơn hàng 8, Đơn hàng 9"
+7,Lê Thị G,"415 Đường 7, Quận 7, TP.HCM",956789012,g@example.com,Đơn hàng 10
+10,Trần Văn J,"192 Đường 10, Quận 10, TP.HCM",989012345,j@example.com,Đơn hàng 14
