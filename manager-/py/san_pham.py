@@ -153,8 +153,38 @@ def add_product(app):
         entry.grid(row=i, column=1, padx=10, pady=5)
         entries[field] = entry
 
-    
-    def submit_product():
+        position_label = ttk.Label(add_window, text="Vị trí thêm sản phẩm")
+        position_label.grid(row=len(fields), column=0, padx=10, pady=5)
+        position_entry = ttk.Entry(add_window, bootstyle="superhero", width=10)
+        position_entry.grid(row=len(fields), column=1, padx=10, pady=5)
+
+        
+    def submit_product_at_position():
+        new_product = tuple(entries[field].get().strip() for field in fields)
+        if any(not value for value in new_product):
+            messagebox.showerror("Lỗi", "Vui lòng không để trống các trường.")
+            return
+
+        try:
+            # Get the position from the entry, default to end if not provided
+            position = int(position_entry.get())
+        except ValueError:
+            messagebox.showerror("Lỗi", "Vui lòng nhập vị trí là số nguyên.")
+            return
+
+        # Insert at the specified position if valid, else append at the end
+        if 0 <= position <= len(sample_products):
+            sample_products.insert(position, new_product)
+        else:
+            sample_products.append(new_product)
+
+        refresh_product_table()
+        save_to_csv('products.csv')
+        add_window.destroy()
+
+        add_button = ttk.Button(add_window, text="Thêm vào Vị Trí", bootstyle="superhero", command=submit_product_at_position)
+        add_button.grid(row=len(fields)+1, column=0, columnspan=2, padx=10, pady=10)
+def submit_product():
         new_product = tuple(entries[field].get().strip() for field in fields)
 
         if any(not value for value in new_product):
@@ -162,7 +192,6 @@ def add_product(app):
             return
 
         sample_products.append(new_product)
-       
         refresh_product_table()
         save_to_csv('products.csv')
         add_window.destroy()
@@ -171,7 +200,6 @@ def add_product(app):
     add_button.grid(row=len(fields), column=0, columnspan=2, padx=10, pady=10)
 
 def edit_product(app):
-    # Lấy sản phẩm được chọn từ bảng
     selected_item = product_table.selection()
     if not selected_item:
         messagebox.showwarning("Cảnh báo", "Vui lòng chọn một sản phẩm để sửa.")
@@ -184,55 +212,47 @@ def edit_product(app):
     fields = ["ID Sản Phẩm", "Tên sản Phẩm", "Giá VND", "Số Lượng Tồn Kho", "Mô Tả", "Nhóm Sản Phẩm"]
     entries = {}
 
-    # Tạo các trường nhập liệu cho mỗi thuộc tính sản phẩm
     for i, field in enumerate(fields):
         label = ttk.Label(edit_window, text=field)
         label.grid(row=i, column=0, padx=10, pady=5)
-        entry = ttk.Entry(edit_window,bootstyle="superhero", width=30)
+        entry = ttk.Entry(edit_window, bootstyle="superhero", width=30)
         entry.grid(row=i, column=1, padx=10, pady=5)
         entry.insert(0, product_data[i])
         entries[field] = entry
 
     def submit_edit():
-        # Lấy dữ liệu mới từ các trường nhập liệu
         updated_product = tuple(entries[field].get().strip() for field in fields)
-        
-        # Kiểm tra dữ liệu có trống không
         if any(not value for value in updated_product):
             messagebox.showerror("Lỗi", "Vui lòng không để trống các trường.")
             return
 
-        sample_products[product_table.index(selected_item)] = updated_product
-        product_table.item(selected_item, values=updated_product)
-        
-        # Cập nhật dữ liệu trong `sample_products` để đồng bộ với CSV
+        #product_table.item(selected_item, values=updated_product)
+
         product_id = updated_product[0]
         for index, existing_product in enumerate(sample_products):
             if existing_product[0] == product_id:
                 sample_products[index] = updated_product
                 break
 
-        # Làm mới bảng và lưu thay đổi vào CSV
-        
-        edit_window.destroy()
-        save_to_csv('products.csv')
         refresh_product_table()
-    # Nút cập nhật để lưu thay đổi
+        save_to_csv('products.csv')
+        edit_window.destroy()
+
     update_button = ttk.Button(edit_window, text="Cập nhật", bootstyle="superhero", command=submit_edit)
     update_button.grid(row=len(fields), column=0, columnspan=2, padx=10, pady=10)
 
 def delete_product():
     selected_item = product_table.selection()
     if not selected_item:
-        messagebox.showwarning("Cảnh báo", "Vui lòng chọn sản phẩm cần xóa.")
+        messagebox.showwarning("Cảnh báo", "Vui lòng chọn một sản phẩm để xóa.")
         return
 
-    confirm = messagebox.askyesno("Xác nhận", "Bạn có chắc chắn muốn xóa sản phẩm này?")
+    product_id = product_table.item(selected_item)["values"][0]
+    confirm = messagebox.askyesno("Xác nhận", f"Bạn có chắc chắn muốn xóa sản phẩm ID {product_id}?")
     if confirm:
-        selected_index = product_table.index(selected_item)
-        del sample_products[selected_index]
-
-        refresh_product_table()
+        product_table.delete(selected_item)
+        global sample_products
+        sample_products = [product for product in sample_products if product[0] != product_id]
         save_to_csv('products.csv')
 sample_products.extend(read_csv('products.csv'))
 if __name__ == "__main__":

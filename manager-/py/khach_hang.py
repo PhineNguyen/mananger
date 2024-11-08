@@ -4,7 +4,6 @@ import tkinter.messagebox as messagebox  # Import messagebox từ tkinter
 import pandas as pd 
 from PIL import Image, ImageTk
 from tkinter import StringVar
-import csv
 # Dữ liệu mẫu
 sample_customers = []
 def read_csv(file_path):
@@ -14,18 +13,6 @@ def read_csv(file_path):
     except Exception as e:
         messagebox.showerror("Lỗi", f"Không thể đọc file: {e}")
         return []
-def save_to_csv(filename):
-    # Mở file ở chế độ ghi (write mode)
-    with open(filename, mode='w', newline='', encoding='utf-8') as file:
-        writer = csv.writer(file)
-        
-        # Ghi tiêu đề cột nếu cần
-        header = ["ID Khách Hàng", "Tên Khách Hàng", "Địa Chỉ", "Số Điện Thoại", "Email", "Lịch Sử Mua Hàng"]  # Thay đổi theo các cột của bạn
-        writer.writerow(header)
-        
-        # Ghi từng dòng dữ liệu từ sample_products
-        for customer in sample_customers:
-            writer.writerow(customer)
 
 def button_click(button_name, app):
     if button_name == "Tìm kiếm":
@@ -43,7 +30,7 @@ def latest_customers():
 
     for row in sample_customers:
         customer_table.insert("", "end", values=row)
-    update_row_colors()
+
 def search_customer(app):
     search_value = search_entry.get().lower()
     for row in customer_table.get_children():
@@ -58,7 +45,7 @@ def add_customer(app):
     add_window = ttk.Toplevel(app)
     add_window.title("Thêm Khách Hàng")
 
-    fields = ["ID Khách Hàng", "Tên Khách Hàng", "Địa Chỉ", "Số Điện Thoại", "Email", "Lịch Sử Mua Hàng"]
+    fields = ["Mã khách hàng", "Tên khách hàng", "Ngày sinh", "Giới tính", "Địa chỉ", "SDT"]
     entries = {}
 
     for i, field in enumerate(fields):
@@ -77,7 +64,6 @@ def add_customer(app):
 
             customer_table.insert("", "end", values=new_customer)
             sample_customers.append(new_customer)
-            save_to_csv('customers.csv')
             add_window.destroy()
             
         except ValueError as e:
@@ -111,9 +97,9 @@ def edit_customer(app):
 
     customer_data = customer_table.item(selected_item)["values"]
     edit_window = ttk.Toplevel(app)
-    edit_window.title("Sửa Thông Tin Khách Hàng")
+    edit_window.title("Sửa Khách Hàng")
 
-    fields = ["ID Khách Hàng", "Tên Khách Hàng", "Địa Chỉ", "Số Điện Thoại", "Email", "Lịch Sử Mua Hàng"]
+    fields = ["Mã khách hàng", "Tên khách hàng", "Ngày sinh", "Giới tính", "Địa chỉ", "SDT"]
     entries = {}
 
     for i, field in enumerate(fields):
@@ -125,38 +111,29 @@ def edit_customer(app):
         entries[field] = entry
 
     def submit_edit():
-        # Cập nhật dữ liệu trong `sample_products` để đồng bộ với CSV
-        edited_order = tuple(entries[field].get().strip() for field in fields)
-        for i, value in enumerate(edited_order):
-            if value != customer_data[i]:
-                # Update the order data
-                sample_customers[sample_customers.index(customer_data)] = edited_order
-                break
+        updated_customer = tuple(entries[field].get().strip() for field in fields)
+        try:
+            if any(not value for value in updated_customer):
+                raise ValueError("Vui lòng không để trống các trường.")
 
-        # Làm mới bảng và lưu thay đổi vào CSV
-        
-       
-        save_to_csv('customers.csv')
-        refresh_customers_table() 
-        edit_window.destroy()
-    # Nút cập nhật để lưu thay đổi
-    update_button = ttk.Button(edit_window, text="Cập nhật", bootstyle="superhero", command=submit_edit)
-    update_button.grid(row=len(fields), column=0, columnspan=2, padx=10, pady=10)
+            customer_table.item(selected_item, values=updated_customer)
+            customer_id = updated_customer[0]
+            for index, existing_customer in enumerate(sample_customers):
+                if existing_customer[0] == customer_id:
+                    sample_customers[index] = updated_customer
+                    break
+
+            edit_window.destroy()
+        except ValueError as e:
+            messagebox.showerror("Lỗi", str(e))
+
+    save_button = ttk.Button(edit_window, text="Lưu", bootstyle="superhero", command=submit_edit)
+    save_button.grid(row=len(fields), column=0, columnspan=2, padx=10, pady=10)
 
 def delete_customer():
     selected_item = customer_table.selection()
     if selected_item:
-        customer_data = customer_table.item(selected_item)["values"]
-        customer_id = customer_data[0]
-        
-        # Xóa khách hàng khỏi Treeview
         customer_table.delete(selected_item)
-        
-        # Xóa khách hàng khỏi sample_customers
-        sample_customers[:] = [customer for customer in sample_customers if customer[0] != customer_id]
-        
-        # Ghi lại thay đổi vào CSV
-        save_to_csv('customers.csv')
     else:
         messagebox.showwarning("Cảnh báo", "Vui lòng chọn khách hàng để xóa.")
 
@@ -222,7 +199,7 @@ def create_khach_hang_tab(notebook, app):
     latest_button.grid(row=0, column=5, padx=5, pady=5, sticky=W)
     frame_khach_hang.arrowup_icon = arrowup_icon
     
-    columns = ["ID Khách Hàng", "Tên Khách Hàng", "Địa Chỉ", "Số Điện Thoại", "Email", "Lịch Sử Mua Hàng"]
+    columns = ["Mã khách hàng", "Tên khách hàng", "Ngày sinh", "Giới tính", "Địa chỉ", "SDT"]
 
     customer_table = ttk.Treeview(frame_khach_hang, columns=columns, show="headings", bootstyle="superhero")
     customer_table.grid(row=2, column=0, columnspan=len(columns), padx=5, pady=5, sticky="nsew")
@@ -230,7 +207,7 @@ def create_khach_hang_tab(notebook, app):
     for col in columns:
         customer_table.heading(col, text=col)
         customer_table.column(col, width=100)
-        if col == "ID Khách Hàng":
+        if col == "Mã khách hàng" or col == "Giới tính":
             customer_table.column(col,anchor='center') 
         else:
             customer_table.column(col, anchor='w')

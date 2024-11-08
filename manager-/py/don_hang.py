@@ -4,7 +4,6 @@ import tkinter.messagebox as messagebox
 import pandas as pd
 from PIL import Image, ImageTk
 from tkinter import StringVar
-import csv
 
 # Sample data
 sample_data = []
@@ -16,20 +15,6 @@ def read_csv(file_path):
     except Exception as e:
         messagebox.showerror("Lỗi", f"Không thể đọc file: {e}")
         return []
-
-def save_to_csv(filename):
-    try:
-        with open(filename, mode='w', newline='', encoding='utf-8') as file:
-            writer = csv.writer(file)
-            # Define header
-            header = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
-            writer.writerow(header)
-            
-            # Write the order data
-            for order in sample_data:
-                writer.writerow(order)
-    except Exception as e:
-        messagebox.showerror("Lỗi", f"Không thể lưu file: {e}")
 
 def button_click(button_name, app):
     if button_name == "Tìm kiếm":
@@ -46,45 +31,49 @@ def create_don_hang_tab(notebook, app):
 
     frame_order = ttk.Frame(notebook)
     notebook.add(frame_order, text="ĐƠN HÀNG")
-
-    # Insert images for buttons
-    image = Image.open("icon/search.png").resize((20, 20), Image.LANCZOS)
+    #insert image
+   
+    image = Image.open("icon/search.png")
+    image = image.resize((20, 20), Image.LANCZOS)
     search_icon = ImageTk.PhotoImage(image)
 
-    image2 = Image.open("icon/multiple.png").resize((20, 20), Image.LANCZOS)
+    image2 = Image.open("icon/multiple.png")
+    image2 = image2.resize((20, 20), Image.LANCZOS)
     multiple_icon = ImageTk.PhotoImage(image2)
 
-    image3 = Image.open("icon/wrenchalt.png").resize((20, 20), Image.LANCZOS)
+    image3 = Image.open("icon/wrenchalt.png")
+    image3 = image3.resize((20, 20), Image.LANCZOS)
     wrenchalt_icon = ImageTk.PhotoImage(image3)
 
-    image4 = Image.open("icon/trash.png").resize((20, 20), Image.LANCZOS)
+    image4 = Image.open("icon/trash.png")
+    image4 = image4.resize((20,20), Image.LANCZOS)
     trash_icon = ImageTk.PhotoImage(image4)
     
     search_value = StringVar()
     
-    search_entry = ttk.Entry(frame_order, bootstyle="superhero", width=30, textvariable=search_value)
+    search_entry = ttk.Entry(frame_order, bootstyle="superhero", width=30, textvariable= search_value)
     search_entry.insert(0, "Tìm kiếm theo sản phẩm")
     search_entry.grid(row=0, column=0, padx=5, pady=5, sticky=W)
     
     search_entry.bind("<FocusIn>", lambda event: search_entry.delete(0, 'end') if search_entry.get() == "Tìm kiếm theo sản phẩm" else None)
-    search_entry.bind("<Return>", lambda event: button_click("Tìm kiếm", app))  # Trigger search on Enter
 
     search_button = ttk.Button(frame_order, text="Tìm kiếm", bootstyle="superhero", image=search_icon, compound=LEFT, cursor="hand2", command=lambda: button_click("Tìm kiếm", app))
     search_button.grid(row=0, column=1, padx=5, pady=5, sticky=W)
-    frame_order.search_icon = search_icon
+    frame_order.search_icon = search_icon  # Keep a reference to the image to avoid garbage collection
 
     add_order_button = ttk.Button(frame_order, text="Thêm đơn", bootstyle="superhero", image=multiple_icon, compound=LEFT, command=lambda: button_click("Thêm đơn", app), cursor="hand2")
     add_order_button.grid(row=0, column=2, padx=5, pady=5, sticky=W)
     frame_order.multiple_icon = multiple_icon
-    
+
     edit_order_button = ttk.Button(frame_order, text="Sửa", bootstyle="superhero", image=wrenchalt_icon, compound=LEFT, command=lambda: button_click("Sửa", app), cursor="hand2")
     edit_order_button.grid(row=0, column=3, padx=5, pady=5, sticky=W)
     frame_order.wrenchalt_icon = wrenchalt_icon
-    
+
     delete_order_button = ttk.Button(frame_order, text="Xóa", bootstyle="superhero", image=trash_icon, compound=LEFT, command=delete_order, cursor="hand2")
     delete_order_button.grid(row=0, column=4, padx=5, pady=5, sticky=W)
     frame_order.trash_icon = trash_icon
-    
+
+
     columns = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
     order_table = ttk.Treeview(frame_order, columns=columns, show="headings", bootstyle="superhero")
     order_table.grid(row=1, column=0, columnspan=5, padx=5, pady=5, sticky="nsew")
@@ -100,15 +89,6 @@ def create_don_hang_tab(notebook, app):
 
     frame_order.grid_rowconfigure(1, weight=1)
     frame_order.grid_columnconfigure(0, weight=1)
-
-def load_image(image_path):
-    try:
-        image = Image.open(image_path)
-        image = image.resize((20, 20), Image.LANCZOS)
-        return ImageTk.PhotoImage(image)
-    except Exception as e:
-        messagebox.showerror("Lỗi", f"Không thể tải hình ảnh: {e}")
-        return None
 
 def refresh_order_table():
     for row in order_table.get_children():
@@ -129,19 +109,20 @@ def update_row_colors():
 
 def search_order():
     search_value = search_entry.get().lower()
-
+    
     # Clear the table to prepare for showing only matching results
     for row in order_table.get_children():
         order_table.delete(row)
-
+    
     # Filter and display only the matching orders
     matched_orders = [order for order in sample_data if search_value in order[3].lower()]
-
+    
     for order in matched_orders:
         order_table.insert("", "end", values=order)
-
+    
     # Update row colors for consistency in appearance
     update_row_colors()
+
 
 def add_order(app):
     add_window = ttk.Toplevel(app)
@@ -170,7 +151,6 @@ def add_order(app):
             return
         
         sample_data.append(new_order)
-        save_to_csv('orders.csv')
         refresh_order_table()
         add_window.destroy()
 
@@ -199,30 +179,33 @@ def edit_order(app):
         entries[field] = entry
 
     def submit_edit():
-        edited_order = tuple(entries[field].get().strip() for field in fields)
-        for i, value in enumerate(edited_order):
-            if value != order_data[i]:
-                # Update the order data
-                sample_data[sample_data.index(order_data)] = edited_order
-                break
-        
-        save_to_csv('orders.csv')
-        refresh_order_table()
+        updated_order = tuple(entries[field].get().strip() for field in fields)
+
+        if any(not value for value in updated_order):
+            messagebox.showerror("Lỗi", "Vui lòng không để trống các trường.")
+            return
+
+        sample_data[order_table.index(selected_item)] = updated_order
+        order_table.item(selected_item, values=updated_order)
         edit_window.destroy()
 
-    edit_button = ttk.Button(edit_window, text="Sửa", bootstyle="superhero", command=submit_edit)
-    edit_button.grid(row=len(fields), column=0, columnspan=2, padx=10, pady=10)
+    save_button = ttk.Button(edit_window, text="Lưu", bootstyle="superhero", command=submit_edit)
+    save_button.grid(row=len(fields), column=0, columnspan=2, padx=10, pady=10)
 
 def delete_order():
-    selected_item = order_table.selection()
-    if not selected_item:
-        messagebox.showwarning("Cảnh báo", "Vui lòng chọn một đơn hàng để xóa.")
-        return
+    selected_items = order_table.selection()
+    if selected_items:
+        for selected_item in selected_items:
+            index = order_table.index(selected_item)
+            order_table.delete(selected_item)
+            sample_data.pop(index)  # Xóa khỏi sample_data
 
-    order_data = order_table.item(selected_item)["values"]
-    result = messagebox.askyesno("Xác nhận xóa", f"Bạn có chắc chắn muốn xóa đơn hàng {order_data[0]}?")
-    if result:
-        sample_data.remove(order_data)
-        save_to_csv('orders.csv')
+        # Cập nhật lại bảng để đồng bộ màu sắc các hàng
         refresh_order_table()
+    else:
+        messagebox.showwarning("Cảnh báo", "Vui lòng chọn đơn hàng để xóa.")
+
 sample_data.extend(read_csv('orders.csv'))
+if __name__ == "__main__":
+    pass  
+
