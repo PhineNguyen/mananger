@@ -5,6 +5,10 @@ import pandas as pd
 from PIL import Image, ImageTk
 from tkinter import StringVar
 import csv
+from setting import load_settings  # Import thêm load_settings
+
+
+
 search_value = []
 sample_products = []
 
@@ -117,14 +121,35 @@ def refresh_product_table():
 
 
 def update_row_colors():
+    # Tải cài đặt từ file
+    current_settings = load_settings()
+    theme = current_settings.get('theme', 'minty')  # Mặc định là 'minty' nếu không có theme nào
+
+    # Cấu hình màu sắc dựa trên theme
+    theme_colors = {
+        "minty": {"foreground": "#000000", "background_even": "#e8f5e9", "background_odd": "#ffffff"},
+        "flatly": {"foreground": "#2c3e50", "background_even": "#f8f9fa", "background_odd": "#ffffff"},
+        "darkly": {"foreground": "#ffffff", "background_even": "#343a40", "background_odd": "#23272b"},
+        "pulse": {"foreground": "#495057", "background_even": "#e1e8f0", "background_odd": "#ffffff"},
+        "solar": {"foreground": "#657b83", "background_even": "#fdf6e3", "background_odd": "#ffffff"},
+    }
+
+    # Lấy màu chữ và nền theo theme
+    colors = theme_colors.get(theme, theme_colors["minty"])
+    font_color = colors["foreground"]
+    background_even = colors["background_even"]
+    background_odd = colors["background_odd"]
+
+    # Tạo tag cho font với font cố định là 'superhero' và màu chữ thay đổi theo theme
+    product_table.tag_configure("custom_font1", font=('superhero', 10), background=background_even, foreground=font_color)
+    product_table.tag_configure("custom_font2", font=('superhero', 10), background=background_odd, foreground=font_color)
+
+    # Áp dụng các tag xen kẽ để tạo màu nền cho các dòng
     for index, item in enumerate(product_table.get_children()):
         if index % 2 == 0:
-            product_table.item(item, tags=('evenrow',))
+            product_table.item(item, tags=('custom_font1',))
         else:
-            product_table.item(item, tags=('oddrow',))
-
-    product_table.tag_configure('evenrow', background='#f0f0f0')
-    product_table.tag_configure('oddrow', background='white')
+            product_table.item(item, tags=('custom_font2',))
 
 def search_product():
     search_value = product_search_entry.get().lower()

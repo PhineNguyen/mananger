@@ -5,7 +5,7 @@ import pandas as pd
 from PIL import Image, ImageTk
 from tkinter import StringVar
 import csv
-from setting import create_setting_tab, load_settings  # Import thêm load_settings
+from setting import load_settings  # Import thêm load_settings
 
 
 # Sample data
