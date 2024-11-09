@@ -9,6 +9,47 @@ import csv
 # Sample data
 sample_data = []
 
+# Hàm đọc dữ liệu từ customers.csv
+def read_customers_csv(file_path):
+    try:
+        with open(file_path, mode='r', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            next(reader)  # Bỏ qua dòng tiêu đề
+            return [row for row in reader]
+    except Exception as e:
+        messagebox.showerror("Lỗi", f"Không thể đọc file customers.csv: {e}")
+        return []
+    
+# Hàm để chọn khách hàng
+def choose_customer(entries):
+    customers = read_customers_csv('customers.csv')
+    customer_window = ttk.Toplevel()
+    customer_window.title("Chọn Khách Hàng")
+    
+    # Tạo bảng hiển thị danh sách khách hàng
+    customer_table = ttk.Treeview(customer_window, columns=("ID Khách Hàng", "Tên Khách Hàng", "Email"), show="headings")
+    customer_table.heading("ID Khách Hàng", text="ID Khách Hàng")
+    customer_table.heading("Tên Khách Hàng", text="Tên Khách Hàng")
+    customer_table.heading("Email", text="Email")
+    
+    # Thêm dữ liệu vào bảng
+    for customer in customers:
+        customer_table.insert("", "end", values=customer)
+    
+    customer_table.pack(fill="both", expand=True)
+
+    # Hàm điền ID Khách Hàng vào ô nhập liệu
+    def select_customer(event):
+        selected_item = customer_table.selection()
+        if selected_item:
+            customer_id = customer_table.item(selected_item)["values"][0]
+            entries["ID Khách Hàng"].delete(0, "end")
+            entries["ID Khách Hàng"].insert(0, customer_id)
+            customer_window.destroy()
+    
+    customer_table.bind("<Double-1>", select_customer)  # Chọn khách hàng bằng double-click
+
+
 def read_csv(file_path):
     try:
         df = pd.read_csv(file_path)
@@ -143,37 +184,154 @@ def search_order():
     # Update row colors for consistency in appearance
     update_row_colors()
 
+# def add_order(app):
+#     add_window = ttk.Toplevel(app)
+#     add_window.title("Thêm Đơn Hàng")
+
+#     fields = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
+#     entries = {}
+
+#     for i, field in enumerate(fields):
+#         label = ttk.Label(add_window, text=field)
+#         label.grid(row=i, column=0, padx=10, pady=5)
+#         entry = ttk.Entry(add_window, bootstyle="superhero", width=30)
+#         entry.grid(row=i, column=1, padx=10, pady=5)
+#         entries[field] = entry
+
+#     def submit_order():
+#         new_order = tuple(entries[field].get().strip() for field in fields)
+
+#         if any(not value for value in new_order):
+#             messagebox.showerror("Lỗi", "Vui lòng không để trống các trường.")
+#             return
+        
+#         # Check for duplicate order ID
+#         if any(order[0] == new_order[0] for order in sample_data):
+#             messagebox.showerror("Lỗi", "ID đơn hàng đã tồn tại.")
+#             return
+        
+#         sample_data.append(new_order)
+#         save_to_csv('orders.csv')
+#         refresh_order_table()
+#         add_window.destroy()
+
+#     add_button = ttk.Button(add_window, text="Thêm", bootstyle="superhero", command=submit_order)
+#     add_button.grid(row=len(fields), column=0, columnspan=2, padx=10, pady=10)
+
+# Thêm cửa sổ "Thêm Đơn Hàng" với nút chọn khách hàng
+####################################################################################
+# def add_order(app):
+#     add_window = ttk.Toplevel(app)
+#     add_window.title("Thêm Đơn Hàng")
+
+#     fields = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
+#     entries = {}
+
+#     for i, field in enumerate(fields):
+#         label = ttk.Label(add_window, text=field)
+#         label.grid(row=i, column=0, padx=10, pady=5)
+#         entry = ttk.Entry(add_window, bootstyle="superhero", width=30)
+#         entry.grid(row=i, column=1, padx=10, pady=5)
+#         entries[field] = entry
+        
+#         # Thêm nút chọn khách hàng bên cạnh ô "ID Khách Hàng"
+#         if field == "ID Khách Hàng":
+#             choose_button = ttk.Button(add_window, text="Chọn", command=lambda: choose_customer(entries))
+#             choose_button.grid(row=i, column=2, padx=5)
+
+#     def submit_order():
+#         new_order = tuple(entries[field].get().strip() for field in fields)
+#         if any(not value for value in new_order):
+#             messagebox.showerror("Lỗi", "Vui lòng không để trống các trường.")
+#             return
+        
+#         # Thêm đơn hàng vào dữ liệu và cập nhật bảng
+#         sample_data.append(new_order)
+#         save_to_csv('orders.csv')
+#         refresh_order_table()
+#         add_window.destroy()
+
+#     add_button = ttk.Button(add_window, text="Thêm", bootstyle="superhero", command=submit_order)
+#     add_button.grid(row=len(fields), column=0, columnspan=2, padx=10, pady=10)
+
+####################################################################################
 def add_order(app):
+    # Tạo cửa sổ "Thêm Đơn Hàng" mới
     add_window = ttk.Toplevel(app)
     add_window.title("Thêm Đơn Hàng")
 
-    fields = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
-    entries = {}
+    # Danh sách các trường thông tin cần nhập cho đơn hàng
+    fields = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", 
+              "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
+    entries = {}  # Tạo dictionary để lưu các entry widget
 
+    # Tạo các nhãn và entry widget cho mỗi trường thông tin
     for i, field in enumerate(fields):
-        label = ttk.Label(add_window, text=field)
-        label.grid(row=i, column=0, padx=10, pady=5)
-        entry = ttk.Entry(add_window, bootstyle="superhero", width=30)
-        entry.grid(row=i, column=1, padx=10, pady=5)
-        entries[field] = entry
+        label = ttk.Label(add_window, text=field)  # Tạo nhãn cho trường
+        label.grid(row=i, column=0, padx=10, pady=5)  # Đặt nhãn vào lưới
+        entry = ttk.Entry(add_window, bootstyle="superhero", width=30)  # Tạo entry cho trường
+        entry.grid(row=i, column=1, padx=10, pady=5)  # Đặt entry vào lưới
+        entries[field] = entry  # Lưu entry vào dictionary với khóa là tên trường
 
+        # Thêm nút chọn khách hàng bên cạnh ô "ID Khách Hàng"
+        if field == "ID Khách Hàng":
+            choose_button = ttk.Button(add_window, text="Chọn", command=lambda: choose_customer(entries))
+            choose_button.grid(row=i, column=2, padx=5)
+
+    # Hàm để mở cửa sổ chọn sản phẩm
+    def select_products():
+        product_window = ttk.Toplevel(add_window)  # Tạo cửa sổ "Chọn Sản Phẩm" mới
+        product_window.title("Chọn")
+
+        # Tải danh sách sản phẩm từ file CSV
+        products = read_csv("products.csv")
+
+        # Tạo bảng hiển thị danh sách sản phẩm với các cột ID, Tên và Giá
+        product_table = ttk.Treeview(product_window, columns=("ID", "Tên", "Giá"), 
+                                     show="headings", selectmode="extended")
+        product_table.heading("ID", text="ID")  # Cột ID
+        product_table.heading("Tên", text="Tên Sản Phẩm")  # Cột tên sản phẩm
+        product_table.heading("Giá", text="Giá VND")  # Cột giá sản phẩm
+        product_table.pack(fill="both", expand=True)  # Đặt bảng vào cửa sổ, mở rộng đầy đủ
+
+        # Thêm các sản phẩm vào bảng
+        for product in products:
+            product_table.insert("", "end", values=(product[0], product[1], product[2]))
+
+        # Hàm để thêm các sản phẩm đã chọn vào đơn hàng
+        def add_selected_products():
+            selected_products = [product_table.item(item)["values"] for item in product_table.selection()]
+            entries["Danh Sách Sản Phẩm"].delete(0, 'end')  # Xóa nội dung cũ trong trường danh sách sản phẩm
+            selected_product_names = [f"{prod[1]} ({prod[2]} VND)" for prod in selected_products]
+            # Ghép tên và giá của các sản phẩm được chọn thành chuỗi và thêm vào trường danh sách sản phẩm
+            entries["Danh Sách Sản Phẩm"].insert(0, ", ".join(selected_product_names))
+            product_window.destroy()  # Đóng cửa sổ chọn sản phẩm
+
+        # Nút để xác nhận chọn các sản phẩm
+        select_button = ttk.Button(product_window, text="Chọn Sản Phẩm", command=add_selected_products)
+        select_button.pack(pady=10)
+
+        
+
+    # Nút "Chọn Sản Phẩm" trong cửa sổ "Thêm Đơn Hàng", mở cửa sổ chọn sản phẩm
+    product_select_button = ttk.Button(add_window, text="Chọn Sản Phẩm", 
+                                       bootstyle="superhero", command=select_products)
+    product_select_button.grid(row=fields.index("Danh Sách Sản Phẩm"), column=2, padx=10, pady=5)
+
+    # Hàm để lưu đơn hàng mới vào danh sách và file CSV
     def submit_order():
+        # Lấy thông tin từ các trường và kiểm tra xem có trường nào bỏ trống không
         new_order = tuple(entries[field].get().strip() for field in fields)
-
         if any(not value for value in new_order):
-            messagebox.showerror("Lỗi", "Vui lòng không để trống các trường.")
+            messagebox.showerror("Lỗi", "Vui lòng không để trống các trường.")  # Hiển thị lỗi nếu bỏ trống
             return
-        
-        # Check for duplicate order ID
-        if any(order[0] == new_order[0] for order in sample_data):
-            messagebox.showerror("Lỗi", "ID đơn hàng đã tồn tại.")
-            return
-        
-        sample_data.append(new_order)
-        save_to_csv('orders.csv')
-        refresh_order_table()
-        add_window.destroy()
 
+        sample_data.append(new_order)  # Thêm đơn hàng vào danh sách tạm thời
+        save_to_csv("orders.csv")  # Lưu đơn hàng vào file CSV
+        refresh_order_table()  # Cập nhật bảng đơn hàng
+        add_window.destroy()  # Đóng cửa sổ thêm đơn hàng
+
+    # Nút "Thêm" để xác nhận thêm đơn hàng mới
     add_button = ttk.Button(add_window, text="Thêm", bootstyle="superhero", command=submit_order)
     add_button.grid(row=len(fields), column=0, columnspan=2, padx=10, pady=10)
 
