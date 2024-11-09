@@ -5,7 +5,7 @@ from don_hang import create_don_hang_tab
 from thong_ke import create_thong_ke_tab
 from khach_hang import create_khach_hang_tab
 from login import create_login_frame
-from setting import create_setting_tab, load_settings  # Import thêm load_settings
+from setting import create_setting_tab, load_settings,apply_settings  # Import thêm load_settings
 from PIL import Image, ImageTk
 from tkinter import PhotoImage
 
@@ -18,6 +18,18 @@ def change_window_icon(app, icon_path):
         app.iconphoto(False, icon)
     except Exception as e:
         print(f"Không thể thay đổi icon của cửa sổ: {e}")
+
+# def refresh_tabs(notebook, app):
+#     # Xóa tất cả các tab hiện tại
+#     for tab in notebook.tabs():
+#         notebook.forget(tab)
+    
+#     # Thêm lại các tab
+#     create_san_pham_tab(notebook, app)
+#     create_don_hang_tab(notebook, app)
+#     create_khach_hang_tab(notebook, app)
+#     create_thong_ke_tab(notebook, app)
+#     create_setting_tab(notebook, app)
 
 def main():
     # Tải cài đặt từ file
@@ -47,12 +59,10 @@ def main():
     create_don_hang_tab(notebook, app)
     create_khach_hang_tab(notebook, app)
     create_thong_ke_tab(notebook, app)
-    create_setting_tab(notebook, app)  # Thêm tab Setting
+    create_setting_tab(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)  # Thêm tab Setting
 
     create_login_frame(app, notebook)
-    
-
-
+  
     # Chạy ứng dụng
     app.mainloop()
 

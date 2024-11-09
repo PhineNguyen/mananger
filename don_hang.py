@@ -85,6 +85,7 @@ def button_click(button_name, app):
         delete_order()
 
 def create_don_hang_tab(notebook, app):
+    print("gọi hàm đơn hàng")
     # Khai báo biến toàn cục để sử dụng trong các phần khác của chương trình
     global order_table, search_entry
 

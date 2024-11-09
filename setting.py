@@ -3,6 +3,7 @@ import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from tkinter import StringVar, IntVar
 
+
 # Danh sách các theme và font
 THEMES = ["minty", "flatly", "darkly", "pulse", "solar"]
 FONTS = ["Helvetica", "Arial", "Times New Roman", "Courier New"]
@@ -23,19 +24,37 @@ def save_settings(theme, font, font_size):
     with open(CONFIG_FILE, "w") as file:
         json.dump(settings, file)
 
-def apply_settings(app, notebook, theme_var, font_var, font_size_var):
+def refresh_tabs(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab):
+    # Xóa tất cả các tab hiện tại
+    for tab in notebook.tabs():
+        notebook.forget(tab)
+    
+    # Thêm lại các tab sau khi cập nhật theme và font
+    create_san_pham_tab(notebook, app)
+    create_don_hang_tab(notebook, app)
+    create_khach_hang_tab(notebook, app)
+    create_thong_ke_tab(notebook, app)
+    create_setting_tab(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)  # Thêm tab Setting
+
+def apply_settings(app, notebook, theme_var, font_var, font_size_var,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab):
     # Thay đổi theme và font
     theme = theme_var.get()
     font = font_var.get()
     font_size = font_size_var.get()
 
+    # Thay đổi theme và font trong app và notebook
     app.style.theme_use(theme)
     notebook.option_add("*TNotebook.Tab*Font", (font, font_size))
 
     # Lưu cài đặt mới
     save_settings(theme, font, font_size)
 
-def create_setting_tab(notebook, app):
+    # Gọi hàm refresh_tabs để cập nhật lại các tab
+    refresh_tabs(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)
+    #refresh_tabs(notebook, app)
+
+
+def create_setting_tab(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab):
     # Tải cài đặt từ file
     current_settings = load_settings()
 
@@ -72,6 +91,8 @@ def create_setting_tab(notebook, app):
     apply_button = ttk.Button(
         setting_frame, 
         text="Áp Dụng", 
-        command=lambda: apply_settings(app, notebook, theme_var, font_var, font_size_var)
+        command=lambda: apply_settings(app, notebook, theme_var, font_var, font_size_var,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)
     )
     apply_button.pack(pady=20)
+
+    
