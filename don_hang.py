@@ -213,16 +213,30 @@ def edit_order(app):
     edit_button = ttk.Button(edit_window, text="Sửa", bootstyle="superhero", command=submit_edit)
     edit_button.grid(row=len(fields), column=0, columnspan=2, padx=10, pady=10)
 
+# def delete_order():
+#     selected_item = order_table.selection()
+#     if not selected_item:
+#         messagebox.showwarning("Cảnh báo", "Vui lòng chọn một đơn hàng để xóa.")
+#         return
+
+#     order_data = order_table.item(selected_item)["values"]
+#     result = messagebox.askyesno("Xác nhận xóa", f"Bạn có chắc chắn muốn xóa đơn hàng {order_data[0]}?")
+#     if result:
+#         sample_data.remove(order_data)
+#         save_to_csv('orders.csv')
+#         refresh_order_table()
+
 def delete_order():
     selected_item = order_table.selection()
     if not selected_item:
-        messagebox.showwarning("Cảnh báo", "Vui lòng chọn một đơn hàng để xóa.")
+        messagebox.showwarning("Cảnh báo", "Vui lòng chọn đơn hàng cần xóa.")
         return
 
-    order_data = order_table.item(selected_item)["values"]
-    result = messagebox.askyesno("Xác nhận xóa", f"Bạn có chắc chắn muốn xóa đơn hàng {order_data[0]}?")
-    if result:
-        sample_data.remove(order_data)
-        save_to_csv('orders.csv')
+    confirm = messagebox.askyesno("Xác nhận", "Bạn có chắc chắn muốn xóa đơn hàng này?")
+    if confirm:
+        selected_index = order_table.index(selected_item)
+        del sample_data[selected_index]
+
         refresh_order_table()
+        save_to_csv('orders.csv')
 sample_data.extend(read_csv('orders.csv'))
