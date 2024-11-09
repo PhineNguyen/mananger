@@ -40,7 +40,7 @@ def main():
 
     # Tạo notebook
     notebook = ttk.Notebook(app, style="TNotebook")
-    notebook.pack(fill=BOTH, expand=TRUE)
+    #notebook.pack(fill=BOTH, expand=TRUE)
 
     # Thêm các tab vào notebook
     create_san_pham_tab(notebook, app)
@@ -48,6 +48,8 @@ def main():
     create_khach_hang_tab(notebook, app)
     create_thong_ke_tab(notebook, app)
     create_setting_tab(notebook, app)  # Thêm tab Setting
+
+    create_login_frame(app, notebook)
 
     # Chạy ứng dụng
     app.mainloop()
