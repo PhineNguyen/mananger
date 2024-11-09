@@ -5,6 +5,8 @@ import pandas as pd
 from PIL import Image, ImageTk
 from tkinter import StringVar
 import csv
+from setting import create_setting_tab, load_settings  # Import thêm load_settings
+
 
 # Sample data
 sample_data = []
@@ -83,12 +85,14 @@ def button_click(button_name, app):
         delete_order()
 
 def create_don_hang_tab(notebook, app):
+    # Khai báo biến toàn cục để sử dụng trong các phần khác của chương trình
     global order_table, search_entry
 
+    # Tạo một frame cho tab ĐƠN HÀNG và thêm vào notebook
     frame_order = ttk.Frame(notebook)
     notebook.add(frame_order, text="ĐƠN HÀNG")
 
-    # Insert images for buttons
+    # Tải các hình ảnh icon và thay đổi kích thước thành 20x20 pixels
     image = Image.open("icon/search.png").resize((20, 20), Image.LANCZOS)
     search_icon = ImageTk.PhotoImage(image)
 
@@ -101,46 +105,66 @@ def create_don_hang_tab(notebook, app):
     image4 = Image.open("icon/trash.png").resize((20, 20), Image.LANCZOS)
     trash_icon = ImageTk.PhotoImage(image4)
     
+    # Tạo biến StringVar để lưu giá trị nhập vào của ô tìm kiếm
     search_value = StringVar()
     
+    # Tạo ô nhập (Entry) để tìm kiếm đơn hàng
     search_entry = ttk.Entry(frame_order, bootstyle="superhero", width=30, textvariable=search_value)
-    search_entry.insert(0, "Tìm kiếm theo sản phẩm")
+    search_entry.insert(0, "Tìm kiếm theo sản phẩm")  # Văn bản mặc định trong ô tìm kiếm
     search_entry.grid(row=0, column=0, padx=5, pady=5, sticky=W)
     
+    # Sự kiện khi nhấn vào ô tìm kiếm sẽ xóa văn bản mặc định
     search_entry.bind("<FocusIn>", lambda event: search_entry.delete(0, 'end') if search_entry.get() == "Tìm kiếm theo sản phẩm" else None)
-    search_entry.bind("<Return>", lambda event: button_click("Tìm kiếm", app))  # Trigger search on Enter
+    # Sự kiện nhấn Enter để thực hiện tìm kiếm
+    search_entry.bind("<Return>", lambda event: button_click("Tìm kiếm", app))  # Kích hoạt tìm kiếm khi nhấn Enter
 
+    # Tạo nút Tìm kiếm với icon và liên kết hàm button_click khi nhấn
     search_button = ttk.Button(frame_order, text="Tìm kiếm", bootstyle="superhero", image=search_icon, compound=LEFT, cursor="hand2", command=lambda: button_click("Tìm kiếm", app))
     search_button.grid(row=0, column=1, padx=5, pady=5, sticky=W)
-    frame_order.search_icon = search_icon
+    frame_order.search_icon = search_icon  # Để giữ tham chiếu đến icon, tránh bị thu hồi bộ nhớ
 
+    # Tạo nút Thêm đơn với icon và liên kết hàm button_click khi nhấn
     add_order_button = ttk.Button(frame_order, text="Thêm đơn", bootstyle="superhero", image=multiple_icon, compound=LEFT, command=lambda: button_click("Thêm đơn", app), cursor="hand2")
     add_order_button.grid(row=0, column=2, padx=5, pady=5, sticky=W)
     frame_order.multiple_icon = multiple_icon
-    
+
+    # Tạo nút Sửa với icon và liên kết hàm button_click khi nhấn
     edit_order_button = ttk.Button(frame_order, text="Sửa", bootstyle="superhero", image=wrenchalt_icon, compound=LEFT, command=lambda: button_click("Sửa", app), cursor="hand2")
     edit_order_button.grid(row=0, column=3, padx=5, pady=5, sticky=W)
     frame_order.wrenchalt_icon = wrenchalt_icon
-    
+
+    # Tạo nút Xóa với icon và liên kết hàm delete_order khi nhấn
     delete_order_button = ttk.Button(frame_order, text="Xóa", bootstyle="superhero", image=trash_icon, compound=LEFT, command=delete_order, cursor="hand2")
     delete_order_button.grid(row=0, column=4, padx=5, pady=5, sticky=W)
     frame_order.trash_icon = trash_icon
-    
+
+    # Định nghĩa các cột cho bảng order_table
     columns = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
     order_table = ttk.Treeview(frame_order, columns=columns, show="headings", bootstyle="superhero")
     order_table.grid(row=1, column=0, columnspan=5, padx=5, pady=5, sticky="nsew")
 
+    # Thiết lập tiêu đề và căn chỉnh cho các cột trong bảng
     for col in columns:
         order_table.heading(col, text=col)
-        if col == "Trạng Thái Đơn Hàng" or col == "Phương Thức Thanh Toán" or col == "Danh Sách Sản Phẩm":
-            order_table.column(col, anchor='w')  # Align left for specific columns
+        if col in ["Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán", "Danh Sách Sản Phẩm"]:
+            order_table.column(col, anchor='w')  # Căn trái cho các cột này
         else:
-            order_table.column(col, anchor='center')  # Center-align other columns
+            order_table.column(col, anchor='center')  # Căn giữa cho các cột còn lại
 
-    refresh_order_table()  # Load initial data from sample_data
+    # # Tải cài đặt từ file
+    # current_settings = load_settings()
 
+    # # Tạo tag cho font mới
+    # order_table.tag_configure("custom_font", font=(current_settings['font']))
+
+
+    # Gọi hàm để tải dữ liệu ban đầu vào bảng
+    refresh_order_table()
+    
+    # Thiết lập khung chứa bảng để tự động thay đổi kích thước khi giao diện mở rộng
     frame_order.grid_rowconfigure(1, weight=1)
     frame_order.grid_columnconfigure(0, weight=1)
+
 
 def load_image(image_path):
     try:
@@ -159,14 +183,39 @@ def refresh_order_table():
     update_row_colors()
 
 def update_row_colors():
+    # Tải cài đặt từ file
+    current_settings = load_settings()
+    theme = current_settings.get('theme', 'minty')  # Mặc định là 'minty' nếu không có theme nào
+
+    # Cấu hình màu sắc dựa trên theme
+    theme_colors = {
+        "minty": {"foreground": "#000000", "background_even": "#e8f5e9", "background_odd": "#ffffff"},
+        "flatly": {"foreground": "#2c3e50", "background_even": "#f8f9fa", "background_odd": "#ffffff"},
+        "darkly": {"foreground": "#ffffff", "background_even": "#343a40", "background_odd": "#23272b"},
+        "pulse": {"foreground": "#495057", "background_even": "#e1e8f0", "background_odd": "#ffffff"},
+        "solar": {"foreground": "#657b83", "background_even": "#fdf6e3", "background_odd": "#ffffff"},
+    }
+
+    # Lấy màu chữ và nền theo theme
+    colors = theme_colors.get(theme, theme_colors["minty"])
+    font_color = colors["foreground"]
+    background_even = colors["background_even"]
+    background_odd = colors["background_odd"]
+
+    # Tạo tag cho font với font cố định là 'superhero' và màu chữ thay đổi theo theme
+    order_table.tag_configure("custom_font1", font=('superhero', 10), background=background_even, foreground=font_color)
+    order_table.tag_configure("custom_font2", font=('superhero', 10), background=background_odd, foreground=font_color)
+
+    # Áp dụng các tag xen kẽ để tạo màu nền cho các dòng
     for index, item in enumerate(order_table.get_children()):
         if index % 2 == 0:
-            order_table.item(item, tags=('evenrow',))
+            order_table.item(item, tags=('custom_font1',))
         else:
-            order_table.item(item, tags=('oddrow',))
+            order_table.item(item, tags=('custom_font2',))
 
-    order_table.tag_configure('evenrow', background='#f0f0f0')
-    order_table.tag_configure('oddrow', background='white')
+
+    # order_table.tag_configure('evenrow', background='#f0f0f0')
+    # order_table.tag_configure('oddrow', background='white')
 
 def search_order():
     search_value = search_entry.get().lower()

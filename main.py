@@ -50,6 +50,8 @@ def main():
     create_setting_tab(notebook, app)  # Thêm tab Setting
 
     create_login_frame(app, notebook)
+    
+
 
     # Chạy ứng dụng
     app.mainloop()
