@@ -4,6 +4,7 @@ from san_pham import create_san_pham_tab
 from don_hang import create_don_hang_tab
 from thong_ke import create_thong_ke_tab
 from khach_hang import create_khach_hang_tab
+from login import create_login_frame
 from PIL import Image, ImageTk
 from tkinter import PhotoImage
 
@@ -38,13 +39,15 @@ def main():
 
     # Tạo notebook với style tùy chỉnh
     notebook = ttk.Notebook(app, style="TNotebook")
-    notebook.pack(fill=BOTH, expand=TRUE)
+    #notebook.pack(fill=BOTH, expand=TRUE)
 
     # Thêm các tab vào notebook
     create_san_pham_tab(notebook, app)
     create_don_hang_tab(notebook, app)
     create_khach_hang_tab(notebook, app)
     create_thong_ke_tab(notebook, app)
+
+    create_login_frame(app, notebook)
 
     # Chạy ứng dụng
     app.mainloop()
