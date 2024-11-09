@@ -1,5 +1,11 @@
-ID Sản Phẩm,Tên Sản Phẩm,Giá VND,Số Lượng Tồn Kho,Mô Tả,Nhóm Sản Phẩm
+﻿ID Sản Phẩm,Tên Sản Phẩm,Giá,Số Lượng Tồn Kho,Mô Tả,Nhóm Sản Phẩm
 101,Áo thun,200000,50,Áo thun cotton,Quần áo
 102,Quần jean,300000,30,Quần jean màu xanh,Quần áo
 103,Giày thể thao,500000,20,Giày thể thao màu trắng,Giày dép
 104,Balo,150000,40,Balo du lịch,Đồ gia dụng
+105,Nón,100000,10,Nón thời trang,Phụ kiện
+106,Kính mát,250000,25,Kính mát chống UV,Phụ kiện
+107,Thắt lưng,350000,35,Thắt lưng da,Phụ kiện
+108,Đồng hồ,400000,15,Đồng hồ thông minh,Đồng hồ
+109,Ví da,300000,60,Ví da nam,Phụ kiện
+110,Giày sandal,450000,5,Giày sandal nữ,Giày dép
