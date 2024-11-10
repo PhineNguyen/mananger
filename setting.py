@@ -24,19 +24,33 @@ def save_settings(theme, font, font_size):
     with open(CONFIG_FILE, "w") as file:
         json.dump(settings, file)
 
-def refresh_tabs(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab):
+def refresh_tabs(notebook_right, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab):
     # Xóa tất cả các tab hiện tại
     for tab in notebook.tabs():
         notebook.forget(tab)
-    
+
+    current_settings = load_settings()
+
+    style = ttk.Style()
+    style.configure("TNotebook.Tab", padding=[10, 5], font=(current_settings["font"], current_settings["font_size"]), background="#5bc0de")
+    style.map("TNotebook.Tab",
+              background=[('selected', '#ADD8E6'), ('!selected', '#B1C6B4')],
+              foreground=[('selected', 'white'), ('!selected', 'black')])
+    style.configure("TNotebook", tabposition='n')  # 'n' cho trên, 's' cho dưới, 'e' cho phải, 'w' cho trái
+
+
+    # Tạo notebook
+    notebook = ttk.Notebook(app, style="TNotebook")
+    notebook.pack(fill=BOTH, expand=TRUE)
+
     # Thêm lại các tab sau khi cập nhật theme và font
     create_san_pham_tab(notebook, app)
     create_don_hang_tab(notebook, app)
     create_khach_hang_tab(notebook, app)
     create_thong_ke_tab(notebook, app)
-    create_setting_tab(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)  # Thêm tab Setting
+    create_setting_tab(notebook_right, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)  # Thêm tab Setting
 
-def apply_settings(app, notebook, theme_var, font_var, font_size_var,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab):
+def apply_settings(app, notebook_right, theme_var, font_var, font_size_var,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab):
     # Thay đổi theme và font
     theme = theme_var.get()
     font = font_var.get()
@@ -44,23 +58,23 @@ def apply_settings(app, notebook, theme_var, font_var, font_size_var,create_san_
 
     # Thay đổi theme và font trong app và notebook
     app.style.theme_use(theme)
-    notebook.option_add("*TNotebook.Tab*Font", (font, font_size))
+    notebook_right.option_add("*TNotebook.Tab*Font", (font, font_size))
 
     # Lưu cài đặt mới
     save_settings(theme, font, font_size)
 
     # Gọi hàm refresh_tabs để cập nhật lại các tab
-    refresh_tabs(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)
+    refresh_tabs(notebook_right, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)
     #refresh_tabs(notebook, app)
 
 
-def create_setting_tab(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab):
+def create_setting_tab(notebook_right, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab):
     # Tải cài đặt từ file
     current_settings = load_settings()
 
     # Tạo frame cho tab Setting
-    setting_frame = ttk.Frame(notebook)
-    notebook.add(setting_frame, text="Cài Đặt")
+    setting_frame = ttk.Frame(notebook_right)
+    notebook_right.add(setting_frame, text="CÀI ĐẶT", padding=(20,20))
 
     # Theme selection
     theme_label = ttk.Label(setting_frame, text="Chọn Giao Diện")
@@ -69,7 +83,7 @@ def create_setting_tab(notebook, app,create_san_pham_tab, create_don_hang_tab, c
     theme_var = StringVar(value=current_settings["theme"])
     for theme in THEMES:
         theme_radio = ttk.Radiobutton(setting_frame, text=theme, variable=theme_var, value=theme)
-        theme_radio.pack(anchor="w")
+        theme_radio.pack(anchor="center")
 
     # Font selection
     font_label = ttk.Label(setting_frame, text="Chọn Font Chữ")
@@ -91,7 +105,7 @@ def create_setting_tab(notebook, app,create_san_pham_tab, create_don_hang_tab, c
     apply_button = ttk.Button(
         setting_frame, 
         text="Áp Dụng", 
-        command=lambda: apply_settings(app, notebook, theme_var, font_var, font_size_var,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)
+        command=lambda: apply_settings(app, notebook_right, theme_var, font_var, font_size_var,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)
     )
     apply_button.pack(pady=20)
 

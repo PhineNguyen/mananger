@@ -91,7 +91,7 @@ def create_don_hang_tab(notebook, app):
 
     # Tạo một frame cho tab ĐƠN HÀNG và thêm vào notebook
     frame_order = ttk.Frame(notebook)
-    notebook.add(frame_order, text="ĐƠN HÀNG")
+    notebook.add(frame_order, text="ĐƠN HÀNG", padding=(20,20))
 
     # Tải các hình ảnh icon và thay đổi kích thước thành 20x20 pixels
     image = Image.open("icon/search.png").resize((20, 20), Image.LANCZOS)

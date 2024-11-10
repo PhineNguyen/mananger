@@ -10,7 +10,7 @@ def check_pin(entry_pin, app, login_frame, notebook):
     """
     if entry_pin.get() == DEFAULT_PIN:
         login_frame.pack_forget()  # Ẩn giao diện đăng nhập
-        notebook.pack(fill="both", expand=True)  # Hiển thị giao diện chính
+        notebook.pack(side="left", fill="both", expand=True)  # Hiển thị giao diện chính
     else:
         messagebox.showerror("Lỗi", "Mã PIN không đúng. Vui lòng thử lại.")
         entry_pin.delete(0, 'end')  # Xóa mã PIN trong ô nhập

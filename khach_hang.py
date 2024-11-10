@@ -183,7 +183,7 @@ def create_khach_hang_tab(notebook, app):
     global search_entry, customer_table
 
     frame_khach_hang = ttk.Frame(notebook)
-    notebook.add(frame_khach_hang, text="KHÁCH HÀNG")
+    notebook.add(frame_khach_hang, text="KHÁCH HÀNG", padding=(20,20))
     
     image = Image.open("icon/search.png")
     image = image.resize((20, 20), Image.LANCZOS)

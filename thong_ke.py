@@ -6,7 +6,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 def create_thong_ke_tab(notebook, app):
     tab = ttk.Frame(notebook)
-    notebook.add(tab, text="Thống Kê")
+    notebook.add(tab, text="THỐNG KÊ", padding=(20,20))
     
     try:
         # Đọc dữ liệu từ các file CSV
