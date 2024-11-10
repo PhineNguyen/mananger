@@ -68,7 +68,7 @@ def create_thong_ke_tab(notebook, app):
         plt.close(fig)  # Đóng biểu đồ sau khi vẽ
 
     # Gọi update_charts khi cửa sổ thay đổi kích thước
-    chart_frame.bind("<Configure>", update_charts)
+    #chart_frame.bind("<Configure>", update_charts)
 
     # Vẽ các biểu đồ ban đầu
     update_charts()

@@ -237,9 +237,9 @@ def create_khach_hang_tab(notebook, app):
     delete_button.grid(row=0, column=4, padx=5, pady=5, sticky=W)
     frame_khach_hang.trash_icon = trash_icon
     
-    latest_button = ttk.Button(frame_khach_hang, text="Mới nhất", bootstyle="superhero",image=arrowup_icon ,compound=LEFT,cursor ="hand2",command=lambda: button_click("Mới nhất", app))
-    latest_button.grid(row=0, column=5, padx=5, pady=5, sticky=W)
-    frame_khach_hang.arrowup_icon = arrowup_icon
+    # latest_button = ttk.Button(frame_khach_hang, text="Mới nhất", bootstyle="superhero",image=arrowup_icon ,compound=LEFT,cursor ="hand2",command=lambda: button_click("Mới nhất", app))
+    # latest_button.grid(row=0, column=5, padx=5, pady=5, sticky=W)
+    # frame_khach_hang.arrowup_icon = arrowup_icon
     
     columns = ["ID Khách Hàng", "Tên Khách Hàng", "Địa Chỉ", "Số Điện Thoại", "Email", "Lịch Sử Mua Hàng"]
 
