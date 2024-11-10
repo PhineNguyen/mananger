@@ -39,7 +39,7 @@ def create_thong_ke_tab(notebook, app):
 
         # Vẽ lại các biểu đồ với kích thước mới
         plot_product_count_by_category(left_frame, width, height)
-        plot_payment_methods(right_frame, width, height)
+        #plot_payment_methods(right_frame, width, height)
 
     # Biểu đồ thống kê số lượng sản phẩm theo nhóm
     def plot_product_count_by_category(frame, width, height):

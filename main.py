@@ -241,7 +241,8 @@ def main():
     create_thong_ke_tab(notebook_right1, app)
     create_setting_tab(notebook_right, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)  # Thêm tab Setting
 
-    #create_login_frame(app, notebook)
+    #bật tắt trang login
+    #create_login_frame(app, notebook, notebook_right, notebook_right1)
 
     # Liên kết sự kiện <<NotebookTabChanged>> với hàm on_tab_changed
     notebook.bind("<Button-1>", on_tab_double_click)
