@@ -4,8 +4,11 @@ from san_pham import create_san_pham_tab
 from don_hang import create_don_hang_tab
 from thong_ke import create_thong_ke_tab
 from khach_hang import create_khach_hang_tab
+from login import create_login_frame
+from setting import create_setting_tab, load_settings  # Import thêm load_settings
 from PIL import Image, ImageTk
 from tkinter import PhotoImage
+
 
 
 def change_window_icon(app, icon_path):
@@ -20,31 +23,31 @@ def main():
     # Khởi tạo cửa sổ chính
     app = ttk.Window(themename="minty")
     app.geometry("800x500")
-    app.title("Store Manager")  # Đặt tên ban đầu cho cửa sổ
+    app.title("Store Manager")
 
-    change_window_icon(app, "store_icon.png")  # Đảm bảo file store_icon.png có trong thư mục
+    # Áp dụng icon cho cửa sổ
+    change_window_icon(app, "store_icon.png")
 
-
-    # Create a frame for the title area at the top
-    title_frame = ttk.Frame(app)
-    title_frame.pack(side=TOP, fill=X, padx=10, pady=10)
-
-    # Tạo style cho tab
+    # Tạo style cho tab với font từ cài đặt
     style = ttk.Style()
-    style.configure("TNotebook.Tab", padding=[101, 5], font=('Helvetica', 14), background="#5bc0de")
+    style.configure("TNotebook.Tab", padding=[101, 5], font=(current_settings["font"], current_settings["font_size"]), background="#5bc0de")
     style.map("TNotebook.Tab",
               background=[('selected', '#ADD8E6'), ('!selected', '#B1C6B4')],
               foreground=[('selected', 'white'), ('!selected', 'black')])
 
-    # Tạo notebook với style tùy chỉnh
+    # Tạo notebook
     notebook = ttk.Notebook(app, style="TNotebook")
-    notebook.pack(fill=BOTH, expand=TRUE)
+    #notebook.pack(fill=BOTH, expand=TRUE)
 
     # Thêm các tab vào notebook
     create_san_pham_tab(notebook, app)
     create_don_hang_tab(notebook, app)
     create_khach_hang_tab(notebook, app)
     create_thong_ke_tab(notebook, app)
+    create_setting_tab(notebook, app)  # Thêm tab Setting
+#fa
+    create_login_frame(app, notebook)
+
 
     # Chạy ứng dụng
     app.mainloop()
