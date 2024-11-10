@@ -6,7 +6,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 def create_thong_ke_tab(notebook, app):
     tab = ttk.Frame(notebook)
-    notebook.add(tab, text="Thống Kê")
+    notebook.add(tab, text="THỐNG KÊ", padding=(20,20))
     
     try:
         # Đọc dữ liệu từ các file CSV
@@ -39,7 +39,7 @@ def create_thong_ke_tab(notebook, app):
 
         # Vẽ lại các biểu đồ với kích thước mới
         plot_product_count_by_category(left_frame, width, height)
-        plot_payment_methods(right_frame, width, height)
+        #plot_payment_methods(right_frame, width, height)
 
     # Biểu đồ thống kê số lượng sản phẩm theo nhóm
     def plot_product_count_by_category(frame, width, height):
@@ -68,7 +68,7 @@ def create_thong_ke_tab(notebook, app):
         plt.close(fig)  # Đóng biểu đồ sau khi vẽ
 
     # Gọi update_charts khi cửa sổ thay đổi kích thước
-    chart_frame.bind("<Configure>", update_charts)
+    #chart_frame.bind("<Configure>", update_charts)
 
     # Vẽ các biểu đồ ban đầu
     update_charts()

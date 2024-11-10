@@ -5,7 +5,9 @@ import pandas as pd
 from PIL import Image, ImageTk
 from tkinter import StringVar
 import csv
-# Dữ liệu mẫu
+from setting import load_settings  # Import thêm load_settings
+
+
 sample_customers = []
 def read_csv(file_path):
     try:
@@ -94,14 +96,35 @@ def refresh_customers_table():
     update_row_colors()
 
 def update_row_colors():
+    # Tải cài đặt từ file
+    current_settings = load_settings()
+    theme = current_settings.get('theme', 'minty')  # Mặc định là 'minty' nếu không có theme nào
+
+    # Cấu hình màu sắc dựa trên theme
+    theme_colors = {
+        "minty": {"foreground": "#000000", "background_even": "#e8f5e9", "background_odd": "#ffffff"},
+        "flatly": {"foreground": "#2c3e50", "background_even": "#f8f9fa", "background_odd": "#ffffff"},
+        "darkly": {"foreground": "#ffffff", "background_even": "#343a40", "background_odd": "#23272b"},
+        "pulse": {"foreground": "#495057", "background_even": "#e1e8f0", "background_odd": "#ffffff"},
+        "solar": {"foreground": "#657b83", "background_even": "#fdf6e3", "background_odd": "#ffffff"},
+    }
+
+    # Lấy màu chữ và nền theo theme
+    colors = theme_colors.get(theme, theme_colors["minty"])
+    font_color = colors["foreground"]
+    background_even = colors["background_even"]
+    background_odd = colors["background_odd"]
+
+    # Tạo tag cho font với font cố định là 'superhero' và màu chữ thay đổi theo theme
+    customer_table.tag_configure("custom_font1", font=('superhero', 10), background=background_even, foreground=font_color)
+    customer_table.tag_configure("custom_font2", font=('superhero', 10), background=background_odd, foreground=font_color)
+
+    # Áp dụng các tag xen kẽ để tạo màu nền cho các dòng
     for index, item in enumerate(customer_table.get_children()):
         if index % 2 == 0:
-            customer_table.item(item, tags=('evenrow',))
+            customer_table.item(item, tags=('custom_font1',))
         else:
-            customer_table.item(item, tags=('oddrow',))
-
-    customer_table.tag_configure('evenrow', background='#f0f0f0')
-    customer_table.tag_configure('oddrow', background='white')
+            customer_table.item(item, tags=('custom_font2',))
 
 def edit_customer(app):
     selected_item = customer_table.selection()
@@ -160,7 +183,7 @@ def create_khach_hang_tab(notebook, app):
     global search_entry, customer_table
 
     frame_khach_hang = ttk.Frame(notebook)
-    notebook.add(frame_khach_hang, text="KHÁCH HÀNG")
+    notebook.add(frame_khach_hang, text="KHÁCH HÀNG", padding=(20,20))
     
     image = Image.open("icon/search.png")
     image = image.resize((20, 20), Image.LANCZOS)
@@ -214,9 +237,9 @@ def create_khach_hang_tab(notebook, app):
     delete_button.grid(row=0, column=4, padx=5, pady=5, sticky=W)
     frame_khach_hang.trash_icon = trash_icon
     
-    latest_button = ttk.Button(frame_khach_hang, text="Mới nhất", bootstyle="superhero",image=arrowup_icon ,compound=LEFT,cursor ="hand2",command=lambda: button_click("Mới nhất", app))
-    latest_button.grid(row=0, column=5, padx=5, pady=5, sticky=W)
-    frame_khach_hang.arrowup_icon = arrowup_icon
+    # latest_button = ttk.Button(frame_khach_hang, text="Mới nhất", bootstyle="superhero",image=arrowup_icon ,compound=LEFT,cursor ="hand2",command=lambda: button_click("Mới nhất", app))
+    # latest_button.grid(row=0, column=5, padx=5, pady=5, sticky=W)
+    # frame_khach_hang.arrowup_icon = arrowup_icon
     
     columns = ["ID Khách Hàng", "Tên Khách Hàng", "Địa Chỉ", "Số Điện Thoại", "Email", "Lịch Sử Mua Hàng"]
 
