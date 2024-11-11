@@ -6,6 +6,7 @@ from PIL import Image, ImageTk
 from tkinter import StringVar
 import csv
 from setting import load_settings  # Import thêm load_settings
+from tkinter import Scrollbar, VERTICAL, HORIZONTAL
 
 
 sample_customers = []
@@ -258,6 +259,16 @@ def create_khach_hang_tab(notebook, app):
 
     frame_khach_hang.grid_rowconfigure(2, weight=1)
     frame_khach_hang.grid_columnconfigure(0, weight=1)
+
+    # Thêm Scrollbar dọc
+    y_scrollbar = Scrollbar(frame_khach_hang, orient=VERTICAL, command=customer_table.yview)
+    y_scrollbar.grid(row=2, column=5, sticky="ns")
+    customer_table.configure(yscrollcommand=y_scrollbar.set)
+
+    # Thêm Scrollbar ngang
+    x_scrollbar = Scrollbar(frame_khach_hang, orient=HORIZONTAL, command=customer_table.xview)
+    x_scrollbar.grid(row=3, column=0, columnspan=5, sticky="ew")
+    customer_table.configure(xscrollcommand=x_scrollbar.set)
 
     refresh_customers_table()
 sample_customers.extend(read_csv('customers.csv'))

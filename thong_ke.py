@@ -71,4 +71,4 @@ def create_thong_ke_tab(notebook, app):
     #chart_frame.bind("<Configure>", update_charts)
 
     # Vẽ các biểu đồ ban đầu
-    update_charts()
+    #update_charts()

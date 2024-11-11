@@ -6,6 +6,8 @@ from PIL import Image, ImageTk
 from tkinter import StringVar
 import csv
 from setting import load_settings  # Import thêm load_settings
+from tkinter import Scrollbar, VERTICAL, HORIZONTAL
+
 
 
 
@@ -107,8 +109,20 @@ def create_san_pham_tab(notebook, app):
         else:
             product_table.column(col, anchor='center')  # căn giữa cho các cột khác
 
+    # Thêm Scrollbar dọc
+    y_scrollbar = Scrollbar(frame_product, orient=VERTICAL, command=product_table.yview)
+    y_scrollbar.grid(row=2, column=5, sticky="ns")
+    product_table.configure(yscrollcommand=y_scrollbar.set)
+
+    # Thêm Scrollbar ngang
+    x_scrollbar = Scrollbar(frame_product, orient=HORIZONTAL, command=product_table.xview)
+    x_scrollbar.grid(row=3, column=0, columnspan=5, sticky="ew")
+    product_table.configure(xscrollcommand=x_scrollbar.set)
+
+    #tải dữ liệu vào bảng
     refresh_product_table()  # Initial load from sample_products
 
+    # Đặt tỷ lệ khung cho các hàng và cột
     frame_product.grid_rowconfigure(2, weight=1)
     frame_product.grid_columnconfigure(0, weight=1)
 
