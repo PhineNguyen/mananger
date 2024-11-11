@@ -24,7 +24,7 @@ def save_settings(theme, font, font_size):
     with open(CONFIG_FILE, "w") as file:
         json.dump(settings, file)
 
-def refresh_tabs(notebook_right, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab):
+def refresh_tabs(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab):
     # Xóa tất cả các tab hiện tại
     for tab in notebook.tabs():
         notebook.forget(tab)
@@ -40,7 +40,9 @@ def refresh_tabs(notebook_right, app,create_san_pham_tab, create_don_hang_tab, c
 
 
     # Tạo notebook
-    notebook = ttk.Notebook(app, style="TNotebook")
+    #notebook = ttk.Notebook(app, style="TNotebook")
+    notebook.configure(style="CustomNotebook.TNotebook")
+
     notebook.pack(fill=BOTH, expand=TRUE)
 
     # Thêm lại các tab sau khi cập nhật theme và font
@@ -48,7 +50,7 @@ def refresh_tabs(notebook_right, app,create_san_pham_tab, create_don_hang_tab, c
     create_don_hang_tab(notebook, app)
     create_khach_hang_tab(notebook, app)
     create_thong_ke_tab(notebook, app)
-    create_setting_tab(notebook_right, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)  # Thêm tab Setting
+    create_setting_tab(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)  # Thêm tab Setting
 
 def apply_settings(app, notebook_right, theme_var, font_var, font_size_var,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab):
     # Thay đổi theme và font

@@ -1,19 +1,18 @@
 from tkinter import messagebox
 import ttkbootstrap as ttk
-from PIL import Image, ImageTk
 
-DEFAULT_PIN = "1234"  # Đặt mã PIN mặc định 
+DEFAULT_PIN = "1234"  # Đặt mã PIN mặc định để đăng nhập
 
 def check_pin(entry_pin, app, login_frame, notebook):
     """
-    Hàm kiểm tra mã PIN khi nhấn nút "Đăng nhập". 
+    Hàm kiểm tra mã PIN khi nhấn nút "Đăng nhập".
     Nếu đúng mã PIN, ẩn giao diện đăng nhập và hiển thị giao diện chính.
     """
     if entry_pin.get() == DEFAULT_PIN:
         login_frame.pack_forget()  # Ẩn giao diện đăng nhập
         notebook.pack(fill="both", expand=True)  # Hiển thị giao diện chính
     else:
-        messagebox.showerror("INCORRECT", "Mã PIN không đúng.")
+        messagebox.showerror("Lỗi", "Mã PIN không đúng. Vui lòng thử lại.")
         entry_pin.delete(0, 'end')  # Xóa mã PIN trong ô nhập
 
 def create_login_frame(app, notebook):
@@ -34,7 +33,4 @@ def create_login_frame(app, notebook):
         text="Đăng nhập",
         command=lambda: check_pin(entry_pin, app, login_frame, notebook)
     )
-    login_button.pack(pady=10)  # Sử dụng pack thay vì grid cho sự nhất quán
-
-    # Ẩn các tab trong lúc login
-    notebook.pack_forget()
+    login_button.pack(pady=10)

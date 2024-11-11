@@ -202,66 +202,57 @@ def main():
 
     #Tạo notebook
     notebook = ttk.Notebook(app, style="TNotebook")
-    notebook_bottom = ttk.Notebook(app)
-    notebook_right = ttk.Notebook(app)
-    notebook_top = ttk.Notebook(app)
-    notebook_right1 = ttk.Notebook(app)
+    # notebook_bottom = ttk.Notebook(app)
+    # notebook_right = ttk.Notebook(app)
+    # notebook_top = ttk.Notebook(app)
+    # notebook_right1 = ttk.Notebook(app)
 
-    # notebook_right.pack(side="right", fill="both", expand=True)
+    # # Đặt các Notebook trong lưới
+    # notebook_top.grid(row=0, column=0, sticky="nsew")
+    # notebook.grid(row=1, column=0, sticky="nsew")
     
+    # # Cài đặt notebook_right ở hàng trên của cột bên phải (để làm tab Cài đặt)
+    # notebook_right.grid(row=0, column=1, sticky="nsew")
 
-    # notebook_bottom.pack(side="bottom", fill="both", expand=True)
+    # # Cài đặt notebook_right1 ở hàng dưới của cột bên phải (để làm tab Thống kê)
+    # notebook_right1.grid(row=1, column=1, rowspan=2, sticky="nsew")
+    # notebook_bottom.grid(row=2, column=0, sticky="nsew")
 
-    # notebook_top.pack(side="top", fill="both", expand=True)
-
-    # notebook.pack(side="left", fill=BOTH, expand=TRUE)
-
-    # Đặt các Notebook trong lưới
-    notebook_top.grid(row=0, column=0, sticky="nsew")
-    notebook.grid(row=1, column=0, sticky="nsew")
-    
-    # Cài đặt notebook_right ở hàng trên của cột bên phải (để làm tab Cài đặt)
-    notebook_right.grid(row=0, column=1, sticky="nsew")
-
-    # Cài đặt notebook_right1 ở hàng dưới của cột bên phải (để làm tab Thống kê)
-    notebook_right1.grid(row=1, column=1, rowspan=2, sticky="nsew")
-    notebook_bottom.grid(row=2, column=0, sticky="nsew")
-
-    # Cấu hình hàng và cột để cho phép co giãn
-    app.grid_rowconfigure(1, weight=1)  # Tab giữa (sản phẩm)
-    app.grid_rowconfigure(2, weight=1)  # Tab dưới (khách hàng)
-    app.grid_columnconfigure(0, weight=1)
-    app.grid_columnconfigure(1, weight=1)
+    # # Cấu hình hàng và cột để cho phép co giãn
+    # app.grid_rowconfigure(1, weight=1)  # Tab giữa (sản phẩm)
+    # app.grid_rowconfigure(2, weight=1)  # Tab dưới (khách hàng)
+    # app.grid_columnconfigure(0, weight=1)
+    # app.grid_columnconfigure(1, weight=1)
 
 
     # Thêm các tab vào notebook
-    create_san_pham_tab(notebook_top, app)
-    create_don_hang_tab(notebook_top, app)
-    create_khach_hang_tab(notebook_top, app)
-    create_thong_ke_tab(notebook_right1, app)
-    create_setting_tab(notebook_right, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)  # Thêm tab Setting
+    create_san_pham_tab(notebook, app)
+    create_don_hang_tab(notebook, app)
+    create_khach_hang_tab(notebook, app)
+    create_thong_ke_tab(notebook, app)
+    create_setting_tab(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)  # Thêm tab Setting
 
     #bật tắt trang login
-    #create_login_frame(app, notebook, notebook_right, notebook_right1)
+    create_login_frame(app, notebook)
 
-    # Liên kết sự kiện <<NotebookTabChanged>> với hàm on_tab_changed
-    notebook.bind("<Button-1>", on_tab_double_click)
-    # notebook_top.bind("<Button-1>", on_tab_double_click)
-    # notebook_bottom.bind("<Button-1>", on_tab_double_click)
-    notebook_right.bind("<Button-1>", on_tab_double_click)
-    notebook_right1.bind("<Button-1>", on_tab_double_click)
+    # # Liên kết sự kiện <<NotebookTabChanged>> với hàm on_tab_changed
+    # notebook.bind("<Button-1>", on_tab_double_click)
+    # # notebook_top.bind("<Button-1>", on_tab_double_click)
+    # # notebook_bottom.bind("<Button-1>", on_tab_double_click)
+    # notebook_right.bind("<Button-1>", on_tab_double_click)
+    # notebook_right1.bind("<Button-1>", on_tab_double_click)
 
-    notebook.bind("<<NotebookTabChanged>>", on_tab_changed)
-    notebook_top.bind("<<NotebookTabChanged>>", on_tab_changed)
-    notebook_bottom.bind("<<NotebookTabChanged>>", on_tab_changed)
-    notebook_right.bind("<<NotebookTabChanged>>", on_tab_changed)
-    notebook_right1.bind("<<NotebookTabChanged>>", on_tab_changed)
+    # notebook.bind("<<NotebookTabChanged>>", on_tab_changed)
+    # notebook_top.bind("<<NotebookTabChanged>>", on_tab_changed)
+    # notebook_bottom.bind("<<NotebookTabChanged>>", on_tab_changed)
+    # notebook_right.bind("<<NotebookTabChanged>>", on_tab_changed)
+    # notebook_right1.bind("<<NotebookTabChanged>>", on_tab_changed)
 
-    # Liên kết sự kiện double-click với các notebook
-    notebook_top.bind("<Button-1>", lambda event: on_tab_double_click(event, notebook_bottom,app))
-    notebook_bottom.bind("<Button-1>", lambda event: on_tab_double_click2(event, notebook_top,app))
+    # # Liên kết sự kiện double-click với các notebook
+    # notebook_top.bind("<Button-1>", lambda event: on_tab_double_click(event, notebook_bottom,app))
+    # notebook_bottom.bind("<Button-1>", lambda event: on_tab_double_click2(event, notebook_top,app))
 
-    notebook.pack_forget
+    #notebook.pack_forget
 
     # Chạy ứng dụng
     app.mainloop()
