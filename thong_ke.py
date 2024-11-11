@@ -57,6 +57,9 @@ def plot_product_count_by_category(products_df, frame):
     ax.set_xlabel("Nhóm Sản Phẩm")
     ax.set_ylabel("Số lượng")
 
+    # Thay đổi kích thước chữ của nhãn trục X (tên nhóm sản phẩm)
+    ax.set_xticklabels(product_counts.index, rotation=0, ha='right', fontsize=10)
+
     # Chuyển biểu đồ thành canvas để hiển thị trên giao diện Tkinter
     canvas = FigureCanvasTkAgg(fig, master=frame)
     canvas.draw()
