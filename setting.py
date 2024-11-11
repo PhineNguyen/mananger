@@ -95,7 +95,7 @@ def create_setting_tab(notebook_right, app,create_san_pham_tab, create_don_hang_
     notebook_right.add(setting_frame, text="CÀI ĐẶT", padding=(20,20))
 
     # Theme selection
-    theme_label = ttk.Label(setting_frame, text="Chọn Giao Diện")
+    theme_label = ttk.Label(setting_frame, text="Chọn Giao Diện", font = (current_settings["font"],current_settings["font_size"],"bold"))
     theme_label.pack(pady=10)
 
     theme_var = StringVar(value=current_settings["theme"])
@@ -104,7 +104,7 @@ def create_setting_tab(notebook_right, app,create_san_pham_tab, create_don_hang_
         theme_radio.pack(anchor="center")
 
     # Font selection
-    font_label = ttk.Label(setting_frame, text="Chọn Font Chữ")
+    font_label = ttk.Label(setting_frame, text="Chọn Font Chữ", font=(current_settings["font"], current_settings["font_size"],"bold"))
     font_label.pack(pady=10)
 
     font_var = StringVar(value=current_settings["font"])
@@ -112,7 +112,7 @@ def create_setting_tab(notebook_right, app,create_san_pham_tab, create_don_hang_
     font_dropdown.pack()
 
     # Font size selection
-    font_size_label = ttk.Label(setting_frame, text="Chọn Cỡ Chữ")
+    font_size_label = ttk.Label(setting_frame, text="Chọn Cỡ Chữ", font=(current_settings["font"], current_settings["font_size"],"bold"))
     font_size_label.pack(pady=10)
 
     font_size_var = IntVar(value=current_settings["font_size"])

@@ -47,6 +47,7 @@ def latest_customers():
     for row in sample_customers:
         customer_table.insert("", "end", values=row)
     update_row_colors()
+
 def search_customer(app):
     search_value = search_entry.get().lower()
     for row in customer_table.get_children():
@@ -57,6 +58,7 @@ def search_customer(app):
             customer_table.insert("", "end", values=row)
 
         update_row_colors()
+
 def add_customer(app):
     add_window = ttk.Toplevel(app)
     add_window.title("Thêm Khách Hàng")

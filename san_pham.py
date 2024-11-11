@@ -50,7 +50,7 @@ def create_san_pham_tab(notebook, app):
     global product_table, product_search_entry
 
     frame_product = ttk.Frame(notebook)
-    notebook.add(frame_product, text="SẢN PHẨM", padding=(10,10))
+    notebook.add(frame_product, text=" SẢN PHẨM ", padding=(10,10))
 
     # Tải icon
     image = Image.open("icon/search.png").resize((20, 20), Image.LANCZOS)
