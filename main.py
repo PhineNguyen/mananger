@@ -198,7 +198,7 @@ def main():
     style.map("TNotebook.Tab",
               background=[('selected', '#ADD8E6'), ('!selected', '#B1C6B4')],
               foreground=[('selected', 'white'), ('!selected', 'black')])
-    #style.configure("TNotebook", tabposition='n')  # 'n' cho trên, 's' cho dưới, 'e' cho phải, 'w' cho trái
+    style.configure("TNotebook", tabposition='n')  # 'n' cho trên, 's' cho dưới, 'e' cho phải, 'w' cho trái
 
     #Tạo notebook
     notebook = ttk.Notebook(app, style="TNotebook")

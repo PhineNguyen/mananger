@@ -17,6 +17,22 @@ def load_settings():
     except (FileNotFoundError, json.JSONDecodeError):
         # Trả về cài đặt mặc định nếu file không tồn tại hoặc bị lỗi
         return {"theme": "minty", "font": "Helvetica", "font_size": 14}
+    
+def reset_to_default_settings(app, notebook_right, theme_var, font_var, font_size_var, create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab, create_setting_tab):
+    # Đặt giá trị mặc định
+    default_settings = {"theme": "minty", "font": "Helvetica", "font_size": 14}
+    
+    # Cập nhật biến giao diện
+    theme_var.set(default_settings["theme"])
+    font_var.set(default_settings["font"])
+    font_size_var.set(default_settings["font_size"])
+
+    # Lưu cài đặt mặc định vào file
+    save_settings(default_settings["theme"], default_settings["font"], default_settings["font_size"])
+
+    # Áp dụng cài đặt mặc định
+    apply_settings(app, notebook_right, theme_var, font_var, font_size_var, create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab, create_setting_tab)
+
 
 def save_settings(theme, font, font_size):
     # Hàm lưu cài đặt vào file config.json
@@ -111,4 +127,10 @@ def create_setting_tab(notebook_right, app,create_san_pham_tab, create_don_hang_
     )
     apply_button.pack(pady=20)
 
-    
+    # Default button
+    default_button = ttk.Button(
+        setting_frame,
+        text="Mặc Định",
+        command=lambda: reset_to_default_settings(app, notebook_right, theme_var, font_var, font_size_var, create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab, create_setting_tab)
+    )
+    default_button.pack(pady=10)
