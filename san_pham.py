@@ -50,7 +50,7 @@ def create_san_pham_tab(notebook, app):
     global product_table, product_search_entry
 
     frame_product = ttk.Frame(notebook)
-    notebook.add(frame_product, text="SẢN PHẨM", padding=(20,20))
+    notebook.add(frame_product, text="SẢN PHẨM", padding=(10,10))
 
     # Tải icon
     image = Image.open("icon/search.png").resize((20, 20), Image.LANCZOS)
@@ -100,7 +100,7 @@ def create_san_pham_tab(notebook, app):
 
     columns = ["ID Sản Phẩm", "Tên Sản Phẩm", "Giá VND", "Số Lượng Tồn Kho", "Mô Tả", "Nhóm Sản Phẩm"]
     product_table = ttk.Treeview(frame_product, columns=columns, show="headings", bootstyle="superhero")
-    product_table.grid(row=2, column=0, columnspan=5, padx=5, pady=5, sticky="nsew")
+    product_table.grid(row=2, column=0, columnspan=5, padx=5, pady=5, sticky="ns")
 
     for col in columns:
         product_table.heading(col, text=col)
@@ -118,6 +118,23 @@ def create_san_pham_tab(notebook, app):
     x_scrollbar = Scrollbar(frame_product, orient=HORIZONTAL, command=product_table.xview)
     x_scrollbar.grid(row=3, column=0, columnspan=5, sticky="ew")
     product_table.configure(xscrollcommand=x_scrollbar.set)
+
+    # Hàm cập nhật bố cục khi thay đổi kích thước cửa sổ
+    def update_layout(event=None):
+        window_width = frame_product.winfo_width()
+        window_height = frame_product.winfo_height()
+        
+        if window_width >= 1000 and window_height >= 600:  # Kích thước tùy ý cho chế độ toàn màn hình
+            product_table.grid(sticky="nsew")  # Mở rộng cả chiều dọc và chiều ngang
+            frame_product.grid_rowconfigure(2, weight=1)  # Mở rộng chiều dọc
+            frame_product.grid_columnconfigure(0, weight=1)  # Mở rộng chiều ngang
+        else:
+            product_table.grid(sticky="ns")  # Mở rộng chỉ theo chiều dọc
+            frame_product.grid_rowconfigure(2, weight=1)  # Mở rộng chiều dọc, không thay đổi chiều ngang
+            frame_product.grid_columnconfigure(0, weight=1)  # Không mở rộng chiều ngang
+
+    # Ràng buộc sự kiện cấu hình kích thước cửa sổ
+    frame_product.bind("<Configure>", update_layout)
 
     #tải dữ liệu vào bảng
     refresh_product_table()  # Initial load from sample_products

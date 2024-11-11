@@ -184,7 +184,7 @@ def create_khach_hang_tab(notebook, app):
     global search_entry, customer_table
 
     frame_khach_hang = ttk.Frame(notebook)
-    notebook.add(frame_khach_hang, text="KHÁCH HÀNG", padding=(20,20))
+    notebook.add(frame_khach_hang, text="KHÁCH HÀNG", padding=(10,10))
     
     image = Image.open("icon/search.png")
     image = image.resize((20, 20), Image.LANCZOS)
@@ -205,7 +205,6 @@ def create_khach_hang_tab(notebook, app):
     image5 = Image.open("icon/arrowup.png")
     image5 = image5.resize((20,20), Image.LANCZOS)
     arrowup_icon = ImageTk.PhotoImage(image5)
-    
     
     
 
@@ -245,11 +244,11 @@ def create_khach_hang_tab(notebook, app):
     columns = ["ID Khách Hàng", "Tên Khách Hàng", "Địa Chỉ", "Số Điện Thoại", "Email", "Lịch Sử Mua Hàng"]
 
     customer_table = ttk.Treeview(frame_khach_hang, columns=columns, show="headings", bootstyle="superhero")
-    customer_table.grid(row=2, column=0, columnspan=len(columns), padx=5, pady=5, sticky="nsew")
+    customer_table.grid(row=2, column=0, columnspan=5, padx=5, pady=5, sticky="ns")
 
     for col in columns:
         customer_table.heading(col, text=col)
-        customer_table.column(col, width=100)
+        #customer_table.column(col, width=100)
         if col == "ID Khách Hàng":
             customer_table.column(col,anchor='center') 
         else:
@@ -257,8 +256,7 @@ def create_khach_hang_tab(notebook, app):
     for row in sample_customers:
         customer_table.insert("", "end", values=row)
 
-    frame_khach_hang.grid_rowconfigure(2, weight=1)
-    frame_khach_hang.grid_columnconfigure(0, weight=1)
+    
 
     # Thêm Scrollbar dọc
     y_scrollbar = Scrollbar(frame_khach_hang, orient=VERTICAL, command=customer_table.yview)
@@ -270,6 +268,29 @@ def create_khach_hang_tab(notebook, app):
     x_scrollbar.grid(row=3, column=0, columnspan=5, sticky="ew")
     customer_table.configure(xscrollcommand=x_scrollbar.set)
 
+   # Hàm cập nhật bố cục khi thay đổi kích thước cửa sổ
+    def update_layout(event=None):
+        window_width = frame_khach_hang.winfo_width()
+        window_height = frame_khach_hang.winfo_height()
+        
+        if window_width >= 1000 and window_height >= 600:  # Kích thước tùy ý cho chế độ toàn màn hình
+            customer_table.grid(sticky="nsew")  # Mở rộng cả chiều dọc và chiều ngang
+            frame_khach_hang.grid_rowconfigure(2, weight=1)  # Mở rộng chiều dọc
+            frame_khach_hang.grid_columnconfigure(0, weight=1)  # Mở rộng chiều ngang
+        else:
+            customer_table.grid(sticky="ns")  # Mở rộng chỉ theo chiều dọc
+            frame_khach_hang.grid_rowconfigure(2, weight=1)  # Mở rộng chiều dọc, không thay đổi chiều ngang
+            frame_khach_hang.grid_columnconfigure(0, weight=1)  # Không mở rộng chiều ngang
+
+
+    # Ràng buộc sự kiện cấu hình kích thước cửa sổ
+    frame_khach_hang.bind("<Map>", update_layout)
+    frame_khach_hang.bind("<Unmap>", update_layout)  # Khi cửa sổ bị thu nhỏ
+
     refresh_customers_table()
+
+    frame_khach_hang.grid_rowconfigure(2, weight=1)
+    frame_khach_hang.grid_columnconfigure(0, weight=1)
+    
 sample_customers.extend(read_csv('customers.csv'))
 

@@ -11,7 +11,7 @@ from tkinter import PhotoImage
 
 
 
-def change_window_icon(app, icon_path):
+def change_window_icon(app):
     #Hàm thay đổi icon của cửa sổ
     try:
         icon = PhotoImage(file="masterplan.png")  # Đảm bảo file icon tồn tại
@@ -25,11 +25,11 @@ def main():
 
     # Khởi tạo cửa sổ chính với theme từ cài đặt
     app = ttk.Window(themename=current_settings["theme"])
-    app.geometry("800x500")
+    app.geometry("1000x600")
     app.title("Store Manager")
 
     # Áp dụng icon cho cửa sổ
-    change_window_icon(app, "store_icon.png")
+    change_window_icon(app)
 
     # Tạo style cho tab với font từ cài đặt
     style = ttk.Style()
@@ -41,7 +41,7 @@ def main():
 
     #Tạo notebook
     notebook = ttk.Notebook(app, style="TNotebook")
-  
+    notebook.pack(fill="both", expand=True)
 
     # Thêm các tab vào notebook
     create_san_pham_tab(notebook, app)
@@ -51,7 +51,7 @@ def main():
     create_setting_tab(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)  # Thêm tab Setting
 
     #bật tắt trang login
-    create_login_frame(app, notebook)
+    #create_login_frame(app, notebook)
 
     # Chạy ứng dụng
     app.mainloop()

@@ -1,87 +1,55 @@
 import pandas as pd
+import random
+from faker import Faker
 
-# Dữ liệu khách hàng
-customers_data = {
-    "ID Khách Hàng": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    "Tên Khách Hàng": [
-        "Nguyễn Văn A", "Trần Thị B", "Lê Văn C", "Phạm Thị D", "Nguyễn Văn E",
-        "Trần Văn F", "Lê Thị G", "Phạm Văn H", "Nguyễn Thị I", "Trần Văn J"
-    ],
-    "Địa Chỉ": [
-        "123 Đường 1, Quận 1, TP.HCM", "456 Đường 2, Quận 2, TP.HCM",
-        "789 Đường 3, Quận 3, TP.HCM", "101 Đường 4, Quận 4, TP.HCM",
-        "112 Đường 5, Quận 5, TP.HCM", "131 Đường 6, Quận 6, TP.HCM",
-        "415 Đường 7, Quận 7, TP.HCM", "161 Đường 8, Quận 8, TP.HCM",
-        "718 Đường 9, Quận 9, TP.HCM", "192 Đường 10, Quận 10, TP.HCM"
-    ],
-    "Số Điện Thoại": [
-        "0123456789", "0987654321", "0912345678", "0901234567",
-        "0934567890", "0945678901", "0956789012", "0967890123",
-        "0978901234", "0989012345"
-    ],
-    "Email": [
-        "a@example.com", "b@example.com", "c@example.com", "d@example.com",
-        "e@example.com", "f@example.com", "g@example.com", "h@example.com",
-        "i@example.com", "j@example.com"
-    ],
-    "Lịch Sử Mua Hàng": [
-        "Đơn hàng 1, Đơn hàng 2", "Đơn hàng 3", "Đơn hàng 4, Đơn hàng 5",
-        "Đơn hàng 6", "Đơn hàng 7", "Đơn hàng 8, Đơn hàng 9", "Đơn hàng 10",
-        "Đơn hàng 11", "Đơn hàng 12, Đơn hàng 13", "Đơn hàng 14"
-    ]
-}
+fake = Faker()
 
-# Dữ liệu sản phẩm
-products_data = {
-    "ID Sản Phẩm": [101, 102, 103, 104, 105, 106, 107, 108, 109, 110],
-    "Tên Sản Phẩm": [
-        "Áo thun", "Quần jean", "Giày thể thao", "Balo", "Nón",
-        "Kính mát", "Thắt lưng", "Đồng hồ", "Ví da", "Giày sandal"
-    ],
-    "Giá": [200000, 300000, 500000, 150000, 100000, 250000, 350000, 400000, 300000, 450000],
-    "Số Lượng Tồn Kho": [50, 30, 20, 40, 10, 25, 35, 15, 60, 5],
-    "Mô Tả": [
-        "Áo thun cotton", "Quần jean màu xanh", "Giày thể thao màu trắng", "Balo du lịch",
-        "Nón thời trang", "Kính mát chống UV", "Thắt lưng da", "Đồng hồ thông minh",
-        "Ví da nam", "Giày sandal nữ"
-    ],
-    "Nhóm Sản Phẩm": [
-        "Quần áo", "Quần áo", "Giày dép", "Đồ gia dụng", "Phụ kiện",
-        "Phụ kiện", "Phụ kiện", "Đồng hồ", "Phụ kiện", "Giày dép"
-    ]
-}
+# Hàm tạo dữ liệu khách hàng
+def generate_customers_data(num_customers):
+    customers_data = {
+        "ID Khách Hàng": list(range(1, num_customers + 1)),
+        "Tên Khách Hàng": [fake.name() for _ in range(num_customers)],
+        "Địa Chỉ": [fake.address().replace("\n", ", ") for _ in range(num_customers)],
+        "Số Điện Thoại": [fake.phone_number() for _ in range(num_customers)],
+        "Email": [fake.email() for _ in range(num_customers)],
+        "Lịch Sử Mua Hàng": [", ".join([f"Đơn hàng {random.randint(1, 50)}" for _ in range(random.randint(1, 3))]) for _ in range(num_customers)]
+    }
+    return pd.DataFrame(customers_data)
 
-# Dữ liệu đơn hàng
-orders_data = {
-    "ID Đơn Hàng": [201, 202, 203, 204, 205, 206, 207, 208, 209, 210],
-    "ID Khách Hàng": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    "Ngày Đặt Hàng": [
-        "2024-01-01", "2024-01-02", "2024-01-03", "2024-01-04",
-        "2024-01-05", "2024-01-06", "2024-01-07", "2024-01-08",
-        "2024-01-09", "2024-01-10"
-    ],
-    "Danh Sách Sản Phẩm": [
-        "101, 102", "103", "104, 105", "106", "107, 108",
-        "109", "110", "101, 106", "102, 104", "105, 109"
-    ],
-    "Tổng Giá Trị Đơn Hàng": [
-        500000, 500000, 800000, 250000, 600000,
-        350000, 300000, 450000, 650000, 800000
-    ],
-    "Trạng Thái Đơn Hàng": [
-        "Đang xử lý", "Đã giao", "Đã hủy", "Đang xử lý", "Đã giao",
-        "Đã hủy", "Đang xử lý", "Đã giao", "Đang xử lý", "Đã giao"
-    ],
-    "Phương Thức Thanh Toán": [
-        "Tiền mặt", "Chuyển khoản", "Thẻ tín dụng", "Tiền mặt", "Chuyển khoản",
-        "Tiền mặt", "Thẻ tín dụng", "Tiền mặt", "Chuyển khoản", "Thẻ tín dụng"
-    ]
-}
+# Hàm tạo dữ liệu sản phẩm
+def generate_products_data(num_products):
+    products_data = {
+        "ID Sản Phẩm": list(range(101, 101 + num_products)),
+        "Tên Sản Phẩm": [fake.word().capitalize() for _ in range(num_products)],
+        "Giá": [random.randint(100000, 1000000) for _ in range(num_products)],
+        "Số Lượng Tồn Kho": [random.randint(1, 100) for _ in range(num_products)],
+        "Mô Tả": [fake.sentence() for _ in range(num_products)],
+        "Nhóm Sản Phẩm": [random.choice(["Quần áo", "Giày dép", "Phụ kiện", "Đồ gia dụng", "Đồng hồ"]) for _ in range(num_products)]
+    }
+    return pd.DataFrame(products_data)
+
+# Hàm tạo dữ liệu đơn hàng
+def generate_orders_data(num_orders, num_customers, num_products):
+    orders_data = {
+        "ID Đơn Hàng": list(range(201, 201 + num_orders)),
+        "ID Khách Hàng": [random.randint(1, num_customers) for _ in range(num_orders)],
+        "Ngày Đặt Hàng": [fake.date_this_year() for _ in range(num_orders)],
+        "Danh Sách Sản Phẩm": [", ".join([str(random.randint(101, 100 + num_products)) for _ in range(random.randint(1, 3))]) for _ in range(num_orders)],
+        "Tổng Giá Trị Đơn Hàng": [random.randint(200000, 2000000) for _ in range(num_orders)],
+        "Trạng Thái Đơn Hàng": [random.choice(["Đang xử lý", "Đã giao", "Đã hủy"]) for _ in range(num_orders)],
+        "Phương Thức Thanh Toán": [random.choice(["Tiền mặt", "Chuyển khoản", "Thẻ tín dụng"]) for _ in range(num_orders)]
+    }
+    return pd.DataFrame(orders_data)
+
+# Số lượng dữ liệu muốn tạo
+num_customers = 50
+num_products = 50
+num_orders = 50
 
 # Tạo DataFrame cho từng loại dữ liệu
-customers_df = pd.DataFrame(customers_data)
-products_df = pd.DataFrame(products_data)
-orders_df = pd.DataFrame(orders_data)
+customers_df = generate_customers_data(num_customers)
+products_df = generate_products_data(num_products)
+orders_df = generate_orders_data(num_orders, num_customers, num_products)
 
 # Lưu dữ liệu vào các file CSV
 customers_df.to_csv('customers.csv', index=False, encoding='utf-8-sig')

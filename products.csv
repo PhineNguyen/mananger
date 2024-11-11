@@ -1,16 +1,51 @@
-ID Sản Phẩm,Tên Sản Phẩm,Giá VND,Số Lượng Tồn Kho,Mô Tả,Nhóm Sản Phẩm
-101,Áo thun,200000,50,Áo thun cotton,Quần áo
-102,Quần jean,300000,30,Quần jean màu xanh,Quần áo
-103,Giày thể thao,500000,20,Giày thể thao màu trắng,Giày dép
-104,Balo,150000,40,Balo du lịch,Đồ gia dụng
-105,Nón,100000,10,Nón thời trang,Phụ kiện
-106,Kính mát,250000,25,Kính mát chống UV,Phụ kiện
-107,Thắt lưng,350000,35,Thắt lưng da,Phụ kiện
-108,Đồng hồ,400000,15,Đồng hồ thông minh,Đồng hồ
-109,Ví da,300000,60,Ví da nam,Phụ kiện
-110,Giày sandal,450000,5,Giày sandal nữ,Giày dép
-3,3,3,3,3,3
-34,4,4,4,4,4
-5,5,5,5,5,5
-1,1,1,1,1,2
-2,2,2,2,2,3
+﻿ID Sản Phẩm,Tên Sản Phẩm,Giá,Số Lượng Tồn Kho,Mô Tả,Nhóm Sản Phẩm
+101,Among,235750,32,Me management under heart.,Phụ kiện
+102,Purpose,324800,58,Fast paper identify sit test heart unit.,Phụ kiện
+103,Yeah,508649,52,Economy wall guy discover point.,Giày dép
+104,Walk,329369,92,Never really former same doctor few.,Phụ kiện
+105,Support,180542,11,Whole crime answer father education.,Quần áo
+106,Attack,479343,40,Team traditional wonder have parent next national.,Phụ kiện
+107,Lawyer,535073,28,Model loss system learn.,Đồ gia dụng
+108,Here,131268,46,Including whatever important office baby maybe character American.,Đồng hồ
+109,Night,285424,69,Action either miss training worry them position.,Phụ kiện
+110,Hope,129081,13,Later alone move century most hundred.,Đồng hồ
+111,Contain,362928,75,Human several likely result.,Đồ gia dụng
+112,Three,864872,7,Its push data social bag new main.,Đồ gia dụng
+113,Technology,251732,78,Land quite glass name forget claim.,Đồng hồ
+114,Very,135265,2,Art white involve who beyond begin sense.,Quần áo
+115,Professor,873221,25,Four imagine state baby happy community truth always.,Đồ gia dụng
+116,Reality,828446,72,Everything positive question most ball remain.,Quần áo
+117,Subject,760871,23,Trouble determine worry step forward.,Đồng hồ
+118,Nearly,364709,81,Chair audience forget compare listen.,Giày dép
+119,Generation,916718,49,Defense end trade hit point many here often.,Phụ kiện
+120,Sport,375357,89,Tonight share and meeting four you heavy.,Đồng hồ
+121,Party,878795,16,Page now box his case.,Giày dép
+122,Future,119692,29,Ground gas concern provide deal better by.,Đồng hồ
+123,Change,363076,65,Character TV those fine spend.,Phụ kiện
+124,West,213225,86,Account need main add standard adult.,Quần áo
+125,Through,394225,97,Detail card within wall race seem physical.,Phụ kiện
+126,Develop,132316,31,Safe down history politics the allow.,Đồng hồ
+127,Grow,186328,17,Indeed hit medical prevent degree pass.,Phụ kiện
+128,Upon,598149,33,Cause almost interest property over condition.,Quần áo
+129,Fact,936949,52,Along back think serious less nation.,Đồng hồ
+130,Way,674578,89,Staff and section.,Đồ gia dụng
+131,Time,845423,41,Management inside can.,Quần áo
+132,Environmental,977754,4,Offer nor bar realize perhaps important speech.,Đồ gia dụng
+133,Sure,173531,24,My sit total camera very soon cultural bank.,Đồng hồ
+134,Friend,210671,48,Wind fight week Mr find one subject.,Đồng hồ
+135,Reach,467199,71,Certain him trial create.,Giày dép
+136,Born,362572,96,Prove reflect situation there production must.,Đồng hồ
+137,Glass,913058,34,Stop price must.,Đồ gia dụng
+138,The,647506,29,Others small summer doctor.,Phụ kiện
+139,Administration,462618,21,Certain girl executive maintain.,Đồng hồ
+140,Program,644494,14,Group suggest too poor I become good event.,Đồng hồ
+141,Change,324328,21,Animal may car no race clearly follow.,Giày dép
+142,Energy,695445,45,Generation as back area water.,Đồng hồ
+143,Reveal,742145,100,Still rock others whom apply building.,Giày dép
+144,Beyond,693147,46,Former president message so heart.,Đồng hồ
+145,Sell,834131,18,Dog economy by community we lay plant.,Đồng hồ
+146,Professor,865837,68,Represent serious no quickly.,Phụ kiện
+147,Peace,339786,86,Especially fact treat never site quickly picture.,Đồ gia dụng
+148,Air,384430,53,Life tend group baby nice anything.,Đồng hồ
+149,Up,352584,63,Enter seek put later charge collection nation.,Đồ gia dụng
+150,Radio,974107,55,Many for laugh language so.,Đồ gia dụng

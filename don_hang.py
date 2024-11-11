@@ -92,7 +92,7 @@ def create_don_hang_tab(notebook, app):
 
     # Tạo một frame cho tab ĐƠN HÀNG và thêm vào notebook
     frame_order = ttk.Frame(notebook)
-    notebook.add(frame_order, text="ĐƠN HÀNG", padding=(20,20))
+    notebook.add(frame_order, text="ĐƠN HÀNG", padding=(10,10))
 
     # Tải các hình ảnh icon và thay đổi kích thước thành 20x20 pixels
     image = Image.open("icon/search.png").resize((20, 20), Image.LANCZOS)
@@ -143,7 +143,7 @@ def create_don_hang_tab(notebook, app):
     # Định nghĩa các cột cho bảng order_table
     columns = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
     order_table = ttk.Treeview(frame_order, columns=columns, show="headings", bootstyle="superhero")
-    order_table.grid(row=1, column=0, columnspan=5, padx=5, pady=5, sticky="nsew")
+    order_table.grid(row=1, column=0, columnspan=5, padx=5, pady=5, sticky="ns")
 
     # Thiết lập tiêu đề và căn chỉnh cho các cột trong bảng
     for col in columns:
@@ -164,6 +164,24 @@ def create_don_hang_tab(notebook, app):
     order_table.configure(xscrollcommand=x_scrollbar.set)
 
     order_table.configure(yscrollcommand=y_scrollbar.set, xscrollcommand=x_scrollbar.set)
+
+    # Hàm cập nhật bố cục khi thay đổi kích thước cửa sổ
+    def update_layout(event=None):
+        window_width = frame_order.winfo_width()
+        window_height = frame_order.winfo_height()
+        
+        if window_width >= 1000 and window_height >= 600:  # Kích thước tùy ý cho chế độ toàn màn hình
+            order_table.grid(sticky="nsew")  # Mở rộng cả chiều dọc và chiều ngang
+            frame_order.grid_rowconfigure(2, weight=1)  # Mở rộng chiều dọc
+            frame_order.grid_columnconfigure(0, weight=1)  # Mở rộng chiều ngang
+        else:
+            order_table.grid(sticky="ns")  # Mở rộng chỉ theo chiều dọc
+            frame_order.grid_rowconfigure(1, weight=1)  # Mở rộng chiều dọc, không thay đổi chiều ngang
+            frame_order.grid_columnconfigure(0, weight=1)  # Không mở rộng chiều ngang
+
+
+    # Ràng buộc sự kiện cấu hình kích thước cửa sổ
+    frame_order.bind("<Configure>", update_layout)
 
 
     # Gọi hàm để tải dữ liệu ban đầu vào bảng
