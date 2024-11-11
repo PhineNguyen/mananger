@@ -155,6 +155,8 @@ def update_row_colors():
     # Tải cài đặt từ file
     current_settings = load_settings()
     theme = current_settings.get('theme', 'minty')  # Mặc định là 'minty' nếu không có theme nào
+    font_name = current_settings.get('font', 'Helvetica')  # Mặc định là 'Helvetica' nếu không có trong config
+    font_size = current_settings.get('font_size', 14)     # Mặc định là 14 nếu không có trong config
 
     # Cấu hình màu sắc dựa trên theme
     theme_colors = {
@@ -172,8 +174,8 @@ def update_row_colors():
     background_odd = colors["background_odd"]
 
     # Tạo tag cho font với font cố định là 'superhero' và màu chữ thay đổi theo theme
-    product_table.tag_configure("custom_font1", font=('superhero', 10), background=background_even, foreground=font_color)
-    product_table.tag_configure("custom_font2", font=('superhero', 10), background=background_odd, foreground=font_color)
+    product_table.tag_configure("custom_font1", font=(font_name, font_size), background=background_even, foreground=font_color)
+    product_table.tag_configure("custom_font2", font=(font_name, font_size), background=background_odd, foreground=font_color)
 
     # Áp dụng các tag xen kẽ để tạo màu nền cho các dòng
     for index, item in enumerate(product_table.get_children()):
@@ -181,6 +183,21 @@ def update_row_colors():
             product_table.item(item, tags=('custom_font1',))
         else:
             product_table.item(item, tags=('custom_font2',))
+    #product_table.configure(height=font_size+5)
+    update_row_height(font_size)
+
+def update_row_height(font_size):
+    # Tạo kiểu tùy chỉnh cho bảng Treeview
+    style = ttk.Style()
+
+    # Cài đặt chiều cao của các hàng (row height) cho Treeview
+    row_height = font_size*2  # Tính toán chiều cao hàng dựa trên cỡ chữ
+
+    # Áp dụng kiểu cho bảng Treeview
+    style.configure("Custom.Treeview", rowheight=row_height)
+
+    # Cập nhật style của product_table
+    product_table.configure(style="Custom.Treeview")
 
 def search_product():
     search_value = product_search_entry.get().lower()
