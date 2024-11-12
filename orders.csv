@@ -1,4 +1,4 @@
-﻿ID Đơn Hàng,ID Khách Hàng,Ngày Đặt Hàng,Danh Sách Sản Phẩm,Tổng Giá Trị Đơn Hàng,Trạng Thái Đơn Hàng,Phương Thức Thanh Toán
+ID Đơn Hàng,ID Khách Hàng,Ngày Đặt Hàng,Danh Sách Sản Phẩm,Tổng Giá Trị Đơn Hàng,Trạng Thái Đơn Hàng,Phương Thức Thanh Toán
 201,29,2024-06-21,"128, 121",584170,Đã giao,Thẻ tín dụng
 202,6,2024-02-24,129,1138140,Đã hủy,Chuyển khoản
 203,46,2024-01-03,140,542076,Đang xử lý,Thẻ tín dụng
@@ -49,3 +49,5 @@
 248,40,2024-02-16,"113, 132",357821,Đã hủy,Chuyển khoản
 249,5,2024-05-16,137,1334058,Đã hủy,Thẻ tín dụng
 250,27,2024-07-02,112,1520945,Đã hủy,Thẻ tín dụng
+3,3,3,3,3,3,3
+3,3,33,3,3,3,3

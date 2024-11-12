@@ -112,16 +112,30 @@ def create_don_hang_tab(notebook, app):
     
     # Tạo ô nhập (Entry) để tìm kiếm đơn hàng
     search_entry = ttk.Entry(frame_order, bootstyle="superhero", width=30, textvariable=search_value)
-    search_entry.insert(0, "Tìm kiếm theo sản phẩm")  # Văn bản mặc định trong ô tìm kiếm
+    search_entry.insert(0, "Tìm kiếm theo id đơn hàng")  # Văn bản mặc định trong ô tìm kiếm
     search_entry.grid(row=0, column=0, padx=5, pady=5, sticky=W)
     
-    # Sự kiện khi nhấn vào ô tìm kiếm sẽ xóa văn bản mặc định
-    search_entry.bind("<FocusIn>", lambda event: search_entry.delete(0, 'end') if search_entry.get() == "Tìm kiếm theo sản phẩm" else None)
-    # Sự kiện nhấn Enter để thực hiện tìm kiếm
-    search_entry.bind("<Return>", lambda event: button_click("Tìm kiếm", app))  # Kích hoạt tìm kiếm khi nhấn Enter
+    
+    # Xóa gợi ý khi nhấn vào ô tìm kiếm
+    def on_entry_click(event):
+        if search_entry.get() == "Tìm kiếm theo id đơn hàng":
+            search_entry.delete(0, 'end')  # Xóa gợi ý
+            search_entry.config(foreground='black')  # Đổi màu chữ để nhập nội dung mới
+
+    # Hiển thị lại gợi ý nếu ô trống khi bỏ chọn
+    def on_focus_out(event):
+        if search_entry.get() == "":
+            search_entry.insert(0, "Tìm kiếm theo id đơn hàng")  # Đặt lại gợi ý
+            search_entry.config(foreground='gray')  # Đổi màu chữ cho gợi ý
+
+    # Gắn sự kiện focus
+    search_entry.bind("<FocusIn>", on_entry_click)
+    search_entry.bind("<FocusOut>", on_focus_out)
+    # Gắn sự kiện Enter cho ô tìm kiếm
+    search_entry.bind("<Return>", lambda event: search_order())
 
     # Tạo nút Tìm kiếm với icon và liên kết hàm button_click khi nhấn
-    search_button = ttk.Button(frame_order, text="Tìm kiếm", bootstyle="superhero", image=search_icon, compound=LEFT, cursor="hand2", command=lambda: button_click("Tìm kiếm", app))
+    search_button = ttk.Button(frame_order, text="Tìm kiếm", bootstyle="superhero", image=search_icon, compound=LEFT, cursor="hand2", command=lambda: button_click("Tìm kiếm",app))
     search_button.grid(row=0, column=1, padx=5, pady=5, sticky=W)
     frame_order.search_icon = search_icon  # Để giữ tham chiếu đến icon, tránh bị thu hồi bộ nhớ
 
@@ -256,19 +270,20 @@ def update_row_height(font_size):
     order_table.configure(style="Custom.Treeview")
 
 def search_order():
-    search_value = search_entry.get().lower()
-
-    # Clear the table to prepare for showing only matching results
+    search_value = search_entry.get().strip().lower()  # Lấy giá trị tìm kiếm và chuyển về chữ thường
+    
+    # Xóa toàn bộ các hàng trong bảng trước khi hiển thị kết quả tìm kiếm
     for row in order_table.get_children():
         order_table.delete(row)
 
-    # Filter and display only the matching orders
-    matched_orders = [order for order in sample_data if search_value in order[3].lower()]
+    # Tìm các đơn hàng khớp với ID đơn hàng trong cột đầu tiên (ID Đơn Hàng)
+    matched_orders = [order for order in sample_data if search_value in str(order[0]).lower()]
 
+    # Hiển thị các đơn hàng khớp trong bảng
     for order in matched_orders:
         order_table.insert("", "end", values=order)
 
-    # Update row colors for consistency in appearance
+    # Cập nhật màu sắc hàng (nếu có) để đảm bảo giao diện đồng nhất
     update_row_colors()
 
 
@@ -337,6 +352,7 @@ def add_order(app):
     product_select_button.grid(row=fields.index("Danh Sách Sản Phẩm"), column=2, padx=10, pady=5)
 
     # Hàm để lưu đơn hàng mới vào danh sách và file CSV
+
     def submit_order():
         # Lấy thông tin từ các trường và kiểm tra xem có trường nào bỏ trống không
         new_order = tuple(entries[field].get().strip() for field in fields)
@@ -344,10 +360,41 @@ def add_order(app):
             messagebox.showerror("Lỗi", "Vui lòng không để trống các trường.")  # Hiển thị lỗi nếu bỏ trống
             return
 
-        sample_data.append(new_order)  # Thêm đơn hàng vào danh sách tạm thời
+        # Thêm đơn hàng vào danh sách tạm thời và lưu vào file CSV
+        sample_data.append(new_order)
         save_to_csv("orders.csv")  # Lưu đơn hàng vào file CSV
         refresh_order_table()  # Cập nhật bảng đơn hàng
-        add_window.destroy()  # Đóng cửa sổ thêm đơn hàng
+
+        # Lấy ID đơn hàng và ID khách hàng
+        order_id = new_order[0]
+        customer_id = new_order[1]
+
+        # Cập nhật lịch sử mua hàng cho khách hàng trong file customers.csv
+        update_customer_purchase_history(customer_id, order_id)
+
+        # Đóng cửa sổ thêm đơn hàng
+        add_window.destroy()
+
+    def update_customer_purchase_history(customer_id, order_id):
+        # Đọc dữ liệu từ file customers.csv
+        customers = []
+        with open("customers.csv", "r", newline="", encoding="utf-8") as file:
+            reader = csv.reader(file)
+            header = next(reader)  # Đọc dòng tiêu đề
+            for row in reader:
+                if row[0] == customer_id:
+                    # Cập nhật lịch sử mua hàng bằng cách thêm ID đơn hàng mới
+                    if row[5]:  # Nếu đã có lịch sử, nối thêm ID đơn hàng
+                        row[5] += f", {order_id}"
+                    else:  # Nếu chưa có lịch sử, gán ID đơn hàng mới
+                        row[5] = order_id
+                customers.append(row)
+
+        # Ghi lại dữ liệu đã cập nhật vào file customers.csv
+        with open("customers.csv", "w", newline="", encoding="utf-8") as file:
+            writer = csv.writer(file)
+            writer.writerow(header)  # Ghi dòng tiêu đề
+            writer.writerows(customers)  # Ghi dữ liệu khách hàng đã cập nhật
 
     # Nút "Thêm" để xác nhận thêm đơn hàng mới
     add_button = ttk.Button(add_window, text="Thêm", bootstyle="superhero", command=submit_order)

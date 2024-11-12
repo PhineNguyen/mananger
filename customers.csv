@@ -1,7 +1,7 @@
-﻿ID Khách Hàng,Tên Khách Hàng,Địa Chỉ,Số Điện Thoại,Email,Lịch Sử Mua Hàng
+ID Khách Hàng,Tên Khách Hàng,Địa Chỉ,Số Điện Thoại,Email,Lịch Sử Mua Hàng
 1,Arthur Wright,"758 Hughes Cliffs Apt. 945, Priceberg, CT 44977",730-745-8617,jessicafernandez@example.org,"Đơn hàng 2, Đơn hàng 25, Đơn hàng 7"
 2,Joseph Brown,"071 Powers Street, Clarkshire, LA 15100",4735546571,jeremyanderson@example.com,Đơn hàng 1
-3,Luke Hernandez,"506 Love Corners, Port Benjaminside, KS 78715",(649)995-5625x80213,ikhan@example.com,Đơn hàng 40
+3,Luke Hernandez,"506 Love Corners, Port Benjaminside, KS 78715",(649)995-5625x80213,ikhan@example.com,"Đơn hàng 40, 3"
 4,Jeffrey Khan,"PSC 4234, Box 0033, APO AP 21439",794-493-2165,james59@example.com,"Đơn hàng 37, Đơn hàng 19"
 5,Shelley Cook,"6564 David Plaza, Barrettborough, RI 03317",814-801-3984x45460,craigallison@example.com,"Đơn hàng 37, Đơn hàng 32, Đơn hàng 12"
 6,Jasmine Lyons,"1467 Holmes Turnpike Suite 862, Diazshire, NH 35361",866.600.4342,xaustin@example.org,Đơn hàng 41
@@ -49,3 +49,6 @@
 48,Anthony Hall DDS,"14773 David Corner, New Wayne, CO 55328",201.396.5090x51931,steven17@example.net,Đơn hàng 50
 49,Carol Gibson,"8003 Robert Loaf Suite 721, Brookshaven, IL 88140",333-411-2180x56574,juliemartin@example.net,"Đơn hàng 50, Đơn hàng 29, Đơn hàng 37"
 50,Vanessa Smith,"PSC 1670, Box 9492, APO AA 61855",600.678.3068x749,nicole61@example.net,Đơn hàng 10
+51,dd,ddd,444,đfd,nan
+3,3,3,3,3,"nan, 3"
+2,2,2,2,2,

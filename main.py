@@ -15,29 +15,6 @@ dem=0
 prev_state = "normal"
 
 
-# opened_tabs = []  # Danh sách để lưu các tab đã mở
-
-# def on_tab_double_click(event, app, notebook, create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab, create_setting_tab):
-#     tab_name = event.widget.tab(event.widget.select())['text']
-    
-#     # Kiểm tra xem tab đã được mở chưa
-#     if tab_name not in opened_tabs:
-#         opened_tabs.append(tab_name)  # Thêm vào danh sách các tab đã mở
-
-#         # Tạo các tab trong notebook hiện tại
-#         if tab_name == " SẢN PHẨM ":
-#             create_san_pham_tab(notebook, app)
-#         elif tab_name == "ĐƠN HÀNG":
-#             create_don_hang_tab(notebook, app)
-#         elif tab_name == "KHÁCH HÀNG":
-#             create_khach_hang_tab(notebook, app)
-#         elif tab_name == "THỐNG KÊ":
-#             create_thong_ke_tab(notebook, app)
-#         elif tab_name == "CÀI ĐẶT":
-#             create_setting_tab(notebook, app, create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab, create_setting_tab)
-
-#     else:
-#         print(f"Tab '{tab_name}' đã được mở trước đó.")
 
 def change_window_icon(app):
     #Hàm thay đổi icon của cửa sổ
@@ -103,11 +80,7 @@ def main():
     #create_login_frame(app, notebook)
 
     # Ràng buộc sự kiện để kiểm tra khi thay đổi trạng thái cửa sổ
-    app.bind("<Configure>", lambda event: on_window_state_change(event, app,notebook,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab))
-
-
-    #notebook.bind("<Double-1>", lambda event: on_tab_double_click(event, app, notebook, create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab, create_setting_tab))
-
+    #app.bind("<Configure>", lambda event: on_window_state_change(event, app,notebook,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab))
 
     # Ràng buộc sự kiện để kiểm tra khi thay đổi trạng thái cửa sổ
     app.bind("<Configure>", lambda event: on_window_state_change(event, app, notebook, create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab, create_setting_tab))

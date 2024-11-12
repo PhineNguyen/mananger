@@ -71,8 +71,23 @@ def create_san_pham_tab(notebook, app):
     product_search_entry.insert(0, "Tìm kiếm theo tên sản phẩm")
     product_search_entry.grid(row=0, column=0, padx=5, pady=5, sticky=W)
 
-    # Thêm sự kiện focus_in để xóa nội dung khi nhấn vào ô tìm kiếm
-    product_search_entry.bind("<FocusIn>", lambda event: product_search_entry.delete(0, 'end') if product_search_entry.get() == "Tìm kiếm theo tên sản phẩm" else None)
+    # Xóa gợi ý khi nhấn vào ô tìm kiếm
+    def on_entry_click(event):
+        if product_search_entry.get() == "Tìm kiếm theo tên sản phẩm":
+            product_search_entry.delete(0, 'end')  # Xóa gợi ý
+            product_search_entry.config(foreground='black')  # Đổi màu chữ để nhập nội dung mới
+
+    # Hiển thị lại gợi ý nếu ô trống khi bỏ chọn
+    def on_focus_out(event):
+        if product_search_entry.get() == "":
+            product_search_entry.insert(0, "Tìm kiếm theo tên sản phẩm")  # Đặt lại gợi ý
+            product_search_entry.config(foreground='gray')  # Đổi màu chữ cho gợi ý
+
+    # Gắn sự kiện focus
+    product_search_entry.bind("<FocusIn>", on_entry_click)
+    product_search_entry.bind("<FocusOut>", on_focus_out)
+    # Gắn sự kiện Enter cho ô tìm kiếm
+    product_search_entry.bind("<Return>", lambda event: search_product())
 
 
     search_button = ttk.Button(frame_product, text="Tìm kiếm", bootstyle="superhero",image=search_icon,compound= LEFT ,command=search_product, cursor="hand2")
@@ -191,7 +206,7 @@ def update_row_height(font_size):
     style = ttk.Style()
 
     # Cài đặt chiều cao của các hàng (row height) cho Treeview
-    row_height = font_size*10  # Tính toán chiều cao hàng dựa trên cỡ chữ
+    row_height = font_size*2  # Tính toán chiều cao hàng dựa trên cỡ chữ
 
     # Áp dụng kiểu cho bảng Treeview
     style.configure("Custom.Treeview", rowheight=row_height)
