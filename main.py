@@ -5,10 +5,14 @@ from don_hang import create_don_hang_tab
 from thong_ke import create_thong_ke_tab
 from khach_hang import create_khach_hang_tab
 from login import create_login_frame
-from setting import create_setting_tab, load_settings,apply_settings  # Import thêm load_settings
+from setting import create_setting_tab, load_settings,apply_settings, refresh_tabs  # Import thêm load_settings
 from PIL import Image, ImageTk
 from tkinter import PhotoImage
 
+dem=0
+
+# Khởi tạo giá trị ban đầu cho prev_state
+prev_state = "normal"
 
 
 def change_window_icon(app):
@@ -18,6 +22,27 @@ def change_window_icon(app):
         app.iconphoto(False, icon)
     except Exception as e:
         print(f"Không thể thay đổi icon của cửa sổ: {e}")
+
+def on_window_state_change(event, app, notebook, create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab, create_setting_tab):
+    global dem, prev_state
+    state = app.wm_state()
+    
+    if state == "zoomed" and prev_state != "zoomed":
+        dem += 1
+        #print("Cửa sổ đã được maximize.")
+        prev_state = "zoomed"
+    
+    elif state == "normal" and prev_state == "zoomed" and dem > 0:
+        window_width = app.winfo_width()
+        window_height = app.winfo_height()
+        
+        if window_width < 1000 and window_height < 600:
+            refresh_tabs(notebook, app, create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab, create_setting_tab)
+        
+        #print("Cửa sổ đã được restore.")
+        dem -= 1
+        prev_state = "normal"
+
 
 def main():
     # Tải cài đặt từ file
@@ -52,6 +77,10 @@ def main():
 
     #bật tắt trang login
     #create_login_frame(app, notebook)
+
+    # Ràng buộc sự kiện để kiểm tra khi thay đổi trạng thái cửa sổ
+    app.bind("<Configure>", lambda event: on_window_state_change(event, app,notebook,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab))
+
 
     # Chạy ứng dụng
     app.mainloop()
