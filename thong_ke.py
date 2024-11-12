@@ -26,24 +26,37 @@ def create_thong_ke_tab(notebook, app):
     bottom_frame = Frame(main_frame)
     bottom_frame.pack(fill=BOTH, expand=True)
 
-    # Chia khung trên thành 2 hcn cho biểu đồ
-    left_top_frame = Frame(top_frame)
-    left_top_frame.pack(side=LEFT, fill=BOTH, expand=True, padx=5, pady=5)
-    
-    right_top_frame = Frame(top_frame)
-    right_top_frame.pack(side=LEFT, fill=BOTH, expand=True, padx=5, pady=5)
+    # Tạo Combobox để chọn biểu đồ
+    chart_choice = ttk.Combobox(top_frame, values=["Số lượng sản phẩm theo nhóm", "Tỉ lệ phương thức thanh toán", "Tổng thu theo tháng"], state="readonly")
+    chart_choice.pack(side=TOP, padx=5, pady=5)
 
-    # Chia khung dưới thành 2 hcn (trống hoặc cho các biểu đồ khác nếu cần)
-    left_bottom_frame = Frame(bottom_frame)
-    left_bottom_frame.pack(side=LEFT, fill=BOTH, expand=True, padx=5, pady=5)
-    
-    right_bottom_frame = Frame(bottom_frame)
-    right_bottom_frame.pack(side=LEFT, fill=BOTH, expand=True, padx=5, pady=5)
+    # Mặc định chọn biểu đồ đầu tiên
+    chart_choice.set("Số lượng sản phẩm theo nhóm")
 
-    # Vẽ các biểu đồ trong hai ô trên
-    plot_product_count_by_category(products_df, left_top_frame)
-    plot_payment_methods(orders_df, right_top_frame)
-    plot_revenue_by_month(orders_df, left_bottom_frame)
+    # Tạo khung chứa biểu đồ
+    chart_frame = Frame(bottom_frame)
+    chart_frame.pack(fill=BOTH, expand=True)
+
+    # Vẽ biểu đồ ban đầu
+    plot_product_count_by_category(products_df, chart_frame)
+
+    # Hàm xử lý thay đổi lựa chọn trong Combobox
+    def on_chart_choice_changed(event):
+        # Xóa biểu đồ hiện tại trong chart_frame
+        for widget in chart_frame.winfo_children():
+            widget.destroy()
+        
+        # Vẽ biểu đồ tương ứng với lựa chọn trong Combobox
+        choice = chart_choice.get()
+        if choice == "Số lượng sản phẩm theo nhóm":
+            plot_product_count_by_category(products_df, chart_frame)
+        elif choice == "Tỉ lệ phương thức thanh toán":
+            plot_payment_methods(orders_df, chart_frame)
+        elif choice == "Tổng thu theo tháng":
+            plot_revenue_by_month(orders_df, chart_frame)
+
+    # Gắn sự kiện thay đổi lựa chọn của Combobox
+    chart_choice.bind("<<ComboboxSelected>>", on_chart_choice_changed)
 
 def load_data():
     """Hàm để tải dữ liệu từ các file CSV."""
@@ -142,40 +155,4 @@ def plot_revenue_by_month(orders_df, frame):
     
     plt.close(fig)
 
-# def plot_revenue_by_month(orders_df, frame):
-#     if 'Ngày Đặt Hàng' not in orders_df.columns or 'Tổng Giá Trị Đơn Hàng' not in orders_df.columns:
-#         print("Lỗi: Cột 'Ngày Đặt Hàng' hoặc 'Tổng Giá Trị Đơn Hàng' không có trong dữ liệu đơn hàng.")
-#         return
 
-#     # Đảm bảo rằng cột 'Ngày Đặt Hàng' là kiểu dữ liệu datetime
-#     orders_df['Ngày Đặt Hàng'] = pd.to_datetime(orders_df['Ngày Đặt Hàng'], errors='coerce')
-
-#     # Lọc dữ liệu để chỉ lấy các đơn hàng có ngày hợp lệ
-#     orders_df = orders_df.dropna(subset=['Ngày Đặt Hàng'])
-
-#     # Chuyển đổi cột 'Tổng Giá Trị Đơn Hàng' thành kiểu số
-#     orders_df['Tổng Giá Trị Đơn Hàng'] = pd.to_numeric(orders_df['Tổng Giá Trị Đơn Hàng'], errors='coerce')
-
-#     # Nhóm theo tháng và năm, tính tổng doanh thu cho từng tháng
-#     orders_df['Tháng'] = orders_df['Ngày Đặt Hàng'].dt.to_period('M')
-#     monthly_revenue = orders_df.groupby('Tháng')['Tổng Giá Trị Đơn Hàng'].sum() / 1_000_000  # Chia cho 1 triệu VND
-
-#     # Vẽ biểu đồ
-#     fig, ax = plt.subplots(figsize=(8, 5))
-#     monthly_revenue.plot(kind='bar', ax=ax, color='#5bc0de')
-
-#     ax.set_title("Tổng Thu Theo Tháng (Triệu VND)")
-#     ax.set_xlabel("Tháng")
-#     ax.set_ylabel("Tổng Thu (Triệu VND)")
-#     ax.set_xticklabels(monthly_revenue.index.astype(str), rotation=0, ha='right', fontsize=10)
-
-#     # Thêm giá trị trên các cột
-#     for i, value in enumerate(monthly_revenue):
-#         ax.text(i, value + 0.1, f'{value:.2f}', ha='center', fontsize=10)
-
-#     # Hiển thị biểu đồ trên giao diện Tkinter
-#     canvas = FigureCanvasTkAgg(fig, master=frame)
-#     canvas.draw()
-#     canvas.get_tk_widget().pack(fill=BOTH, expand=True)
-
-#     plt.close(fig)
