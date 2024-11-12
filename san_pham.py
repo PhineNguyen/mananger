@@ -232,6 +232,14 @@ def add_product(app):
         if any(not value for value in new_product):
             messagebox.showerror("Lỗi", "Vui lòng không để trống các trường.")
             return
+        
+        # Kiểm tra xem ID sản phẩm đã tồn tại chưa
+        new_product_id = new_product[0]  # ID sản phẩm là phần tử đầu tiên trong tuple
+        for product in sample_products:
+            if product[0] == new_product_id:  # Nếu ID đã tồn tại
+                messagebox.showerror("Lỗi", "ID sản phẩm đã tồn tại. Vui lòng nhập lại ID khác.")
+                entries["ID Sản Phẩm"].delete(0, 'end')  # Xóa ID hiện tại để người dùng nhập lại
+                return
 
         sample_products.append(new_product)
        
