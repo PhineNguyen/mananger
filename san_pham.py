@@ -191,7 +191,7 @@ def update_row_height(font_size):
     style = ttk.Style()
 
     # Cài đặt chiều cao của các hàng (row height) cho Treeview
-    row_height = font_size*2  # Tính toán chiều cao hàng dựa trên cỡ chữ
+    row_height = font_size*10  # Tính toán chiều cao hàng dựa trên cỡ chữ
 
     # Áp dụng kiểu cho bảng Treeview
     style.configure("Custom.Treeview", rowheight=row_height)
