@@ -197,6 +197,23 @@ def update_row_colors():
             product_table.item(item, tags=('custom_font1',))
         else:
             product_table.item(item, tags=('custom_font2',))
+    #product_table.configure(height=font_size+5)
+    update_row_height(font_size)
+
+def update_row_height(font_size):
+    # Tạo kiểu tùy chỉnh cho bảng Treeview
+    style = ttk.Style()
+
+    # Cài đặt chiều cao của các hàng (row height) cho Treeview
+    row_height = font_size*2  # Tính toán chiều cao hàng dựa trên cỡ chữ
+
+    # Áp dụng kiểu cho bảng Treeview
+    style.configure("Custom.Treeview", rowheight=row_height)
+
+    # Cập nhật style của product_table
+    product_table.configure(style="Custom.Treeview")
+
+
 
 def search_product():
     search_value = product_search_entry.get().lower()
