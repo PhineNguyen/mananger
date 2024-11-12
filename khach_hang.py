@@ -6,6 +6,7 @@ from PIL import Image, ImageTk
 from tkinter import StringVar
 import csv
 from setting import load_settings  # Import thêm load_settings
+from tkinter import Scrollbar, VERTICAL, HORIZONTAL
 
 
 sample_customers = []
@@ -46,6 +47,7 @@ def latest_customers():
     for row in sample_customers:
         customer_table.insert("", "end", values=row)
     update_row_colors()
+
 def search_customer(app):
     search_value = search_entry.get().lower()
     for row in customer_table.get_children():
@@ -56,6 +58,7 @@ def search_customer(app):
             customer_table.insert("", "end", values=row)
 
         update_row_colors()
+
 def add_customer(app):
     add_window = ttk.Toplevel(app)
     add_window.title("Thêm Khách Hàng")
@@ -99,6 +102,8 @@ def update_row_colors():
     # Tải cài đặt từ file
     current_settings = load_settings()
     theme = current_settings.get('theme', 'minty')  # Mặc định là 'minty' nếu không có theme nào
+    font_name = current_settings.get('font', 'Helvetica')  # Mặc định là 'Helvetica' nếu không có trong config
+    font_size = current_settings.get('font_size', 14)     # Mặc định là 14 nếu không có trong config
 
     # Cấu hình màu sắc dựa trên theme
     theme_colors = {
@@ -116,8 +121,8 @@ def update_row_colors():
     background_odd = colors["background_odd"]
 
     # Tạo tag cho font với font cố định là 'superhero' và màu chữ thay đổi theo theme
-    customer_table.tag_configure("custom_font1", font=('superhero', 10), background=background_even, foreground=font_color)
-    customer_table.tag_configure("custom_font2", font=('superhero', 10), background=background_odd, foreground=font_color)
+    customer_table.tag_configure("custom_font1", font=(font_name, font_size), background=background_even, foreground=font_color)
+    customer_table.tag_configure("custom_font2", font=(font_name, font_size), background=background_odd, foreground=font_color)
 
     # Áp dụng các tag xen kẽ để tạo màu nền cho các dòng
     for index, item in enumerate(customer_table.get_children()):
@@ -125,6 +130,20 @@ def update_row_colors():
             customer_table.item(item, tags=('custom_font1',))
         else:
             customer_table.item(item, tags=('custom_font2',))
+    update_row_height(font_size)
+
+def update_row_height(font_size):
+    # Tạo kiểu tùy chỉnh cho bảng Treeview
+    style = ttk.Style()
+
+    # Cài đặt chiều cao của các hàng (row height) cho Treeview
+    row_height = font_size*2  # Tính toán chiều cao hàng dựa trên cỡ chữ
+
+    # Áp dụng kiểu cho bảng Treeview
+    style.configure("Custom.Treeview", rowheight=row_height)
+
+    # Cập nhật style của product_table
+    customer_table.configure(style="Custom.Treeview")
 
 def edit_customer(app):
     selected_item = customer_table.selection()
@@ -183,7 +202,7 @@ def create_khach_hang_tab(notebook, app):
     global search_entry, customer_table
 
     frame_khach_hang = ttk.Frame(notebook)
-    notebook.add(frame_khach_hang, text="KHÁCH HÀNG", padding=(20,20))
+    notebook.add(frame_khach_hang, text="KHÁCH HÀNG", padding=(10,10))
     
     image = Image.open("icon/search.png")
     image = image.resize((20, 20), Image.LANCZOS)
@@ -206,16 +225,29 @@ def create_khach_hang_tab(notebook, app):
     arrowup_icon = ImageTk.PhotoImage(image5)
     
     
-    
 
     search_value = StringVar()
 
     search_entry = ttk.Entry(frame_khach_hang, bootstyle="superhero", width=30, textvariable=search_value)
     search_entry.insert(0, "Tìm kiếm theo tên khách hàng")
+    search_entry.config(foreground="grey")
     search_entry.grid(row=0, column=0, padx=5, pady=5, sticky=W)
 
-    # Clear the placeholder text on focus
-    search_entry.bind("<FocusIn>", lambda event: search_entry.delete(0, 'end') if search_entry.get() == "Tìm kiếm theo tên khách hàng" else None)
+    def on_focus_in(event):
+        if search_entry.get()=="Tìm kiếm theo tên khách hàng":
+            search_entry.delete(0, "end")
+            search_entry.config(foreground="black")
+            
+    def on_forcus_out(event):
+        if search_entry.get()=="":
+            search_entry.insert(0,"Tìm kiếm theo tên khách hàng")
+            search_entry.config(foreground="grey")
+            
+    search_entry.bind("<FocusIn>",on_focus_in)
+    search_entry.bind("<FocusOut>", on_forcus_out)
+    
+    notebook.after(100, lambda: search_entry.focus_set())
+    
 
     # Bind Enter key to perform the search
     search_entry.bind("<Return>", lambda event: button_click("Tìm kiếm", app))
@@ -244,11 +276,11 @@ def create_khach_hang_tab(notebook, app):
     columns = ["ID Khách Hàng", "Tên Khách Hàng", "Địa Chỉ", "Số Điện Thoại", "Email", "Lịch Sử Mua Hàng"]
 
     customer_table = ttk.Treeview(frame_khach_hang, columns=columns, show="headings", bootstyle="superhero")
-    customer_table.grid(row=2, column=0, columnspan=len(columns), padx=5, pady=5, sticky="nsew")
+    customer_table.grid(row=2, column=0, columnspan=5, padx=5, pady=5, sticky="ns")
 
     for col in columns:
         customer_table.heading(col, text=col)
-        customer_table.column(col, width=100)
+        #customer_table.column(col, width=100)
         if col == "ID Khách Hàng":
             customer_table.column(col,anchor='center') 
         else:
@@ -256,9 +288,41 @@ def create_khach_hang_tab(notebook, app):
     for row in sample_customers:
         customer_table.insert("", "end", values=row)
 
-    frame_khach_hang.grid_rowconfigure(2, weight=1)
-    frame_khach_hang.grid_columnconfigure(0, weight=1)
+    
+
+    # Thêm Scrollbar dọc
+    y_scrollbar = Scrollbar(frame_khach_hang, orient=VERTICAL, command=customer_table.yview)
+    y_scrollbar.grid(row=2, column=5, sticky="ns")
+    customer_table.configure(yscrollcommand=y_scrollbar.set)
+
+    # Thêm Scrollbar ngang
+    x_scrollbar = Scrollbar(frame_khach_hang, orient=HORIZONTAL, command=customer_table.xview)
+    x_scrollbar.grid(row=3, column=0, columnspan=5, sticky="ew")
+    customer_table.configure(xscrollcommand=x_scrollbar.set)
+
+   # Hàm cập nhật bố cục khi thay đổi kích thước cửa sổ
+    def update_layout(event=None):
+        window_width = frame_khach_hang.winfo_width()
+        window_height = frame_khach_hang.winfo_height()
+        
+        if window_width >= 1000 and window_height >= 600:  # Kích thước tùy ý cho chế độ toàn màn hình
+            customer_table.grid(sticky="nsew")  # Mở rộng cả chiều dọc và chiều ngang
+            frame_khach_hang.grid_rowconfigure(2, weight=1)  # Mở rộng chiều dọc
+            frame_khach_hang.grid_columnconfigure(0, weight=1)  # Mở rộng chiều ngang
+        else:
+            customer_table.grid(sticky="ns")  # Mở rộng chỉ theo chiều dọc
+            frame_khach_hang.grid_rowconfigure(2, weight=1)  # Mở rộng chiều dọc, không thay đổi chiều ngang
+            frame_khach_hang.grid_columnconfigure(0, weight=1)  # Không mở rộng chiều ngang
+
+
+    # Ràng buộc sự kiện cấu hình kích thước cửa sổ
+    frame_khach_hang.bind("<Map>", update_layout)
+    frame_khach_hang.bind("<Unmap>", update_layout)  # Khi cửa sổ bị thu nhỏ
 
     refresh_customers_table()
+
+    frame_khach_hang.grid_rowconfigure(2, weight=1)
+    frame_khach_hang.grid_columnconfigure(0, weight=1)
+    
 sample_customers.extend(read_csv('customers.csv'))
 
