@@ -67,6 +67,7 @@ def add_customer(app):
     fields = ["ID Khách Hàng", "Tên Khách Hàng", "Địa Chỉ", "Số Điện Thoại", "Email"]
     entries = {}
 
+
     # Tạo các nhãn và entry widget cho mỗi trường thông tin
     for i, field in enumerate(fields):
         label = ttk.Label(add_window, text=field)  # Tạo nhãn cho trường
@@ -160,9 +161,11 @@ def edit_customer(app):
     edit_window = ttk.Toplevel(app)
     edit_window.title("Sửa Thông Tin Khách Hàng")
 
-    fields = ["ID Khách Hàng", "Tên Khách Hàng", "Địa Chỉ", "Số Điện Thoại", "Email", "Lịch Sử Mua Hàng"]
+    fields = ["ID Khách Hàng", "Tên Khách Hàng", "Địa Chỉ", "Số Điện Thoại", "Email"]
     entries = {}
-
+    
+    purchase_history = customer_data[-1]
+    
     for i, field in enumerate(fields):
         label = ttk.Label(edit_window, text=field)
         label.grid(row=i, column=0, padx=10, pady=5)
@@ -170,13 +173,17 @@ def edit_customer(app):
         entry.grid(row=i, column=1, padx=10, pady=5)
         entry.insert(0, customer_data[i])
         entries[field] = entry
-
+    
     def submit_edit():
         # Cập nhật dữ liệu trong `sample_products` để đồng bộ với CSV
+         # Create a tuple with the updated customer data
         edited_order = tuple(entries[field].get().strip() for field in fields)
+        edited_order = edited_order + (purchase_history,)  # Add the purchase history back
+
+        # Update the customer data in the sample_customers list
         for i, value in enumerate(edited_order):
             if value != customer_data[i]:
-                # Update the order data
+                # Update the customer data in the sample_customers list
                 sample_customers[sample_customers.index(customer_data)] = edited_order
                 break
 
