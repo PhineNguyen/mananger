@@ -3,12 +3,10 @@ from ttkbootstrap.constants import *
 import tkinter.messagebox as messagebox
 import pandas as pd
 from PIL import Image, ImageTk
-from tkinter import StringVar
+from tkinter import StringVar, Scrollbar
 import csv
 from setting import load_settings  # Import thêm load_settings
-from tkinter import Scrollbar, VERTICAL, HORIZONTAL
 import tkinter as tk
-
 
 
 search_value = []
@@ -72,22 +70,24 @@ def create_san_pham_tab(notebook, app):
     product_search_entry.config(foreground="grey")
     product_search_entry.grid(row=0, column=0, padx=5, pady=5, sticky=tk.W)
 
+# Hàm xử lý khi nhấp vào entry tìm kiếm (FocusIn)
     def on_focus_in(event):
-        if product_search_entry.get()=="Tìm kiếm theo tên sản phẩm":
+        if product_search_entry.get() == "Tìm kiếm theo tên sản phẩm":
             product_search_entry.delete(0, "end")
             product_search_entry.config(foreground="black")
-            
-    def on_forcus_out(event):
-        if product_search_entry.get()=="":
-            product_search_entry.insert(0,"Tìm kiếm theo tên sản phẩm")
-            product_search_entry.config(foreground="grey")
-            
-    product_search_entry.bind("<FocusIn>",on_focus_in)
-    product_search_entry.bind("<FocusOut>", on_forcus_out)
-    
-    notebook.after(100, lambda: product_search_entry.focus_set())
-    
 
+# Hàm xử lý khi rời khỏi entry tìm kiếm (FocusOut)
+    def on_focus_out(event):
+        if product_search_entry.get() == "":
+            product_search_entry.insert(0, "Tìm kiếm theo tên sản phẩm")
+            product_search_entry.config(foreground="grey")
+
+# Gán sự kiện FocusIn và FocusOut cho entry tìm kiếm
+    product_search_entry.bind("<FocusIn>", on_focus_in)
+    product_search_entry.bind("<FocusOut>", on_focus_out)
+
+# Đặt focus vào entry tìm kiếm sau một khoảng thời gian ngắn
+    notebook.after(100, lambda: product_search_entry.focus_set())
 
     search_button = ttk.Button(frame_product, text="Tìm kiếm", bootstyle="superhero",image=search_icon,compound= LEFT ,command=search_product, cursor="hand2")
     search_button.grid(row=0, column=1, padx=5, pady=5, sticky=W)
@@ -197,21 +197,6 @@ def update_row_colors():
             product_table.item(item, tags=('custom_font1',))
         else:
             product_table.item(item, tags=('custom_font2',))
-    #product_table.configure(height=font_size+5)
-    update_row_height(font_size)
-
-def update_row_height(font_size):
-    # Tạo kiểu tùy chỉnh cho bảng Treeview
-    style = ttk.Style()
-
-    # Cài đặt chiều cao của các hàng (row height) cho Treeview
-    row_height = font_size*10  # Tính toán chiều cao hàng dựa trên cỡ chữ
-
-    # Áp dụng kiểu cho bảng Treeview
-    style.configure("Custom.Treeview", rowheight=row_height)
-
-    # Cập nhật style của product_table
-    product_table.configure(style="Custom.Treeview")
 
 def search_product():
     search_value = product_search_entry.get().lower()

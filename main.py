@@ -4,15 +4,13 @@ from san_pham import create_san_pham_tab
 from don_hang import create_don_hang_tab
 from thong_ke import create_thong_ke_tab
 from khach_hang import create_khach_hang_tab
-from setting import create_setting_tab, load_settings, refresh_tabs  # Import thêm load_settings
+from login import create_login_frame
+from setting import create_setting_tab, load_settings, apply_settings,refresh_tabs  # Import thêm load_settings
 from tkinter import PhotoImage
+import time
 
-
-dem=0
-
-# Khởi tạo giá trị ban đầu cho prev_state
-prev_state = "normal"
-
+click_count_san_pham = 0
+last_click_time = 0
 
 def change_window_icon(app):
     #Hàm thay đổi icon của cửa sổ
@@ -73,15 +71,8 @@ def main():
     create_khach_hang_tab(notebook, app)
     create_thong_ke_tab(notebook, app)
     create_setting_tab(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)  # Thêm tab Setting
-
-    #bật tắt trang login
+    #login here
     #create_login_frame(app, notebook)
-
-    # Ràng buộc sự kiện để kiểm tra khi thay đổi trạng thái cửa sổ
-    app.bind("<Configure>", lambda event: on_window_state_change(event, app,notebook,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab))
-
-
-    # Chạy ứng dụng
     app.mainloop()
 
 if __name__ == "__main__":

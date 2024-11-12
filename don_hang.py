@@ -85,13 +85,12 @@ def button_click(button_name, app):
         delete_order()
 
 def create_don_hang_tab(notebook, app):
-    print("gọi hàm đơn hàng")
     # Khai báo biến toàn cục để sử dụng trong các phần khác của chương trình
     global order_table, search_entry
 
     # Tạo một frame cho tab ĐƠN HÀNG và thêm vào notebook
     frame_order = ttk.Frame(notebook)
-    notebook.add(frame_order, text="ĐƠN HÀNG", padding=(20,20))
+    notebook.add(frame_order, text="ĐƠN HÀNG", padding=(10,10))
 
     # Tải các hình ảnh icon và thay đổi kích thước thành 20x20 pixels
     image = Image.open("icon/search.png").resize((20, 20), Image.LANCZOS)
@@ -115,23 +114,26 @@ def create_don_hang_tab(notebook, app):
     search_entry.config(foreground="grey")
     search_entry.grid(row=0, column=0, padx=5, pady=5, sticky=tk.W)
 
+# Hàm xử lý khi nhấp vào entry tìm kiếm (FocusIn)
     def on_focus_in(event):
-        if search_entry.get()=="Tìm kiếm theo sản phẩm":
+        if search_entry.get() == "Tìm kiếm theo tên sản phẩm":
             search_entry.delete(0, "end")
             search_entry.config(foreground="black")
-            
-    def on_forcus_out(event):
-        if search_entry.get()=="":
-            search_entry.insert(0,"Tìm kiếm theo sản phẩm")
+
+# Hàm xử lý khi rời khỏi entry tìm kiếm (FocusOut)
+    def on_focus_out(event):
+        if search_entry.get() == "":
+            search_entry.insert(0, "Tìm kiếm theo tên sản phẩm")
             search_entry.config(foreground="grey")
-            
-    search_entry.bind("<FocusIn>",on_focus_in)
-    search_entry.bind("<FocusOut>", on_forcus_out)
-    
-    notebook.after(100, lambda: search_entry.focus_set())
-    
+
+# Gán sự kiện FocusIn và FocusOut cho entry tìm kiếm
+    search_entry.bind("<FocusIn>", on_focus_in)
+    search_entry.bind("<FocusOut>", on_focus_out)
+
+    search_entry.bind("<Return>", lambda event: button_click("Tìm kiếm", app))  # Kích hoạt tìm kiếm khi nhấn Enter
+
     # Tạo nút Tìm kiếm với icon và liên kết hàm button_click khi nhấn
-    search_button = ttk.Button(frame_order, text="Tìm kiếm", bootstyle="superhero", image=search_icon, compound=LEFT, cursor="hand2", command=lambda: button_click("Tìm kiếm", app))
+    search_button = ttk.Button(frame_order, text="Tìm kiếm", bootstyle="superhero", image=search_icon, compound=LEFT, cursor="hand2", command=lambda: button_click("Tìm kiếm",app))
     search_button.grid(row=0, column=1, padx=5, pady=5, sticky=W)
     frame_order.search_icon = search_icon  # Để giữ tham chiếu đến icon, tránh bị thu hồi bộ nhớ
 
@@ -153,7 +155,7 @@ def create_don_hang_tab(notebook, app):
     # Định nghĩa các cột cho bảng order_table
     columns = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
     order_table = ttk.Treeview(frame_order, columns=columns, show="headings", bootstyle="superhero")
-    order_table.grid(row=1, column=0, columnspan=5, padx=5, pady=5, sticky="nsew")
+    order_table.grid(row=1, column=0, columnspan=5, padx=5, pady=5, sticky="ns")
 
     # Thiết lập tiêu đề và căn chỉnh cho các cột trong bảng
     for col in columns:
@@ -163,11 +165,35 @@ def create_don_hang_tab(notebook, app):
         else:
             order_table.column(col, anchor='center')  # Căn giữa cho các cột còn lại
 
-    # # Tải cài đặt từ file
-    # current_settings = load_settings()
+    # Thêm Scrollbar dọc
+    y_scrollbar = ttk.Scrollbar(frame_order, orient=VERTICAL, command=order_table.yview)
+    y_scrollbar.grid(row=1, column=5, sticky="ns")
+    order_table.configure(yscrollcommand=y_scrollbar.set)
 
-    # # Tạo tag cho font mới
-    # order_table.tag_configure("custom_font", font=(current_settings['font']))
+    # Thêm Scrollbar ngang
+    x_scrollbar = ttk.Scrollbar(frame_order, orient=HORIZONTAL, command=order_table.xview)
+    x_scrollbar.grid(row=2, column=0, columnspan=5, sticky="ew")
+    order_table.configure(xscrollcommand=x_scrollbar.set)
+
+    order_table.configure(yscrollcommand=y_scrollbar.set, xscrollcommand=x_scrollbar.set)
+
+    # Hàm cập nhật bố cục khi thay đổi kích thước cửa sổ
+    def update_layout(event=None):
+        window_width = frame_order.winfo_width()
+        window_height = frame_order.winfo_height()
+        
+        if window_width >= 1000 and window_height >= 600:  # Kích thước tùy ý cho chế độ toàn màn hình
+            order_table.grid(sticky="nsew")  # Mở rộng cả chiều dọc và chiều ngang
+            frame_order.grid_rowconfigure(1, weight=1)  # Mở rộng chiều dọc
+            frame_order.grid_columnconfigure(0, weight=1)  # Mở rộng chiều ngang
+        else:
+            order_table.grid(sticky="ns")  # Mở rộng chỉ theo chiều dọc
+            frame_order.grid_rowconfigure(1, weight=1)  # Mở rộng chiều dọc, không thay đổi chiều ngang
+            frame_order.grid_columnconfigure(0, weight=1)  # Không mở rộng chiều ngang
+
+
+    # Ràng buộc sự kiện cấu hình kích thước cửa sổ
+    frame_order.bind("<Configure>", update_layout)
 
 
     # Gọi hàm để tải dữ liệu ban đầu vào bảng
@@ -198,6 +224,8 @@ def update_row_colors():
     # Tải cài đặt từ file
     current_settings = load_settings()
     theme = current_settings.get('theme', 'minty')  # Mặc định là 'minty' nếu không có theme nào
+    font_name = current_settings.get('font', 'Helvetica')  # Mặc định là 'Helvetica' nếu không có trong config
+    font_size = current_settings.get('font_size', 14)     # Mặc định là 14 nếu không có trong config
 
     # Cấu hình màu sắc dựa trên theme
     theme_colors = {
@@ -215,8 +243,8 @@ def update_row_colors():
     background_odd = colors["background_odd"]
 
     # Tạo tag cho font với font cố định là 'superhero' và màu chữ thay đổi theo theme
-    order_table.tag_configure("custom_font1", font=('superhero', 10), background=background_even, foreground=font_color)
-    order_table.tag_configure("custom_font2", font=('superhero', 10), background=background_odd, foreground=font_color)
+    order_table.tag_configure("custom_font1", font=(font_name, font_size), background=background_even, foreground=font_color)
+    order_table.tag_configure("custom_font2", font=(font_name, font_size), background=background_odd, foreground=font_color)
 
     # Áp dụng các tag xen kẽ để tạo màu nền cho các dòng
     for index, item in enumerate(order_table.get_children()):
@@ -224,96 +252,38 @@ def update_row_colors():
             order_table.item(item, tags=('custom_font1',))
         else:
             order_table.item(item, tags=('custom_font2',))
+    update_row_height(font_size)
 
+def update_row_height(font_size):
+    # Tạo kiểu tùy chỉnh cho bảng Treeview
+    style = ttk.Style()
 
-    # order_table.tag_configure('evenrow', background='#f0f0f0')
-    # order_table.tag_configure('oddrow', background='white')
+    # Cài đặt chiều cao của các hàng (row height) cho Treeview
+    row_height = font_size*2  # Tính toán chiều cao hàng dựa trên cỡ chữ
+
+    # Áp dụng kiểu cho bảng Treeview
+    style.configure("Custom.Treeview", rowheight=row_height)
+
+    # Cập nhật style của product_table
+    order_table.configure(style="Custom.Treeview")
 
 def search_order():
-    search_value = search_entry.get().lower()
-
-    # Clear the table to prepare for showing only matching results
+    search_value = search_entry.get().strip().lower()  # Lấy giá trị tìm kiếm và chuyển về chữ thường
+    
+    # Xóa toàn bộ các hàng trong bảng trước khi hiển thị kết quả tìm kiếm
     for row in order_table.get_children():
         order_table.delete(row)
 
-    # Filter and display only the matching orders
-    matched_orders = [order for order in sample_data if search_value in order[3].lower()]
+    # Tìm các đơn hàng khớp với ID đơn hàng trong cột đầu tiên (ID Đơn Hàng)
+    matched_orders = [order for order in sample_data if search_value in str(order[0]).lower()]
 
+    # Hiển thị các đơn hàng khớp trong bảng
     for order in matched_orders:
         order_table.insert("", "end", values=order)
 
-    # Update row colors for consistency in appearance
+    # Cập nhật màu sắc hàng (nếu có) để đảm bảo giao diện đồng nhất
     update_row_colors()
 
-# def add_order(app):
-#     add_window = ttk.Toplevel(app)
-#     add_window.title("Thêm Đơn Hàng")
-
-#     fields = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
-#     entries = {}
-
-#     for i, field in enumerate(fields):
-#         label = ttk.Label(add_window, text=field)
-#         label.grid(row=i, column=0, padx=10, pady=5)
-#         entry = ttk.Entry(add_window, bootstyle="superhero", width=30)
-#         entry.grid(row=i, column=1, padx=10, pady=5)
-#         entries[field] = entry
-
-#     def submit_order():
-#         new_order = tuple(entries[field].get().strip() for field in fields)
-
-#         if any(not value for value in new_order):
-#             messagebox.showerror("Lỗi", "Vui lòng không để trống các trường.")
-#             return
-        
-#         # Check for duplicate order ID
-#         if any(order[0] == new_order[0] for order in sample_data):
-#             messagebox.showerror("Lỗi", "ID đơn hàng đã tồn tại.")
-#             return
-        
-#         sample_data.append(new_order)
-#         save_to_csv('orders.csv')
-#         refresh_order_table()
-#         add_window.destroy()
-
-#     add_button = ttk.Button(add_window, text="Thêm", bootstyle="superhero", command=submit_order)
-#     add_button.grid(row=len(fields), column=0, columnspan=2, padx=10, pady=10)
-
-# Thêm cửa sổ "Thêm Đơn Hàng" với nút chọn khách hàng
-####################################################################################
-# def add_order(app):
-#     add_window = ttk.Toplevel(app)
-#     add_window.title("Thêm Đơn Hàng")
-
-#     fields = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
-#     entries = {}
-
-#     for i, field in enumerate(fields):
-#         label = ttk.Label(add_window, text=field)
-#         label.grid(row=i, column=0, padx=10, pady=5)
-#         entry = ttk.Entry(add_window, bootstyle="superhero", width=30)
-#         entry.grid(row=i, column=1, padx=10, pady=5)
-#         entries[field] = entry
-        
-#         # Thêm nút chọn khách hàng bên cạnh ô "ID Khách Hàng"
-#         if field == "ID Khách Hàng":
-#             choose_button = ttk.Button(add_window, text="Chọn", command=lambda: choose_customer(entries))
-#             choose_button.grid(row=i, column=2, padx=5)
-
-#     def submit_order():
-#         new_order = tuple(entries[field].get().strip() for field in fields)
-#         if any(not value for value in new_order):
-#             messagebox.showerror("Lỗi", "Vui lòng không để trống các trường.")
-#             return
-        
-#         # Thêm đơn hàng vào dữ liệu và cập nhật bảng
-#         sample_data.append(new_order)
-#         save_to_csv('orders.csv')
-#         refresh_order_table()
-#         add_window.destroy()
-
-#     add_button = ttk.Button(add_window, text="Thêm", bootstyle="superhero", command=submit_order)
-#     add_button.grid(row=len(fields), column=0, columnspan=2, padx=10, pady=10)
 
 ####################################################################################
 def add_order(app):
@@ -380,6 +350,7 @@ def add_order(app):
     product_select_button.grid(row=fields.index("Danh Sách Sản Phẩm"), column=2, padx=10, pady=5)
 
     # Hàm để lưu đơn hàng mới vào danh sách và file CSV
+
     def submit_order():
         # Lấy thông tin từ các trường và kiểm tra xem có trường nào bỏ trống không
         new_order = tuple(entries[field].get().strip() for field in fields)
@@ -387,10 +358,41 @@ def add_order(app):
             messagebox.showerror("Lỗi", "Vui lòng không để trống các trường.")  # Hiển thị lỗi nếu bỏ trống
             return
 
-        sample_data.append(new_order)  # Thêm đơn hàng vào danh sách tạm thời
+        # Thêm đơn hàng vào danh sách tạm thời và lưu vào file CSV
+        sample_data.append(new_order)
         save_to_csv("orders.csv")  # Lưu đơn hàng vào file CSV
         refresh_order_table()  # Cập nhật bảng đơn hàng
-        add_window.destroy()  # Đóng cửa sổ thêm đơn hàng
+
+        # Lấy ID đơn hàng và ID khách hàng
+        order_id = new_order[0]
+        customer_id = new_order[1]
+
+        # Cập nhật lịch sử mua hàng cho khách hàng trong file customers.csv
+        update_customer_purchase_history(customer_id, order_id)
+
+        # Đóng cửa sổ thêm đơn hàng
+        add_window.destroy()
+
+    def update_customer_purchase_history(customer_id, order_id):
+        # Đọc dữ liệu từ file customers.csv
+        customers = []
+        with open("customers.csv", "r", newline="", encoding="utf-8") as file:
+            reader = csv.reader(file)
+            header = next(reader)  # Đọc dòng tiêu đề
+            for row in reader:
+                if row[0] == customer_id:
+                    # Cập nhật lịch sử mua hàng bằng cách thêm ID đơn hàng mới
+                    if row[5]:  # Nếu đã có lịch sử, nối thêm ID đơn hàng
+                        row[5] += f", {order_id}"
+                    else:  # Nếu chưa có lịch sử, gán ID đơn hàng mới
+                        row[5] = order_id
+                customers.append(row)
+
+        # Ghi lại dữ liệu đã cập nhật vào file customers.csv
+        with open("customers.csv", "w", newline="", encoding="utf-8") as file:
+            writer = csv.writer(file)
+            writer.writerow(header)  # Ghi dòng tiêu đề
+            writer.writerows(customers)  # Ghi dữ liệu khách hàng đã cập nhật
 
     # Nút "Thêm" để xác nhận thêm đơn hàng mới
     add_button = ttk.Button(add_window, text="Thêm", bootstyle="superhero", command=submit_order)
@@ -431,19 +433,6 @@ def edit_order(app):
 
     edit_button = ttk.Button(edit_window, text="Sửa", bootstyle="superhero", command=submit_edit)
     edit_button.grid(row=len(fields), column=0, columnspan=2, padx=10, pady=10)
-
-# def delete_order():
-#     selected_item = order_table.selection()
-#     if not selected_item:
-#         messagebox.showwarning("Cảnh báo", "Vui lòng chọn một đơn hàng để xóa.")
-#         return
-
-#     order_data = order_table.item(selected_item)["values"]
-#     result = messagebox.askyesno("Xác nhận xóa", f"Bạn có chắc chắn muốn xóa đơn hàng {order_data[0]}?")
-#     if result:
-#         sample_data.remove(order_data)
-#         save_to_csv('orders.csv')
-#         refresh_order_table()
 
 def delete_order():
     selected_item = order_table.selection()

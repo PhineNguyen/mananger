@@ -7,7 +7,7 @@ from tkinter import StringVar
 import csv
 from setting import load_settings  # Import thêm load_settings
 from tkinter import Scrollbar, VERTICAL, HORIZONTAL
-
+import tkinter as tk
 
 sample_customers = []
 def read_csv(file_path):
@@ -32,7 +32,7 @@ def save_to_csv(filename):
 
 def button_click(button_name, app):
     if button_name == "Tìm kiếm":
-        search_customer(app)
+        search_customer()
     elif button_name == "Thêm khách hàng":
         add_customer(app)
     elif button_name == "Mới nhất":
@@ -47,7 +47,6 @@ def latest_customers():
     for row in sample_customers:
         customer_table.insert("", "end", values=row)
     update_row_colors()
-
 def search_customer(app):
     search_value = search_entry.get().lower()
     for row in customer_table.get_children():
@@ -60,34 +59,40 @@ def search_customer(app):
         update_row_colors()
 
 def add_customer(app):
+    # Tạo cửa sổ "Thêm Khách Hàng" mới
     add_window = ttk.Toplevel(app)
     add_window.title("Thêm Khách Hàng")
 
-    fields = ["ID Khách Hàng", "Tên Khách Hàng", "Địa Chỉ", "Số Điện Thoại", "Email", "Lịch Sử Mua Hàng"]
+    # Danh sách các trường thông tin cần nhập cho khách hàng, không bao gồm "Lịch Sử Mua Hàng"
+    fields = ["ID Khách Hàng", "Tên Khách Hàng", "Địa Chỉ", "Số Điện Thoại", "Email"]
     entries = {}
 
+    # Tạo các nhãn và entry widget cho mỗi trường thông tin
     for i, field in enumerate(fields):
-        label = ttk.Label(add_window, text=field)
-        label.grid(row=i, column=0, padx=10, pady=5)
-        entry = ttk.Entry(add_window, bootstyle="superhero", width=30)
-        entry.grid(row=i, column=1, padx=10, pady=5)
-        entries[field] = entry
-        
+        label = ttk.Label(add_window, text=field)  # Tạo nhãn cho trường
+        label.grid(row=i, column=0, padx=10, pady=5)  # Đặt nhãn vào lưới
+        entry = ttk.Entry(add_window, bootstyle="superhero", width=30)  # Tạo entry cho trường
+        entry.grid(row=i, column=1, padx=10, pady=5)  # Đặt entry vào lưới
+        entries[field] = entry  # Lưu entry vào dictionary với khóa là tên trường
 
+    # Hàm để lưu khách hàng mới vào danh sách và file CSV
     def submit_customer():
-        new_customer = tuple(entries[field].get().strip() for field in fields)
+        # Lấy thông tin từ các trường và kiểm tra xem có trường nào bỏ trống không
+        new_customer = tuple(entries[field].get().strip() for field in fields) + ("",)  # Thêm giá trị rỗng cho "Lịch Sử Mua Hàng"
         try:
-            if any(not value for value in new_customer):
+            if any(not value for value in new_customer[:-1]):  # Bỏ qua kiểm tra trường "Lịch Sử Mua Hàng"
                 raise ValueError("Vui lòng không để trống các trường.")
 
-            customer_table.insert("", "end", values=new_customer)
-            sample_customers.append(new_customer)
-            save_to_csv('customers.csv')
-            add_window.destroy()
+            customer_table.insert("", "end", values=new_customer)  # Thêm khách hàng vào bảng
+            sample_customers.append(new_customer)  # Thêm khách hàng vào danh sách tạm thời
+            save_to_csv('customers.csv')  # Lưu khách hàng vào file CSV
+            add_window.destroy()  # Đóng cửa sổ thêm khách hàng
             
         except ValueError as e:
-            messagebox.showerror("Lỗi", str(e))
+            messagebox.showerror("Lỗi", str(e))  # Hiển thị lỗi nếu bỏ trống trường
+        refresh_customers_table()
 
+    # Nút "Thêm" để xác nhận thêm khách hàng mới
     add_button = ttk.Button(add_window, text="Thêm", bootstyle="superhero", command=submit_customer)
     add_button.grid(row=len(fields), column=0, columnspan=2, padx=10, pady=10)
 
@@ -231,24 +236,26 @@ def create_khach_hang_tab(notebook, app):
     search_entry = ttk.Entry(frame_khach_hang, bootstyle="superhero", width=30, textvariable=search_value)
     search_entry.insert(0, "Tìm kiếm theo tên khách hàng")
     search_entry.config(foreground="grey")
-    search_entry.grid(row=0, column=0, padx=5, pady=5, sticky=W)
+    search_entry.grid(row=0, column=0, padx=5, pady=5, sticky=tk.W)
 
+# Hàm xử lý khi nhấp vào entry tìm kiếm (FocusIn)
     def on_focus_in(event):
-        if search_entry.get()=="Tìm kiếm theo tên khách hàng":
+        if search_entry.get() == "Tìm kiếm theo tên khách hàng":
             search_entry.delete(0, "end")
             search_entry.config(foreground="black")
-            
-    def on_forcus_out(event):
-        if search_entry.get()=="":
-            search_entry.insert(0,"Tìm kiếm theo tên khách hàng")
-            search_entry.config(foreground="grey")
-            
-    search_entry.bind("<FocusIn>",on_focus_in)
-    search_entry.bind("<FocusOut>", on_forcus_out)
-    
-    notebook.after(100, lambda: search_entry.focus_set())
-    
 
+# Hàm xử lý khi rời khỏi entry tìm kiếm (FocusOut)
+    def on_focus_out(event):
+        if search_entry.get() == "":
+            search_entry.insert(0, "Tìm kiếm theo tên khách hàng")
+            search_entry.config(foreground="grey")
+
+# Gán sự kiện FocusIn và FocusOut cho entry tìm kiếm
+    search_entry.bind("<FocusIn>", on_focus_in)
+    search_entry.bind("<FocusOut>", on_focus_out)
+
+# Đặt focus vào entry tìm kiếm sau một khoảng thời gian ngắn
+    notebook.after(100, lambda: search_entry.focus_set())
     # Bind Enter key to perform the search
     search_entry.bind("<Return>", lambda event: button_click("Tìm kiếm", app))
 
