@@ -63,7 +63,7 @@ def main():
 
     #Tạo notebook
     notebook = ttk.Notebook(app, style="TNotebook")
-    notebook.pack(fill="both", expand=True)
+    #notebook.pack(fill="both", expand=True)
 
     # Thêm các tab vào notebook
     create_san_pham_tab(notebook, app)
@@ -72,7 +72,7 @@ def main():
     create_thong_ke_tab(notebook, app)
     create_setting_tab(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)  # Thêm tab Setting
     #login here
-    #create_login_frame(app, notebook)
+    create_login_frame(app, notebook)
     app.mainloop()
 
 if __name__ == "__main__":
