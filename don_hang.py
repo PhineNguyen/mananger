@@ -390,10 +390,25 @@ def add_order(app):
         if any(not value for value in new_order):
             messagebox.showerror("Lỗi", "Vui lòng không để trống các trường.")  # Hiển thị lỗi nếu bỏ trống
             return
+        
+        # Kiểm tra xem ID sản phẩm đã tồn tại chưa
+        new_product_id = new_order[0]  # ID sản phẩm là phần tử đầu tiên trong tuple
+        for product in sample_data:
+            product_id = str(product[0])  # ID Sản Phẩm nằm ở vị trí đầu tiên của mỗi danh sách con
+            if product_id == new_product_id:  # Nếu ID đã tồn tại
+                messagebox.showerror("Lỗi", "ID Đơn Hàng đã tồn tại. Vui lòng nhập lại ID khác.")
+                entries["ID Đơn Hàng"].delete(0, 'end')
+                return
+
 
         # Thêm đơn hàng vào danh sách tạm thời và lưu vào file CSV
         sample_data.append(new_order)
         save_to_csv("orders.csv")  # Lưu đơn hàng vào file CSV
+
+        #cập nhật biến tạm
+        sample_data.clear()
+        sample_data.extend(read_csv("orders.csv"))
+
         refresh_order_table()  # Cập nhật bảng đơn hàng
 
         # Lấy ID đơn hàng và ID khách hàng

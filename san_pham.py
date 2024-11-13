@@ -288,19 +288,26 @@ def add_product(app):
         # Kiểm tra xem ID sản phẩm đã tồn tại chưa
         new_product_id = new_product[0]  # ID sản phẩm là phần tử đầu tiên trong tuple
         for product in sample_products:
-            if product[0] == new_product_id:  # Nếu ID đã tồn tại
+            product_id = str(product[0])  # ID Sản Phẩm nằm ở vị trí đầu tiên của mỗi danh sách con
+            if product_id == new_product_id:  # Nếu ID đã tồn tại
                 messagebox.showerror("Lỗi", "ID sản phẩm đã tồn tại. Vui lòng nhập lại ID khác.")
-                entries["ID Sản Phẩm"].delete(0, 'end')  # Xóa ID hiện tại để người dùng nhập lại
+                entries["ID Sản Phẩm"].delete(0, 'end')
                 return
+
 
         sample_products.append(new_product)
        
         refresh_product_table()
         save_to_csv('products.csv')
+        #cập nhật biến tạm
+        sample_products.clear()
+        sample_products.extend(read_csv("products.csv"))
+        
         add_window.destroy()
 
     add_button = ttk.Button(add_window, text="Thêm", bootstyle="superhero", command=submit_product)
     add_button.grid(row=len(fields), column=0, columnspan=2, padx=10, pady=10)
+
 
 def edit_product(app):
     # Lấy sản phẩm được chọn từ bảng

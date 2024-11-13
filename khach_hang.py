@@ -83,10 +83,23 @@ def add_customer(app):
         try:
             if any(not value for value in new_customer[:-1]):  # Bỏ qua kiểm tra trường "Lịch Sử Mua Hàng"
                 raise ValueError("Vui lòng không để trống các trường.")
+            
+            #Kiểm tra xem ID sản phẩm đã tồn tại chưa
+            new_product_id = new_customer[0]  # ID sản phẩm là phần tử đầu tiên trong tuple
+            for product in sample_customers:
+                product_id = str(product[0])  # ID Sản Phẩm nằm ở vị trí đầu tiên của mỗi danh sách con
+                if product_id == new_product_id:  # Nếu ID đã tồn tại
+                    messagebox.showerror("Lỗi", "ID Khách Hàng đã tồn tại. Vui lòng nhập lại ID khác.")
+                    entries["ID Khách Hàng"].delete(0, 'end')
+                    return
 
-            customer_table.insert("", "end", values=new_customer)  # Thêm khách hàng vào bảng
+            #customer_table.insert("", "end", values=new_customer)  # Thêm khách hàng vào bảng
             sample_customers.append(new_customer)  # Thêm khách hàng vào danh sách tạm thời
             save_to_csv('customers.csv')  # Lưu khách hàng vào file CSV
+            #cập nhật biến tạm
+            sample_customers.clear()
+            sample_customers.extend(read_csv("customers.csv"))
+            
             add_window.destroy()  # Đóng cửa sổ thêm khách hàng
             
         except ValueError as e:
