@@ -214,10 +214,10 @@ def add_product(app):
     add_window = ttk.Toplevel(app)
     add_window.title("Thêm Sản Phẩm")
 
-    
     fields = ["ID Sản Phẩm", "Tên sản Phẩm", "Giá VND", "Số Lượng Tồn Kho", "Mô Tả", "Nhóm Sản Phẩm"]
     entries = {}
 
+    # Tạo các trường nhập liệu
     for i, field in enumerate(fields):
         label = ttk.Label(add_window, text=field)
         label.grid(row=i, column=0, padx=10, pady=5)
@@ -225,28 +225,41 @@ def add_product(app):
         entry.grid(row=i, column=1, padx=10, pady=5)
         entries[field] = entry
 
-    
     def submit_product():
-        new_product = tuple(entries[field].get().strip() for field in fields)
+        # Lấy thông tin sản phẩm từ các trường nhập liệu
+        new_product = tuple(entries[field].get() for field in fields)
 
+        # Kiểm tra xem có trường nào bị bỏ trống không
         if any(not value for value in new_product):
             messagebox.showerror("Lỗi", "Vui lòng không để trống các trường.")
             return
-        
-        # Kiểm tra xem ID sản phẩm đã tồn tại chưa
+
+        # Lấy ID sản phẩm từ tuple
         new_product_id = new_product[0]  # ID sản phẩm là phần tử đầu tiên trong tuple
-        for product in sample_products:
-            if product[0] == new_product_id:  # Nếu ID đã tồn tại
-                messagebox.showerror("Lỗi", "ID sản phẩm đã tồn tại. Vui lòng nhập lại ID khác.")
-                entries["ID Sản Phẩm"].delete(0, 'end')  # Xóa ID hiện tại để người dùng nhập lại
-                return
 
-        sample_products.append(new_product)
-       
-        refresh_product_table()
-        save_to_csv('products.csv')
-        add_window.destroy()
+        # Kiểm tra xem ID sản phẩm đã tồn tại trong danh sách chưa
+        for i, product in enumerate(sample_products):
+            if product[0] == new_product_id:  # Nếu ID trùng
+                # Cập nhật thông tin sản phẩm cũ với thông tin mới
+                sample_products[i] = new_product  # Thay thế thông tin sản phẩm
+                messagebox.showinfo("Thông báo", "Cập nhật thành công sản phẩm với ID: " + new_product_id)
+                
+                # Cập nhật lại bảng sản phẩm và lưu vào CSV
+                save_to_csv('products.csv')  # Lưu vào file CSV
+                refresh_product_table()  # Làm mới bảng hiển thị sản phẩm
+                add_window.destroy()  # Đóng cửa sổ
+                return  # Dừng lại sau khi thay thế
 
+        # Nếu không có ID trùng, thêm sản phẩm mới vào danh sách
+        sample_products.append(new_product)  # Thêm sản phẩm mới vào danh sách
+        messagebox.showinfo("Thông báo", "Thêm sản phẩm mới thành công.")
+
+        # Cập nhật lại bảng sản phẩm và lưu vào CSV
+        save_to_csv('products.csv')  # Lưu vào file CSV
+        refresh_product_table()  # Làm mới bảng hiển thị sản phẩm
+        add_window.destroy()  # Đóng cửa sổ
+
+    # Nút "Thêm" để thêm hoặc cập nhật sản phẩm
     add_button = ttk.Button(add_window, text="Thêm", bootstyle="superhero", command=submit_product)
     add_button.grid(row=len(fields), column=0, columnspan=2, padx=10, pady=10)
 
