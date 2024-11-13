@@ -150,6 +150,41 @@ def create_san_pham_tab(notebook, app):
     # Ràng buộc sự kiện cấu hình kích thước cửa sổ
     frame_product.bind("<Configure>", update_layout)
 
+
+    #dbclick để xem chi tiết
+    def show_product_details(event):
+        """
+        Hàm hiển thị cửa sổ chi tiết sản phẩm khi người dùng nhấp đúp vào một hàng trong bảng.
+        """
+        # Lấy ID của hàng đang được chọn
+        selected_item = product_table.selection()
+        if not selected_item:
+            return
+
+        # Lấy thông tin của hàng được chọn
+        item_data = product_table.item(selected_item, "values")
+
+        # Tạo cửa sổ Toplevel để hiển thị thông tin
+        detail_window = ttk.Toplevel()
+        detail_window.title("Thông tin chi tiết sản phẩm")
+        #detail_window.geometry("600x300")  # Kích thước cửa sổ tùy ý
+
+        # Hiển thị thông tin chi tiết của sản phẩm
+        labels = ["ID Sản Phẩm", "Tên Sản Phẩm", "Giá VND", "Số Lượng Tồn Kho", "Mô Tả", "Nhóm Sản Phẩm"]
+        for i, label_text in enumerate(labels):
+            label = tk.Label(detail_window, text=f"{label_text}: {item_data[i]}", font=("Helvetica", 12))
+            label.pack(anchor="w", padx=10, pady=5)
+
+        # Đặt button đóng cửa sổ
+        close_button = tk.Button(detail_window, text=" Xong ", command=detail_window.destroy)
+        close_button.pack(pady=10)
+         # Cập nhật kích thước của cửa sổ theo nội dung
+        detail_window.update_idletasks()
+        detail_window.geometry(f"{detail_window.winfo_width()}x{detail_window.winfo_height()}")
+
+    # Gán sự kiện double-click vào bảng
+    product_table.bind("<Double-1>", show_product_details)
+
     #tải dữ liệu vào bảng
     refresh_product_table()  # Initial load from sample_products
 

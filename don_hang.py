@@ -175,7 +175,6 @@ def create_don_hang_tab(notebook, app):
     x_scrollbar.grid(row=2, column=0, columnspan=5, sticky="ew")
     order_table.configure(xscrollcommand=x_scrollbar.set)
 
-    order_table.configure(yscrollcommand=y_scrollbar.set, xscrollcommand=x_scrollbar.set)
 
     # Hàm cập nhật bố cục khi thay đổi kích thước cửa sổ
     def update_layout(event=None):
@@ -195,6 +194,40 @@ def create_don_hang_tab(notebook, app):
     # Ràng buộc sự kiện cấu hình kích thước cửa sổ
     frame_order.bind("<Configure>", update_layout)
 
+    #dbclick để xem chi tiết
+    def show_product_details(event):
+        """
+        Hàm hiển thị cửa sổ chi tiết sản phẩm khi người dùng nhấp đúp vào một hàng trong bảng.
+        """
+        # Lấy ID của hàng đang được chọn
+        selected_item = order_table.selection()
+        if not selected_item:
+            return
+
+        # Lấy thông tin của hàng được chọn
+        item_data = order_table.item(selected_item, "values")
+
+        # Tạo cửa sổ Toplevel để hiển thị thông tin
+        detail_window = ttk.Toplevel()
+        detail_window.title("Thông tin chi tiết sản phẩm")
+        #detail_window.geometry("600x300")  # Kích thước cửa sổ tùy ý
+
+        # Hiển thị thông tin chi tiết của sản phẩm
+        labels = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
+        for i, label_text in enumerate(labels):
+            label = tk.Label(detail_window, text=f"{label_text}: {item_data[i]}", font=("Helvetica", 12))
+            label.pack(anchor="w", padx=10, pady=5)
+
+        # Đặt button đóng cửa sổ
+        close_button = tk.Button(detail_window, text=" Xong ", command=detail_window.destroy)
+        close_button.pack(pady=10)
+        
+        # Cập nhật kích thước của cửa sổ theo nội dung
+        detail_window.update_idletasks()
+        detail_window.geometry(f"{detail_window.winfo_width()}x{detail_window.winfo_height()}")
+
+    # Gán sự kiện double-click vào bảng
+    order_table.bind("<Double-1>", show_product_details)
 
     # Gọi hàm để tải dữ liệu ban đầu vào bảng
     refresh_order_table()
