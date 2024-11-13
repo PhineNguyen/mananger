@@ -119,11 +119,23 @@ def create_setting_tab(notebook_right, app,create_san_pham_tab, create_don_hang_
     font_size_spinbox = ttk.Spinbox(setting_frame, from_=8, to=32, textvariable=font_size_var)
     font_size_spinbox.pack()
 
+    # Hàm kiểm tra và giới hạn cỡ chữ trước khi áp dụng
+    def limited_apply_settings():
+        font_size = font_size_var.get()
+        # Giới hạn giá trị cỡ chữ
+        if font_size < 8:
+            font_size_var.set(8)
+        elif font_size > 32:
+            font_size_var.set(32)
+        apply_settings(app, notebook_right, theme_var, font_var, font_size_var, create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab, create_setting_tab)
+
+
     # Apply button
     apply_button = ttk.Button(
         setting_frame, 
         text="Áp Dụng", 
-        command=lambda: apply_settings(app, notebook_right, theme_var, font_var, font_size_var,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)
+        #command=lambda: apply_settings(app, notebook_right, theme_var, font_var, font_size_var,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)
+        command=limited_apply_settings
     )
     apply_button.pack(pady=20)
 
