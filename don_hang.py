@@ -175,7 +175,6 @@ def create_don_hang_tab(notebook, app):
     x_scrollbar.grid(row=2, column=0, columnspan=5, sticky="ew")
     order_table.configure(xscrollcommand=x_scrollbar.set)
 
-    order_table.configure(yscrollcommand=y_scrollbar.set, xscrollcommand=x_scrollbar.set)
 
     # Hàm cập nhật bố cục khi thay đổi kích thước cửa sổ
     def update_layout(event=None):
@@ -195,6 +194,40 @@ def create_don_hang_tab(notebook, app):
     # Ràng buộc sự kiện cấu hình kích thước cửa sổ
     frame_order.bind("<Configure>", update_layout)
 
+    #dbclick để xem chi tiết
+    def show_product_details(event):
+        """
+        Hàm hiển thị cửa sổ chi tiết sản phẩm khi người dùng nhấp đúp vào một hàng trong bảng.
+        """
+        # Lấy ID của hàng đang được chọn
+        selected_item = order_table.selection()
+        if not selected_item:
+            return
+
+        # Lấy thông tin của hàng được chọn
+        item_data = order_table.item(selected_item, "values")
+
+        # Tạo cửa sổ Toplevel để hiển thị thông tin
+        detail_window = ttk.Toplevel()
+        detail_window.title("Thông tin chi tiết sản phẩm")
+        #detail_window.geometry("600x300")  # Kích thước cửa sổ tùy ý
+
+        # Hiển thị thông tin chi tiết của sản phẩm
+        labels = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
+        for i, label_text in enumerate(labels):
+            label = tk.Label(detail_window, text=f"{label_text}: {item_data[i]}", font=("Helvetica", 12))
+            label.pack(anchor="w", padx=10, pady=5)
+
+        # Đặt button đóng cửa sổ
+        close_button = tk.Button(detail_window, text=" Xong ", command=detail_window.destroy)
+        close_button.pack(pady=10)
+        
+        # Cập nhật kích thước của cửa sổ theo nội dung
+        detail_window.update_idletasks()
+        detail_window.geometry(f"{detail_window.winfo_width()}x{detail_window.winfo_height()}")
+
+    # Gán sự kiện double-click vào bảng
+    order_table.bind("<Double-1>", show_product_details)
 
     # Gọi hàm để tải dữ liệu ban đầu vào bảng
     refresh_order_table()
@@ -357,10 +390,25 @@ def add_order(app):
         if any(not value for value in new_order):
             messagebox.showerror("Lỗi", "Vui lòng không để trống các trường.")  # Hiển thị lỗi nếu bỏ trống
             return
+        
+        # Kiểm tra xem ID sản phẩm đã tồn tại chưa
+        new_product_id = new_order[0]  # ID sản phẩm là phần tử đầu tiên trong tuple
+        for product in sample_data:
+            product_id = str(product[0])  # ID Sản Phẩm nằm ở vị trí đầu tiên của mỗi danh sách con
+            if product_id == new_product_id:  # Nếu ID đã tồn tại
+                messagebox.showerror("Lỗi", "ID Đơn Hàng đã tồn tại. Vui lòng nhập lại ID khác.")
+                entries["ID Đơn Hàng"].delete(0, 'end')
+                return
+
 
         # Thêm đơn hàng vào danh sách tạm thời và lưu vào file CSV
         sample_data.append(new_order)
         save_to_csv("orders.csv")  # Lưu đơn hàng vào file CSV
+
+        #cập nhật biến tạm
+        sample_data.clear()
+        sample_data.extend(read_csv("orders.csv"))
+
         refresh_order_table()  # Cập nhật bảng đơn hàng
 
         # Lấy ID đơn hàng và ID khách hàng

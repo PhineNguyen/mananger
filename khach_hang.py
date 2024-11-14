@@ -83,10 +83,23 @@ def add_customer(app):
         try:
             if any(not value for value in new_customer[:-1]):  # Bỏ qua kiểm tra trường "Lịch Sử Mua Hàng"
                 raise ValueError("Vui lòng không để trống các trường.")
+            
+            #Kiểm tra xem ID sản phẩm đã tồn tại chưa
+            new_product_id = new_customer[0]  # ID sản phẩm là phần tử đầu tiên trong tuple
+            for product in sample_customers:
+                product_id = str(product[0])  # ID Sản Phẩm nằm ở vị trí đầu tiên của mỗi danh sách con
+                if product_id == new_product_id:  # Nếu ID đã tồn tại
+                    messagebox.showerror("Lỗi", "ID Khách Hàng đã tồn tại. Vui lòng nhập lại ID khác.")
+                    entries["ID Khách Hàng"].delete(0, 'end')
+                    return
 
-            customer_table.insert("", "end", values=new_customer)  # Thêm khách hàng vào bảng
+            #customer_table.insert("", "end", values=new_customer)  # Thêm khách hàng vào bảng
             sample_customers.append(new_customer)  # Thêm khách hàng vào danh sách tạm thời
             save_to_csv('customers.csv')  # Lưu khách hàng vào file CSV
+            #cập nhật biến tạm
+            sample_customers.clear()
+            sample_customers.extend(read_csv("customers.csv"))
+            
             add_window.destroy()  # Đóng cửa sổ thêm khách hàng
             
         except ValueError as e:
@@ -332,6 +345,41 @@ def create_khach_hang_tab(notebook, app):
     # Ràng buộc sự kiện cấu hình kích thước cửa sổ
     frame_khach_hang.bind("<Map>", update_layout)
     frame_khach_hang.bind("<Unmap>", update_layout)  # Khi cửa sổ bị thu nhỏ
+
+    #dbclick để xem chi tiết
+    def show_product_details(event):
+        """
+        Hàm hiển thị cửa sổ chi tiết sản phẩm khi người dùng nhấp đúp vào một hàng trong bảng.
+        """
+        # Lấy ID của hàng đang được chọn
+        selected_item = customer_table.selection()
+        if not selected_item:
+            return
+
+        # Lấy thông tin của hàng được chọn
+        item_data = customer_table.item(selected_item, "values")
+
+        # Tạo cửa sổ Toplevel để hiển thị thông tin
+        detail_window = ttk.Toplevel()
+        detail_window.title("Thông tin chi tiết sản phẩm")
+        #detail_window.geometry("600x300")  # Kích thước cửa sổ tùy ý
+
+        # Hiển thị thông tin chi tiết của sản phẩm
+        labels = ["ID Khách Hàng", "Tên Khách Hàng", "Địa Chỉ", "Số Điện Thoại", "Email", "Lịch Sử Mua Hàng"]
+        for i, label_text in enumerate(labels):
+            label = tk.Label(detail_window, text=f"{label_text}: {item_data[i]}", font=("Helvetica", 12))
+            label.pack(anchor="w", padx=10, pady=5)
+
+        # Đặt button đóng cửa sổ
+        close_button = tk.Button(detail_window, text=" Xong ", command=detail_window.destroy)
+        close_button.pack(pady=10)
+
+        # Cập nhật kích thước của cửa sổ theo nội dung
+        detail_window.update_idletasks()
+        detail_window.geometry(f"{detail_window.winfo_width()}x{detail_window.winfo_height()}")
+
+    # Gán sự kiện double-click vào bảng
+    customer_table.bind("<Double-1>", show_product_details)
 
     refresh_customers_table()
 
