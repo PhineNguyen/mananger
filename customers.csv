@@ -49,7 +49,4 @@ ID Khách Hàng,Tên Khách Hàng,Địa Chỉ,Số Điện Thoại,Email,Lịch
 48,Adam Padilla,"8484 Christopher Prairie, Debbiefurt, GU 93336",822-511-5962x622,dhughes@example.net,"Đơn hàng 14, Đơn hàng 24"
 49,Brianna Cooper,"0440 Lauren Fields, Kathleenhaven, NJ 81132",+1-830-380-4983x7148,danamason@example.net,"Đơn hàng 22, Đơn hàng 25"
 50,Bryan Evans,"46805 Brennan Mews Suite 355, Gregoryview, NC 44958",422.530.3195x21721,ywolf@example.net,"Đơn hàng 35, Đơn hàng 40, Đơn hàng 19"
-50,6,6,6,6,nan
-50,5,5,5,5,nan
-50,5,5,5,5,
-60,4,4,4,4,
+60,4,4,4,4,"nan, 333"
