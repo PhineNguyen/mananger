@@ -19,7 +19,6 @@ def read_csv(file_path):
     except Exception as e:
         messagebox.showerror("Lỗi", f"Không thể đọc file: {e}")
         return []
-import csv
 
 def save_to_csv(filename):
     # Mở file ở chế độ ghi (write mode)
@@ -261,6 +260,15 @@ def search_product():
         product_table.insert("", "end", values=product)  # Thêm chỉ sản phẩm khớp vào bảng
 
     update_row_colors()
+
+def get_unique_groups(filename):
+    products = read_csv(filename)
+    groups = set()
+    for product in products:
+        group = product[5]  # "Nhóm Sản Phẩm" ở vị trí thứ 6 trong hàng (index 5)
+        if group:
+            groups.add(group)
+    return list(groups)
     
 def add_product(app):
     add_window = ttk.Toplevel(app)
@@ -273,9 +281,20 @@ def add_product(app):
     for i, field in enumerate(fields):
         label = ttk.Label(add_window, text=field)
         label.grid(row=i, column=0, padx=10, pady=5)
-        entry = ttk.Entry(add_window, bootstyle="superhero", width=30)
-        entry.grid(row=i, column=1, padx=10, pady=5)
-        entries[field] = entry
+        # entry = ttk.Entry(add_window, bootstyle="superhero", width=30)
+        # entry.grid(row=i, column=1, padx=10, pady=5)
+        # entries[field] = entry
+
+        if field == "Nhóm Sản Phẩm":
+            # Tạo Combobox cho trường "Nhóm Sản Phẩm" với các giá trị nhóm đã có
+            product_groups = get_unique_groups("products.csv")
+            group_combobox = ttk.Combobox(add_window, values=product_groups, width=28)
+            group_combobox.grid(row=i, column=1, padx=10, pady=5)
+            entries[field] = group_combobox
+        else:
+            entry = ttk.Entry(add_window, bootstyle="superhero", width=30)
+            entry.grid(row=i, column=1, padx=10, pady=5)
+            entries[field] = entry
 
     
     def submit_product():
@@ -296,7 +315,7 @@ def add_product(app):
 
 
         sample_products.append(new_product)
-       
+        
         refresh_product_table()
         save_to_csv('products.csv')
         #cập nhật biến tạm
@@ -327,10 +346,18 @@ def edit_product(app):
     for i, field in enumerate(fields):
         label = ttk.Label(edit_window, text=field)
         label.grid(row=i, column=0, padx=10, pady=5)
-        entry = ttk.Entry(edit_window,bootstyle="superhero", width=30)
-        entry.grid(row=i, column=1, padx=10, pady=5)
-        entry.insert(0, product_data[i])
-        entries[field] = entry
+        if field == "Nhóm Sản Phẩm":
+            # Tạo Combobox cho trường "Nhóm Sản Phẩm" với các giá trị nhóm đã có
+            product_groups = get_unique_groups("products.csv")
+            group_combobox = ttk.Combobox(edit_window, values=product_groups, width=28)
+            group_combobox.grid(row=i, column=1, padx=10, pady=5)
+            group_combobox.insert(0, product_data[i])
+            entries[field] = group_combobox
+        else:
+            entry = ttk.Entry(edit_window,bootstyle="superhero", width=30)
+            entry.grid(row=i, column=1, padx=10, pady=5)
+            entry.insert(0, product_data[i])
+            entries[field] = entry
 
     def submit_edit():
         # Lấy dữ liệu mới từ các trường nhập liệu

@@ -1,4 +1,4 @@
-﻿ID Sản Phẩm,Tên Sản Phẩm,Giá,Số Lượng Tồn Kho,Mô Tả,Nhóm Sản Phẩm
+ID Sản Phẩm,Tên Sản Phẩm,Giá VND,Số Lượng Tồn Kho,Mô Tả,Nhóm Sản Phẩm
 101,Forget,384136,36,Star resource kitchen nation.,Đồng hồ
 102,She,684208,7,Much important later often without.,Quần áo
 103,Ok,135198,76,Cold start knowledge make democratic.,Đồng hồ
@@ -49,3 +49,5 @@
 148,Cause,803397,1,Talk official front public sign mind.,Phụ kiện
 149,Opportunity,584883,48,Production degree they score situation total list.,Đồng hồ
 150,Network,969431,50,Center evening government.,Giày dép
+333,1,1,1,1,nhóm mới
+1,1,1,1,1,Đồ gia dụng
