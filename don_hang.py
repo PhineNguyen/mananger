@@ -7,7 +7,37 @@ from tkinter import StringVar
 import csv
 from setting import load_settings  # Import thêm load_settings
 import tkinter as tk
+from tkcalendar import Calendar
+from tkinter import messagebox
 
+def show_calendar(app):
+    def get_date():
+        # Lấy ngày đã chọn và định dạng lại
+        selected_date = cal.get_date()
+        formatted_date = selected_date.strftime("%d/%m/%Y")  # Định dạng dd/mm/yyyy
+        messagebox.showinfo("Ngày được chọn", f"Ngày bạn chọn là: {formatted_date}")
+        calendar_window.destroy()
+
+    calendar_window = ttk.Toplevel(app)
+    calendar_window.title("Chọn Ngày")
+    calendar_window.geometry("300x250")
+
+    # Tạo lịch
+    cal = Calendar(calendar_window, selectmode="day", year=2024, month=11, day=14)
+    cal.pack(pady=20)
+
+    # Nút chọn ngày
+    select_button = ttk.Button(calendar_window, text="Chọn Ngày", command=get_date, bootstyle=PRIMARY)
+    select_button.pack(pady=10)
+
+# Tạo cửa sổ chính sử dụng ttkbootstrap
+app = ttk.Window(themename="superhero")  # Chủ đề ttkbootstrap
+app.title("Ứng dụng chọn ngày")
+app.geometry("200x100")
+
+# Nút mở calendar
+open_calendar_button = ttk.Button(app, text="Mở Calendar", command=show_calendar, bootstyle=SUCCESS)
+open_calendar_button.pack(pady=20)
 # Sample data
 sample_data = []
 
@@ -50,8 +80,6 @@ def choose_customer(entries):
             customer_window.destroy()
     
     customer_table.bind("<Double-1>", select_customer)  # Chọn khách hàng bằng double-click
-
-
 def read_csv(file_path):
     try:
         df = pd.read_csv(file_path)
@@ -333,9 +361,27 @@ def add_order(app):
     for i, field in enumerate(fields):
         label = ttk.Label(add_window, text=field)  # Tạo nhãn cho trường
         label.grid(row=i, column=0, padx=10, pady=5)  # Đặt nhãn vào lưới
-        entry = ttk.Entry(add_window, bootstyle="superhero", width=30)  # Tạo entry cho trường
-        entry.grid(row=i, column=1, padx=10, pady=5)  # Đặt entry vào lưới
-        entries[field] = entry  # Lưu entry vào dictionary với khóa là tên trường
+        # entry = ttk.Entry(add_window, bootstyle="superhero", width=30)  # Tạo entry cho trường
+        # entry.grid(row=i, column=1, padx=10, pady=5)  # Đặt entry vào lưới
+        # entries[field] = entry  # Lưu entry vào dictionary với khóa là tên trường
+
+         # Sử dụng Combobox cho "Phương Thức Thanh Toán" với ba tùy chọn
+        if field == "Ngày Đặt Hàng":
+            date = show_calendar(add_window, width =28)
+            date.grid(row = i, column=1, padx=10, pady=5)
+            entries[field] = date
+        elif field == "Trạng Thái Đơn Hàng":
+            payment_method = ttk.Combobox(add_window, values=["Đang Xử Lý", "Đã Giao", "Đã Hủy"], state="readonly",width=28)
+            payment_method.grid(row=i, column=1, padx=10, pady=5)
+            entries[field] = payment_method  # Lưu combobox vào dictionary với khóa là tên trường
+        elif field == "Phương Thức Thanh Toán":
+            payment_method = ttk.Combobox(add_window, values=["Tiền mặt", "Thẻ tín dụng", "Chuyển khoản"], state="readonly",width=28)
+            payment_method.grid(row=i, column=1, padx=10, pady=5)
+            entries[field] = payment_method  # Lưu combobox vào dictionary với khóa là tên trường
+        else:
+            entry = ttk.Entry(add_window, bootstyle="superhero", width=30)  # Tạo entry cho các trường khác
+            entry.grid(row=i, column=1, padx=10, pady=5)
+            entries[field] = entry  # Lưu entry vào dictionary với khóa là tên trường
 
         # Thêm nút chọn khách hàng bên cạnh ô "ID Khách Hàng"
         if field == "ID Khách Hàng":
@@ -378,8 +424,7 @@ def add_order(app):
         
 
     # Nút "Chọn Sản Phẩm" trong cửa sổ "Thêm Đơn Hàng", mở cửa sổ chọn sản phẩm
-    product_select_button = ttk.Button(add_window, text="Chọn Sản Phẩm", 
-                                       bootstyle="superhero", command=select_products)
+    product_select_button = ttk.Button(add_window, text="Chọn Sản Phẩm", bootstyle="superhero", command=select_products)
     product_select_button.grid(row=fields.index("Danh Sách Sản Phẩm"), column=2, padx=10, pady=5)
 
     # Hàm để lưu đơn hàng mới vào danh sách và file CSV
