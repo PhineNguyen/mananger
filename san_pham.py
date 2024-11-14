@@ -266,10 +266,10 @@ def add_product(app):
     add_window = ttk.Toplevel(app)
     add_window.title("Thêm Sản Phẩm")
 
-    
     fields = ["ID Sản Phẩm", "Tên sản Phẩm", "Giá VND", "Số Lượng Tồn Kho", "Mô Tả", "Nhóm Sản Phẩm"]
     entries = {}
 
+    # Tạo các trường nhập liệu
     for i, field in enumerate(fields):
         label = ttk.Label(add_window, text=field)
         label.grid(row=i, column=0, padx=10, pady=5)
@@ -277,32 +277,27 @@ def add_product(app):
         entry.grid(row=i, column=1, padx=10, pady=5)
         entries[field] = entry
 
-    
     def submit_product():
-        new_product = tuple(entries[field].get().strip() for field in fields)
+        # Lấy thông tin sản phẩm từ các trường nhập liệu
+        new_product = tuple(entries[field].get() for field in fields)
 
+        # Kiểm tra xem có trường nào bị bỏ trống không
         if any(not value for value in new_product):
             messagebox.showerror("Lỗi", "Vui lòng không để trống các trường.")
             return
-        
-        # Kiểm tra xem ID sản phẩm đã tồn tại chưa
+
+        # Lấy ID sản phẩm từ tuple
         new_product_id = new_product[0]  # ID sản phẩm là phần tử đầu tiên trong tuple
         for product in sample_products:
-            product_id = str(product[0])  # ID Sản Phẩm nằm ở vị trí đầu tiên của mỗi danh sách con
-            if product_id == new_product_id:  # Nếu ID đã tồn tại
+            if product[0] == new_product_id:  # Nếu ID đã tồn tại
                 messagebox.showerror("Lỗi", "ID sản phẩm đã tồn tại. Vui lòng nhập lại ID khác.")
-                entries["ID Sản Phẩm"].delete(0, 'end')
+                entries["ID Sản Phẩm"].delete(0, 'end')  # Xóa ID hiện tại để người dùng nhập lại
                 return
-
 
         sample_products.append(new_product)
        
         refresh_product_table()
         save_to_csv('products.csv')
-        #cập nhật biến tạm
-        sample_products.clear()
-        sample_products.extend(read_csv("products.csv"))
-        
         add_window.destroy()
 
     add_button = ttk.Button(add_window, text="Thêm", bootstyle="superhero", command=submit_product)
