@@ -333,9 +333,23 @@ def add_order(app):
     for i, field in enumerate(fields):
         label = ttk.Label(add_window, text=field)  # Tạo nhãn cho trường
         label.grid(row=i, column=0, padx=10, pady=5)  # Đặt nhãn vào lưới
-        entry = ttk.Entry(add_window, bootstyle="superhero", width=30)  # Tạo entry cho trường
-        entry.grid(row=i, column=1, padx=10, pady=5)  # Đặt entry vào lưới
-        entries[field] = entry  # Lưu entry vào dictionary với khóa là tên trường
+        # entry = ttk.Entry(add_window, bootstyle="superhero", width=30)  # Tạo entry cho trường
+        # entry.grid(row=i, column=1, padx=10, pady=5)  # Đặt entry vào lưới
+        # entries[field] = entry  # Lưu entry vào dictionary với khóa là tên trường
+
+         # Sử dụng Combobox cho "Phương Thức Thanh Toán" với ba tùy chọn
+        if field == "Trạng Thái Đơn Hàng":
+            payment_method = ttk.Combobox(add_window, values=["Đang Xử Lý", "Đã Giao", "Đã Hủy"], state="readonly",width=28)
+            payment_method.grid(row=i, column=1, padx=10, pady=5)
+            entries[field] = payment_method  # Lưu combobox vào dictionary với khóa là tên trường
+        elif field == "Phương Thức Thanh Toán":
+            payment_method = ttk.Combobox(add_window, values=["Tiền mặt", "Thẻ tín dụng", "Chuyển khoản"], state="readonly",width=28)
+            payment_method.grid(row=i, column=1, padx=10, pady=5)
+            entries[field] = payment_method  # Lưu combobox vào dictionary với khóa là tên trường
+        else:
+            entry = ttk.Entry(add_window, bootstyle="superhero", width=30)  # Tạo entry cho các trường khác
+            entry.grid(row=i, column=1, padx=10, pady=5)
+            entries[field] = entry  # Lưu entry vào dictionary với khóa là tên trường
 
         # Thêm nút chọn khách hàng bên cạnh ô "ID Khách Hàng"
         if field == "ID Khách Hàng":

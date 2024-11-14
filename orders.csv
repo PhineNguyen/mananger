@@ -1,4 +1,4 @@
-﻿ID Đơn Hàng,ID Khách Hàng,Ngày Đặt Hàng,Danh Sách Sản Phẩm,Tổng Giá Trị Đơn Hàng,Trạng Thái Đơn Hàng,Phương Thức Thanh Toán
+ID Đơn Hàng,ID Khách Hàng,Ngày Đặt Hàng,Danh Sách Sản Phẩm,Tổng Giá Trị Đơn Hàng,Trạng Thái Đơn Hàng,Phương Thức Thanh Toán
 201,48,2024-10-27,118,1603463,Đã giao,Tiền mặt
 202,9,2024-06-25,"113, 107",1665933,Đang xử lý,Tiền mặt
 203,4,2024-04-02,114,1176605,Đang xử lý,Tiền mặt
@@ -49,3 +49,4 @@
 248,34,2024-08-10,"108, 148, 111",557415,Đã giao,Thẻ tín dụng
 249,8,2024-08-11,"138, 120, 145",876700,Đang xử lý,Chuyển khoản
 250,13,2024-05-11,"135, 109",1670235,Đang xử lý,Chuyển khoản
+1,1,1,She (684208 VND),1,1,Đang Xử Lý
