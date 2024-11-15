@@ -7,37 +7,9 @@ from tkinter import StringVar
 import csv
 from setting import load_settings  # Import thêm load_settings
 import tkinter as tk
-from tkcalendar import Calendar
 from tkinter import messagebox
 
-def show_calendar(app):
-    def get_date():
-        # Lấy ngày đã chọn và định dạng lại
-        selected_date = cal.get_date()
-        formatted_date = selected_date.strftime("%d/%m/%Y")  # Định dạng dd/mm/yyyy
-        messagebox.showinfo("Ngày được chọn", f"Ngày bạn chọn là: {formatted_date}")
-        calendar_window.destroy()
 
-    calendar_window = ttk.Toplevel(app)
-    calendar_window.title("Chọn Ngày")
-    calendar_window.geometry("300x250")
-
-    # Tạo lịch
-    cal = Calendar(calendar_window, selectmode="day", year=2024, month=11, day=14)
-    cal.pack(pady=20)
-
-    # Nút chọn ngày
-    select_button = ttk.Button(calendar_window, text="Chọn Ngày", command=get_date, bootstyle=PRIMARY)
-    select_button.pack(pady=10)
-
-# Tạo cửa sổ chính sử dụng ttkbootstrap
-app = ttk.Window(themename="superhero")  # Chủ đề ttkbootstrap
-app.title("Ứng dụng chọn ngày")
-app.geometry("200x100")
-
-# Nút mở calendar
-open_calendar_button = ttk.Button(app, text="Mở Calendar", command=show_calendar, bootstyle=SUCCESS)
-open_calendar_button.pack(pady=20)
 # Sample data
 sample_data = []
 
@@ -366,11 +338,7 @@ def add_order(app):
         # entries[field] = entry  # Lưu entry vào dictionary với khóa là tên trường
 
          # Sử dụng Combobox cho "Phương Thức Thanh Toán" với ba tùy chọn
-        if field == "Ngày Đặt Hàng":
-            date = show_calendar(add_window, width =28)
-            date.grid(row = i, column=1, padx=10, pady=5)
-            entries[field] = date
-        elif field == "Trạng Thái Đơn Hàng":
+        if field == "Trạng Thái Đơn Hàng":
             payment_method = ttk.Combobox(add_window, values=["Đang Xử Lý", "Đã Giao", "Đã Hủy"], state="readonly",width=28)
             payment_method.grid(row=i, column=1, padx=10, pady=5)
             entries[field] = payment_method  # Lưu combobox vào dictionary với khóa là tên trường
