@@ -7,7 +7,8 @@ from khach_hang import create_khach_hang_tab
 from login import create_login_frame
 from setting import create_setting_tab, load_settings, apply_settings,refresh_tabs  # Import thêm load_settings
 from tkinter import PhotoImage
-import time
+from tkcalendar import Calendar
+from tkinter import messagebox
 
 click_count_san_pham = 0
 last_click_time = 0

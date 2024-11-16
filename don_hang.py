@@ -8,12 +8,7 @@ import csv
 from setting import load_settings  # Import thêm load_settings
 import tkinter as tk
 from tkinter import messagebox
-
-
-# Sample data
 sample_data = []
-
-# Hàm đọc dữ liệu từ customers.csv
 def read_customers_csv(file_path):
     try:
         with open(file_path, mode='r', encoding='utf-8') as file:
@@ -338,6 +333,7 @@ def add_order(app):
         # entry.grid(row=i, column=1, padx=10, pady=5)  # Đặt entry vào lưới
         # entries[field] = entry  # Lưu entry vào dictionary với khóa là tên trường
 
+       
          # Sử dụng Combobox cho "Phương Thức Thanh Toán" với ba tùy chọn
         if field == "Trạng Thái Đơn Hàng":
             payment_method = ttk.Combobox(add_window, values=["Đang Xử Lý", "Đã Giao", "Đã Hủy"], state="readonly",width=28)
@@ -393,7 +389,7 @@ def add_order(app):
         
 
     # Nút "Chọn Sản Phẩm" trong cửa sổ "Thêm Đơn Hàng", mở cửa sổ chọn sản phẩm
-    product_select_button = ttk.Button(add_window, text="Chọn Sản Phẩm", bootstyle="superhero", command=select_products)
+    product_select_button = ttk.Button(add_window, text="Chọn Sản Phẩm",  bootstyle="superhero", command=select_products)
     product_select_button.grid(row=fields.index("Danh Sách Sản Phẩm"), column=2, padx=10, pady=5)
 
     # Hàm để lưu đơn hàng mới vào danh sách và file CSV
