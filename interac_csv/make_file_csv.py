@@ -36,12 +36,12 @@ def generate_orders_data(num_orders, num_customers, num_products):
         "Ngày Đặt Hàng": [fake.date_this_year() for _ in range(num_orders)],
         # Chỉ chọn ngẫu nhiên 1 sản phẩm
         "Danh Sách Sản Phẩm": [str(random.randint(101, 100 + num_products)) for _ in range(num_orders)],
+        "Số Lượng Sản Phẩm": [random.randint(1, 10) for _ in range(num_orders)],  # Thêm số lượng
         "Tổng Giá Trị Đơn Hàng": [random.randint(200000, 2000000) for _ in range(num_orders)],
         "Trạng Thái Đơn Hàng": [random.choice(["Đang xử lý", "Đã giao", "Đã hủy"]) for _ in range(num_orders)],
-        "Phương Thức Thanh Toán": [random.choice(["Tiền mặt", "Chuyển khoản", "Thẻ tín dụng"]) for _ in range(num_orders)]
+        "Phương Thức Thanh Toán": [random.choice(["Tiền mặt", "Chuyển khoản", "Thẻ tín dụng"]) for _ in range(num_orders)],
     }
     return pd.DataFrame(orders_data)
-
 
 # Số lượng dữ liệu muốn tạo
 num_customers = 50

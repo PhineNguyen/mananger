@@ -148,7 +148,7 @@ def create_don_hang_tab(notebook, app):
     frame_order.trash_icon = trash_icon
 
     # Định nghĩa các cột cho bảng order_table
-    columns = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
+    columns = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm","Số Lượng Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
     order_table = ttk.Treeview(frame_order, columns=columns, show="headings", bootstyle="superhero")
     order_table.grid(row=1, column=0, columnspan=5, padx=5, pady=5, sticky="ns")
 
@@ -156,7 +156,7 @@ def create_don_hang_tab(notebook, app):
     for col in columns:
         order_table.heading(col, text=col)
         if col in ["Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán", "Danh Sách Sản Phẩm"]:
-            order_table.column(col, anchor='w')  # Căn trái cho các cột này
+            order_table.column(col, anchor='w')  # Căn trái cho các cột này 
         else:
             order_table.column(col, anchor='center')  # Căn giữa cho các cột còn lại
 
@@ -208,7 +208,7 @@ def create_don_hang_tab(notebook, app):
         #detail_window.geometry("600x300")  # Kích thước cửa sổ tùy ý
 
         # Hiển thị thông tin chi tiết của sản phẩm
-        labels = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
+        labels = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm","Số Lượng Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
         for i, label_text in enumerate(labels):
             label = tk.Label(detail_window, text=f"{label_text}: {item_data[i]}", font=("Helvetica", 12))
             label.pack(anchor="w", padx=10, pady=5)
@@ -321,7 +321,7 @@ def add_order(app):
     add_window.title("Thêm Đơn Hàng")
 
     # Danh sách các trường thông tin cần nhập cho đơn hàng
-    fields = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", 
+    fields = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm","Số Lượng Sản Phẩm", 
               "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
     entries = {}  # Tạo dictionary để lưu các entry widget
 
@@ -466,7 +466,7 @@ def edit_order(app):
     edit_window = ttk.Toplevel(app)
     edit_window.title("Sửa Đơn Hàng")
 
-    fields = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
+    fields = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm","Số Lượng Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
     entries = {}
 
     for i, field in enumerate(fields):
