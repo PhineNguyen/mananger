@@ -7,7 +7,7 @@ from tkinter import StringVar
 import csv
 from setting import load_settings  # Import thêm load_settings
 import tkinter as tk
-# Sample data
+from tkinter import messagebox
 sample_data = []
 def read_customers_csv(file_path):
     try:
@@ -105,7 +105,7 @@ def create_don_hang_tab(notebook, app):
     
     # Tạo ô nhập (Entry) để tìm kiếm đơn hàng
     search_entry = ttk.Entry(frame_order, bootstyle="superhero", width=30, textvariable=search_value)
-    search_entry.insert(0, "Tìm kiếm theo sản phẩm")  # Văn bản mặc định trong ô tìm kiếm
+    search_entry.insert(0, "Tìm kiếm theo id khách hàng")  # Văn bản mặc định trong ô tìm kiếm
     search_entry.config(foreground="grey")
     search_entry.grid(row=0, column=0, padx=5, pady=5, sticky=tk.W)
 
@@ -303,7 +303,8 @@ def search_order():
         order_table.delete(row)
 
     # Tìm các đơn hàng khớp với ID đơn hàng trong cột đầu tiên (ID Đơn Hàng)
-    matched_orders = [order for order in sample_data if search_value in str(order[0]).lower()]
+    # chuyển qua tìm bằng id khách hàng
+    matched_orders = [order for order in sample_data if search_value in str(order[1]).lower()]
 
     # Hiển thị các đơn hàng khớp trong bảng
     for order in matched_orders:
