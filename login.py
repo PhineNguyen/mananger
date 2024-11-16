@@ -1,36 +1,57 @@
-from tkinter import messagebox
 import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
+from tkinter import messagebox
 
-DEFAULT_PIN = "1234"  # Đặt mã PIN mặc định để đăng nhập
+def create_login_frame(app, notebook, load_main_interface):
+    """
+    Tạo giao diện đăng nhập và xử lý xác thực người dùng.
 
-def check_pin(entry_pin, app, login_frame, notebook):
+    Args:
+        app: Cửa sổ chính của ứng dụng.
+        notebook: Notebook sẽ chứa các tab sau khi đăng nhập.
+        load_main_interface: Hàm để tải giao diện chính sau khi đăng nhập thành công.
     """
-    Hàm kiểm tra mã PIN khi nhấn nút "Đăng nhập".
-    Nếu đúng mã PIN, ẩn giao diện đăng nhập và hiển thị giao diện chính.
-    """
-    if entry_pin.get() == DEFAULT_PIN:
-        login_frame.pack_forget()  # Ẩn giao diện đăng nhập
-        notebook.pack(fill="both", expand=True)  # Hiển thị giao diện chính
-    else:
-        messagebox.showerror("Lỗi", "Mã PIN không đúng. Vui lòng thử lại.")
-        entry_pin.delete(0, 'end')  # Xóa mã PIN trong ô nhập
+    def authenticate():
+        """
+        Xác thực người dùng dựa trên tên đăng nhập và mật khẩu.
+        """
+        username = entry_username.get().strip()
+        password = entry_password.get().strip()
 
-def create_login_frame(app, notebook):
-    """
-    Tạo giao diện đăng nhập trong cửa sổ chính và yêu cầu nhập mã PIN.
-    """
+        # Xác định vai trò tài khoản dựa trên thông tin nhập
+        if username == "admin" and password == "admin123":
+            user_role.set("owner")  # Chủ cửa hàng
+            messagebox.showinfo("Đăng nhập", "Đăng nhập thành công với vai trò: Chủ cửa hàng")
+            login_frame.destroy()
+            load_main_interface(app, notebook, user_role.get())
+        elif username == "staff" and password == "staff123":
+            user_role.set("staff")  # Nhân viên
+            messagebox.showinfo("Đăng nhập", "Đăng nhập thành công với vai trò: Nhân viên")
+            login_frame.destroy()
+            load_main_interface(app, notebook, user_role.get())
+        else:
+            messagebox.showerror("Đăng nhập", "Sai tên đăng nhập hoặc mật khẩu!")
+
+    # Tạo giao diện đăng nhập
     login_frame = ttk.Frame(app)
     login_frame.pack(fill="both", expand=True)
 
-    label = ttk.Label(login_frame, text="Nhập mã PIN để đăng nhập", font=("Helvetica", 14))
-    label.pack(pady=20)
+    # Tiêu đề đăng nhập
+    ttk.Label(login_frame, text="Đăng nhập", font=("Arial", 16, "bold")).pack(pady=20)
 
-    entry_pin = ttk.Entry(login_frame, show="*", font=("Helvetica", 14), width=15)
-    entry_pin.pack(pady=10)
+    # Nhãn và ô nhập tên đăng nhập
+    ttk.Label(login_frame, text="Tên đăng nhập:").pack(anchor="w", padx=20)
+    entry_username = ttk.Entry(login_frame)
+    entry_username.pack(fill="x", padx=20)
 
-    login_button = ttk.Button(
-        login_frame,
-        text="Đăng nhập",
-        command=lambda: check_pin(entry_pin, app, login_frame, notebook)
-    )
-    login_button.pack(pady=10)
+    # Nhãn và ô nhập mật khẩu
+    ttk.Label(login_frame, text="Mật khẩu:").pack(anchor="w", padx=20, pady=(10, 0))
+    entry_password = ttk.Entry(login_frame, show="*")
+    entry_password.pack(fill="x", padx=20)
+
+    # Nút đăng nhập
+    ttk.Button(login_frame, text="Đăng nhập", bootstyle="primary", command=authenticate).pack(pady=20)
+
+    # Biến lưu vai trò người dùng
+    global user_role
+    user_role = ttk.StringVar(value="guest")  # Mặc định là khách
