@@ -12,6 +12,27 @@ import time
 click_count_san_pham = 0
 last_click_time = 0
 
+def load_main_interface(app, notebook, role):
+    """
+    Tải giao diện chính của ứng dụng dựa trên vai trò người dùng.
+
+    Args:
+        app: Cửa sổ chính của ứng dụng.
+        notebook: Notebook chứa các tab.
+        role: Vai trò của người dùng ('owner' hoặc 'staff').
+    """
+    # Thêm các tab cơ bản
+    create_san_pham_tab(notebook, app)
+    create_don_hang_tab(notebook, app)
+    create_khach_hang_tab(notebook, app)
+
+    # Chỉ thêm các tab đặc quyền nếu người dùng là chủ cửa hàng
+    if role == "owner":
+        create_thong_ke_tab(notebook, app)
+        create_setting_tab(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)  # Thêm tab Setting
+
+    notebook.pack(fill="both", expand=True)
+
 def change_window_icon(app):
     #Hàm thay đổi icon của cửa sổ
     try:
@@ -63,17 +84,22 @@ def main():
 
     #Tạo notebook
     notebook = ttk.Notebook(app, style="TNotebook")
-    notebook.pack(fill="both", expand=True)
+    #notebook.pack(fill="both", expand=True)
 
     # Thêm các tab vào notebook
-    create_san_pham_tab(notebook, app)
-    create_don_hang_tab(notebook, app)
-    create_khach_hang_tab(notebook, app)
-    create_thong_ke_tab(notebook, app)
-    create_setting_tab(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)  # Thêm tab Setting
+    # create_san_pham_tab(notebook, app)
+    # create_don_hang_tab(notebook, app)
+    # create_khach_hang_tab(notebook, app)
+    # create_thong_ke_tab(notebook, app)
+    # create_setting_tab(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)  # Thêm tab Setting
     #login here
     #create_login_frame(app, notebook)
+
+    # Hiển thị giao diện đăng nhập
+    create_login_frame(app, notebook, load_main_interface)
+
     app.mainloop()
 
 if __name__ == "__main__":
     main()
+
