@@ -7,7 +7,6 @@ from khach_hang import create_khach_hang_tab
 from login import create_login_frame
 from setting import create_setting_tab, load_settings, apply_settings,refresh_tabs  # Import thêm load_settings
 from tkinter import PhotoImage
-from tkcalendar import Calendar
 from tkinter import messagebox
 
 click_count_san_pham = 0
@@ -85,19 +84,19 @@ def main():
 
     #Tạo notebook
     notebook = ttk.Notebook(app, style="TNotebook")
-    #notebook.pack(fill="both", expand=True)
+    notebook.pack(fill="both", expand=True)
 
     # Thêm các tab vào notebook
-    # create_san_pham_tab(notebook, app)
-    # create_don_hang_tab(notebook, app)
-    # create_khach_hang_tab(notebook, app)
-    # create_thong_ke_tab(notebook, app)
-    # create_setting_tab(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)  # Thêm tab Setting
+    create_san_pham_tab(notebook, app)
+    create_don_hang_tab(notebook, app)
+    create_khach_hang_tab(notebook, app)
+    create_thong_ke_tab(notebook, app)
+    create_setting_tab(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)  # Thêm tab Setting
     #login here
     #create_login_frame(app, notebook)
 
     # Hiển thị giao diện đăng nhập
-    create_login_frame(app, notebook, load_main_interface)
+   # create_login_frame(app, notebook, load_main_interface)
 
     app.mainloop()
 

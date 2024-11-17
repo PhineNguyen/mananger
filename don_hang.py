@@ -8,7 +8,20 @@ import csv
 from setting import load_settings  # Import thêm load_settings
 import tkinter as tk
 from tkinter import messagebox
+
 sample_data = []
+
+# Lưu lại dữ liệu đơn hàng đã tính tổng giá trị vào file orders.csv
+def save_orders_to_csv(filename, orders):
+    try:
+        with open(filename, mode='w', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            header = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm","Số Lượng Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
+            writer.writerow(header)
+            for order in orders:
+                writer.writerow(order)
+    except Exception as e:
+        print(f"Lỗi khi lưu file đơn hàng: {e}")
 def read_customers_csv(file_path):
     try:
         with open(file_path, mode='r', encoding='utf-8') as file:
@@ -18,7 +31,61 @@ def read_customers_csv(file_path):
     except Exception as e:
         messagebox.showerror("Lỗi", f"Không thể đọc file customers.csv: {e}")
         return []
-    
+def load_product_data(filename):
+    product_data = {}
+    try:
+        with open(filename, newline='', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            next(reader)  # Bỏ qua header
+            for row in reader:
+                product_id = row[0]  # ID Sản Phẩm
+                price = int(row[2])  # Giá
+                product_data[product_id] = price  # Lưu vào dictionary
+        return product_data
+    except Exception as e:
+        print(f"Lỗi khi đọc file sản phẩm: {e}")
+        return {}
+
+# Tính tổng giá trị đơn hàng từ dữ liệu đơn hàng, có tính đến số lượng sản phẩm
+def calculate_order_total(order, product_data):
+    total = 0
+    product_ids = order[3].split(',')  # Danh sách ID Sản Phẩm trong đơn hàng (giả sử là chuỗi ngăn cách bằng dấu phẩy)
+    quantities = order[4].split(',')  # Danh sách Số Lượng sản phẩm trong đơn hàng
+    for product_id, quantity in zip(product_ids, quantities):
+        quantity = int(quantity)  # Chuyển số lượng thành kiểu số nguyên
+        if product_id in product_data:
+            total += product_data[product_id] * quantity  # Nhân giá với số lượng
+    return total
+
+# Đọc dữ liệu từ file orders.csv và tính tổng giá trị đơn hàng
+def process_orders(order_filename, product_data_filename):
+    product_data = load_product_data(product_data_filename)  # Lấy dữ liệu sản phẩm
+    orders = []
+    try:
+        with open(order_filename, newline='', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            header = next(reader)  # Bỏ qua header
+            for row in reader:
+                order_id = row[0]  # ID Đơn Hàng
+                customer_id = row[1]  # ID Khách Hàng
+                order_date = row[2]  # Ngày Đặt Hàng
+                product_list = row[3]  # Danh sách sản phẩm (ID sản phẩm)
+                quantity_list = row[4]  # Danh sách số lượng sản phẩm
+                total_value = calculate_order_total(row, product_data)  # Tính tổng giá trị đơn hàng
+                status = row[7]  # Trạng thái đơn hàng
+                payment_method = row[6]  # Phương thức thanh toán
+                orders.append([order_id, customer_id, order_date, product_list,quantity_list ,total_value, status, payment_method])
+    except Exception as e:
+        print(f"Lỗi khi đọc file đơn hàng: {e}")
+    return orders
+order_filename = 'orders.csv'  # Đường dẫn tới file orders.csv
+product_filename = 'products.csv'  # Đường dẫn tới file products.csv
+
+# Xử lý các đơn hàng và tính tổng giá trị
+orders = process_orders(order_filename, product_filename)
+
+
+save_orders_to_csv(order_filename, orders)
 # Hàm để chọn khách hàng
 def choose_customer(entries):
     customers = read_customers_csv('customers.csv')
@@ -321,8 +388,7 @@ def add_order(app):
     add_window.title("Thêm Đơn Hàng")
 
     # Danh sách các trường thông tin cần nhập cho đơn hàng
-    fields = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm","Số Lượng Sản Phẩm", 
-              "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
+    fields = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm","Số Lượng Sản Phẩm","Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
     entries = {}  # Tạo dictionary để lưu các entry widget
 
     # Tạo các nhãn và entry widget cho mỗi trường thông tin
@@ -362,8 +428,7 @@ def add_order(app):
         products = read_csv("products.csv")
 
         # Tạo bảng hiển thị danh sách sản phẩm với các cột ID, Tên và Giá
-        product_table = ttk.Treeview(product_window, columns=("ID", "Tên", "Giá"), 
-                                     show="headings", selectmode="extended")
+        product_table = ttk.Treeview(product_window, columns=("ID", "Tên", "Giá"), show="headings", selectmode="extended")
         product_table.heading("ID", text="ID")  # Cột ID
         product_table.heading("Tên", text="Tên Sản Phẩm")  # Cột tên sản phẩm
         product_table.heading("Giá", text="Giá VND")  # Cột giá sản phẩm
@@ -377,11 +442,14 @@ def add_order(app):
         def add_selected_products():
             selected_products = [product_table.item(item)["values"] for item in product_table.selection()]
             entries["Danh Sách Sản Phẩm"].delete(0, 'end')  # Xóa nội dung cũ trong trường danh sách sản phẩm
-            selected_product_names = [f"{prod[1]} ({prod[2]} VND)" for prod in selected_products]
+            selected_product_names = [f"{prod[1]}" for prod in selected_products]
             # Ghép tên và giá của các sản phẩm được chọn thành chuỗi và thêm vào trường danh sách sản phẩm
             entries["Danh Sách Sản Phẩm"].insert(0, ", ".join(selected_product_names))
             product_window.destroy()  # Đóng cửa sổ chọn sản phẩm
 
+            total_value = sum(int(prod[2]) for prod in selected_products)
+            entries["Tổng Giá Trị Đơn Hàng"] = total_value  # Lưu tổng giá trị vào entries dictionary
+            product_window.destroy()
         # Nút để xác nhận chọn các sản phẩm
         select_button = ttk.Button(product_window, text="Chọn Sản Phẩm", command=add_selected_products)
         select_button.pack(pady=10)
@@ -397,6 +465,9 @@ def add_order(app):
     def submit_order():
         # Lấy thông tin từ các trường và kiểm tra xem có trường nào bỏ trống không
         new_order = tuple(entries[field].get().strip() for field in fields)
+        total_value = entries.get("Tổng Giá Trị Đơn Hàng", 0)
+        new_order_with_total = new_order + (total_value,)
+        
         if any(not value for value in new_order):
             messagebox.showerror("Lỗi", "Vui lòng không để trống các trường.")  # Hiển thị lỗi nếu bỏ trống
             return
@@ -409,7 +480,6 @@ def add_order(app):
                 messagebox.showerror("Lỗi", "ID Đơn Hàng đã tồn tại. Vui lòng nhập lại ID khác.")
                 entries["ID Đơn Hàng"].delete(0, 'end')
                 return
-
 
         # Thêm đơn hàng vào danh sách tạm thời và lưu vào file CSV
         sample_data.append(new_order)
@@ -424,9 +494,8 @@ def add_order(app):
         # Lấy ID đơn hàng và ID khách hàng
         order_id = new_order[0]
         customer_id = new_order[1]
-
-        # Cập nhật lịch sử mua hàng cho khách hàng trong file customers.csv
         update_customer_purchase_history(customer_id, order_id)
+        # Cập nhật lịch sử mua hàng cho khách hàng trong file customers.csv
 
         # Đóng cửa sổ thêm đơn hàng
         add_window.destroy()
