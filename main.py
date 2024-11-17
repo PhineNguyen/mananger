@@ -4,14 +4,13 @@ from san_pham import create_san_pham_tab
 from don_hang import create_don_hang_tab
 from thong_ke import create_thong_ke_tab
 from khach_hang import create_khach_hang_tab
+from staff_san_pham import staff_create_san_pham_tab
+from staff_don_hang import staff_create_don_hang_tab
+from staff_khach_hang import staff_create_khach_hang_tab
 from login import create_login_frame
 from setting import create_setting_tab, load_settings, apply_settings,refresh_tabs  # Import thêm load_settings
 from tkinter import PhotoImage
-from tkcalendar import Calendar
 from tkinter import messagebox
-
-click_count_san_pham = 0
-last_click_time = 0
 
 def load_main_interface(app, notebook, role):
     """
@@ -23,12 +22,20 @@ def load_main_interface(app, notebook, role):
         role: Vai trò của người dùng ('owner' hoặc 'staff').
     """
     # Thêm các tab cơ bản
-    create_san_pham_tab(notebook, app)
-    create_don_hang_tab(notebook, app)
-    create_khach_hang_tab(notebook, app)
+    # create_san_pham_tab(notebook, app)
+    # create_don_hang_tab(notebook, app)
+    # create_khach_hang_tab(notebook, app)
+
+    if role=="staff":
+        staff_create_san_pham_tab(notebook, app)
+        staff_create_don_hang_tab(notebook, app)
+        staff_create_khach_hang_tab(notebook, app)
 
     # Chỉ thêm các tab đặc quyền nếu người dùng là chủ cửa hàng
     if role == "owner":
+        create_san_pham_tab(notebook, app)
+        create_don_hang_tab(notebook, app)
+        create_khach_hang_tab(notebook, app)
         create_thong_ke_tab(notebook, app)
         create_setting_tab(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)  # Thêm tab Setting
 

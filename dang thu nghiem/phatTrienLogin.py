@@ -5,38 +5,80 @@ from captcha.image import ImageCaptcha
 import random
 import string
 from PIL import Image, ImageTk
+import json
+import hashlib
+import os
 
-# Dữ liệu giả lập (thay bằng cơ sở dữ liệu trong thực tế)
-USER_DATA = {
-    "admin": {"password": "admin123", "email": "admin@example.com"},
-    "staff": {"password": "staff123", "email": "staff@example.com"},
-}
+PASSWORD_FILE = "password.json"
 
+# --- Utility Functions ---
+def hash_password(password):
+    """Mã hóa mật khẩu bằng SHA256."""
+    return hashlib.sha256(password.encode('utf-8')).hexdigest()
+
+def load_user_credentials():
+    """Tải thông tin người dùng từ file JSON."""
+    if os.path.exists(PASSWORD_FILE):
+        try:
+            with open(PASSWORD_FILE, "r") as file:
+                return json.load(file)
+        except json.JSONDecodeError:
+            messagebox.showerror("Lỗi", "Dữ liệu người dùng không hợp lệ. Tạo lại tệp dữ liệu.")
+    return {}
+
+def save_user_credentials(username, password, email=None):
+    """Lưu thông tin người dùng vào file JSON."""
+    credentials = load_user_credentials()
+    credentials[username] = {
+        "hashed_password": hash_password(password),
+        "email": email
+    }
+    with open(PASSWORD_FILE, "w") as file:
+        json.dump(credentials, file, indent=4)
+
+def verify_user_credentials(username, password):
+    """Xác minh thông tin đăng nhập."""
+    credentials = load_user_credentials()
+    return (
+        username in credentials and
+        credentials[username]["hashed_password"] == hash_password(password)
+    )
+
+def initialize_default_users():
+    """Khởi tạo người dùng mặc định nếu chưa tồn tại."""
+    credentials = load_user_credentials()
+    if "admin" not in credentials:
+        save_user_credentials("admin", "admin123", "admin@example.com")
+    if "staff" not in credentials:
+        save_user_credentials("staff", "staff123", "staff@example.com")
+
+# --- Captcha Functions ---
+def generate_captcha(length=5):
+    """Sinh chuỗi và hình ảnh Captcha."""
+    text = ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+    image = ImageCaptcha()
+    captcha_image = Image.open(image.generate(text))
+    return text, captcha_image
+
+# --- Password Reset ---
 def reset_password(username):
-    """
-    Hiển thị giao diện đặt lại mật khẩu.
-    """
+    """Giao diện đặt lại mật khẩu."""
     def confirm_reset():
         new_password = entry_new_password.get().strip()
         confirm_password = entry_confirm_password.get().strip()
-
         if new_password != confirm_password:
-            messagebox.showerror("Lỗi", "Mật khẩu không khớp. Vui lòng thử lại.")
+            messagebox.showerror("Lỗi", "Mật khẩu không khớp.")
             return
-
-        if len(new_password) < 6:
-            messagebox.showerror("Lỗi", "Mật khẩu phải có ít nhất 6 ký tự.")
+        if len(new_password) < 6 or not any(c.isdigit() for c in new_password):
+            messagebox.showerror("Lỗi", "Mật khẩu phải có ít nhất 6 ký tự và 1 số.")
             return
-
-        # Cập nhật mật khẩu mới
-        USER_DATA[username]["password"] = new_password
+        save_user_credentials(username, new_password)
         messagebox.showinfo("Thành công", "Mật khẩu đã được đặt lại.")
         reset_window.destroy()
 
-    # Giao diện đặt lại mật khẩu
     reset_window = ttk.Toplevel()
     reset_window.title("Đặt lại mật khẩu")
-    reset_window.geometry("400x250")
+    reset_window.geometry("400x200")
 
     ttk.Label(reset_window, text="Mật khẩu mới:").pack(pady=10, anchor="w", padx=20)
     entry_new_password = ttk.Entry(reset_window, show="*")
@@ -48,31 +90,25 @@ def reset_password(username):
 
     ttk.Button(reset_window, text="Xác nhận", command=confirm_reset).pack(pady=20)
 
+# --- Forgot Password ---
 def forgot_password():
-    """
-    Xử lý quên mật khẩu.
-    """
+    """Xử lý quên mật khẩu."""
     def verify_email():
         username = entry_username.get().strip()
         email = entry_email.get().strip()
+        credentials = load_user_credentials()
 
-        if username not in USER_DATA:
-            messagebox.showerror("Lỗi", "Tên đăng nhập không tồn tại.")
+        if username not in credentials or credentials[username].get("email") != email:
+            messagebox.showerror("Lỗi", "Tên đăng nhập hoặc email không chính xác.")
             return
 
-        if USER_DATA[username]["email"] != email:
-            messagebox.showerror("Lỗi", "Email không khớp với tài khoản.")
-            return
-
-        # Xác thực thành công, chuyển sang đặt lại mật khẩu
         messagebox.showinfo("Thành công", "Xác thực thành công. Vui lòng đặt lại mật khẩu.")
         forgot_window.destroy()
         reset_password(username)
 
-    # Giao diện quên mật khẩu
     forgot_window = ttk.Toplevel()
     forgot_window.title("Quên mật khẩu")
-    forgot_window.geometry("400x250")
+    forgot_window.geometry("400x200")
 
     ttk.Label(forgot_window, text="Tên đăng nhập:").pack(pady=10, anchor="w", padx=20)
     entry_username = ttk.Entry(forgot_window)
@@ -84,24 +120,10 @@ def forgot_password():
 
     ttk.Button(forgot_window, text="Xác nhận", command=verify_email).pack(pady=20)
 
-def generate_captcha_text(length=4):
-    """
-    Sinh chuỗi ngẫu nhiên gồm chữ cái cho Captcha (dễ đoán hơn).
-    """
-    return ''.join(random.choices(string.ascii_lowercase, k=length))  # Chỉ dùng chữ cái
-
-def create_captcha_image(captcha_text):
-    """
-    Tạo hình ảnh Captcha từ chuỗi văn bản với font mặc định.
-    """
-    image = ImageCaptcha()  # Sử dụng font mặc định của PIL
-    data = image.generate(captcha_text)
-    captcha_image = Image.open(data)
-    return captcha_image
-
-
-
+# --- Login Frame ---
 def create_login_frame(app, notebook, load_main_interface):
+    initialize_default_users()
+
     def authenticate():
         username = entry_username.get().strip()
         password = entry_password.get().strip()
@@ -112,7 +134,7 @@ def create_login_frame(app, notebook, load_main_interface):
             refresh_captcha()
             return
 
-        if username in USER_DATA and USER_DATA[username]["password"] == password:
+        if verify_user_credentials(username, password):
             user_role.set("owner" if username == "admin" else "staff")
             messagebox.showinfo("Đăng nhập", f"Đăng nhập thành công với vai trò: {user_role.get()}")
             login_frame.destroy()
@@ -122,24 +144,20 @@ def create_login_frame(app, notebook, load_main_interface):
             refresh_captcha()
 
     def refresh_captcha():
-        new_captcha_text = generate_captcha_text()
-        current_captcha.set(new_captcha_text)
-
-        new_captcha_image = create_captcha_image(new_captcha_text)
-        captcha_photo = ImageTk.PhotoImage(new_captcha_image)
+        captcha_text, captcha_image = generate_captcha()
+        current_captcha.set(captcha_text)
+        captcha_photo = ImageTk.PhotoImage(captcha_image)
         captcha_label.config(image=captcha_photo)
-        captcha_label.image = captcha_photo
+        captcha_label.image = captcha_photo  # Gắn ảnh vào biến để tránh bị xóa bộ nhớ
 
-    # Biến Captcha hiện tại
-    current_captcha = ttk.StringVar(value=generate_captcha_text())
+    current_captcha = ttk.StringVar()
 
-    # Khung đăng nhập chính
+    # Tạo giao diện đăng nhập
     login_frame = ttk.Frame(app)
     login_frame.pack(fill="both", expand=True)
 
     ttk.Label(login_frame, text="Đăng nhập", font=("Arial", 16, "bold")).pack(pady=20)
 
-    # Khung trung tâm
     center_frame = ttk.Frame(login_frame)
     center_frame.pack(anchor="center", pady=10)
 
@@ -151,27 +169,19 @@ def create_login_frame(app, notebook, load_main_interface):
     entry_password = ttk.Entry(center_frame, show="*", width=25)
     entry_password.grid(row=1, column=1, padx=10, pady=5)
 
-    # Captcha
-    ttk.Label(center_frame, text="Xác minh: Tôi không phải là robot").grid(row=2, column=0, columnspan=2, pady=10)
+    ttk.Label(center_frame, text="Captcha:").grid(row=2, column=0, sticky="e", padx=10, pady=5)
+    entry_captcha = ttk.Entry(center_frame, width=15)
+    entry_captcha.grid(row=2, column=1, padx=10, pady=5)
 
-    captcha_image = create_captcha_image(current_captcha.get())
-    captcha_photo = ImageTk.PhotoImage(captcha_image)
-    captcha_label = ttk.Label(center_frame, image=captcha_photo)
-    captcha_label.image = captcha_photo
+    # Tạo `captcha_label` trước khi gọi hàm `refresh_captcha`
+    captcha_label = ttk.Label(center_frame)
     captcha_label.grid(row=3, column=0, columnspan=2, pady=10)
 
-    # Khung chứa nhập Captcha và nút Làm mới
-    captcha_frame = ttk.Frame(center_frame)
-    captcha_frame.grid(row=4, column=0, columnspan=2, pady=5)
-
-    entry_captcha = ttk.Entry(captcha_frame, width=15)
-    entry_captcha.pack(side="left", padx=(0, 5))
-
-    ttk.Button(captcha_frame, text="Làm mới", bootstyle="secondary", command=refresh_captcha).pack(side="right")
+    # Làm mới captcha ngay khi khởi tạo
+    refresh_captcha()
 
     ttk.Button(login_frame, text="Đăng nhập", bootstyle="primary", command=authenticate).pack(pady=20)
-    ttk.Button(login_frame, text="Quên mật khẩu", bootstyle="secondary", command=forgot_password).pack(pady=(0, 20))
+    ttk.Button(login_frame, text="Quên mật khẩu", bootstyle="secondary", command=forgot_password).pack()
 
     global user_role
     user_role = ttk.StringVar(value="guest")
-
