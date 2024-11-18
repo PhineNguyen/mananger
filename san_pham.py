@@ -395,8 +395,12 @@ def delete_product():
 
     confirm = messagebox.askyesno("Xác nhận", "Bạn có chắc chắn muốn xóa sản phẩm này?")
     if confirm:
-        selected_index = product_table.index(selected_item)
-        del sample_products[selected_index]
+        selected_products = sorted([product_table.index(item)for item in selected_item], reverse =True)
+        for index in selected_products:
+            del sample_products[index]
+        
+        for item in selected_item:
+            product_table.delete(item)
 
         refresh_product_table()
         save_to_csv('products.csv')

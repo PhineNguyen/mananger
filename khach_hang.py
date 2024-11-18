@@ -218,9 +218,12 @@ def delete_customer():
 
     confirm = messagebox.askyesno("Xác nhận", "Bạn có chắc chắn muốn xóa sản phẩm này?")
     if confirm:
-        selected_index = customer_table.index(selected_item)
-        del sample_customers[selected_index]
-
+        selected_customers =sorted([customer_table.index(item)for item in selected_item],reverse=True)
+        for index in selected_customers:    
+            del sample_customers[index]
+        for item in selected_item:
+            customer_table.delete(item)
+       
         refresh_customers_table()
         save_to_csv('customers.csv')
 def create_khach_hang_tab(notebook, app):

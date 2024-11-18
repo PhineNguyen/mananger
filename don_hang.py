@@ -569,8 +569,12 @@ def delete_order():
 
     confirm = messagebox.askyesno("Xác nhận", "Bạn có chắc chắn muốn xóa đơn hàng này?")
     if confirm:
-        selected_index = order_table.index(selected_item)
-        del sample_data[selected_index]
+        selected_indices = sorted([order_table.index(item)for item in selected_item], reverse=True)
+        for index in selected_indices:
+            del sample_data[index]
+        
+        for item in selected_item:
+            order_table.delete(item)
 
         refresh_order_table()
         save_to_csv('orders.csv')
