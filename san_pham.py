@@ -57,10 +57,10 @@ sample_products = read_csv(products_file)
 orders = read_csv(orders_file)
 
 # Cập nhật tồn kho
-updated_products = update_inventory(sample_products, orders)
+#updated_products = update_inventory(sample_products, orders)
 
 # Lưu lại file products.csv
-save_to_csv(products_file, updated_products)
+#save_to_csv(products_file, updated_products)
 def button_click(button_name, app):
     if button_name == "Tìm kiếm":
         search_product()
