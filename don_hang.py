@@ -127,7 +127,7 @@ def save_to_csv(filename):
         with open(filename, mode='w', newline='', encoding='utf-8') as file:
             writer = csv.writer(file)
             # Define header
-            header = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
+            header = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", "Số Lượng Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
             writer.writerow(header)
             
             # Write the order data
@@ -442,13 +442,16 @@ def add_order(app):
         def add_selected_products():
             selected_products = [product_table.item(item)["values"] for item in product_table.selection()]
             entries["Danh Sách Sản Phẩm"].delete(0, 'end')  # Xóa nội dung cũ trong trường danh sách sản phẩm
-            selected_product_names = [f"{prod[1]}" for prod in selected_products]
+            selected_product_names = [f"{prod[0]}" for prod in selected_products]
             # Ghép tên và giá của các sản phẩm được chọn thành chuỗi và thêm vào trường danh sách sản phẩm
             entries["Danh Sách Sản Phẩm"].insert(0, ", ".join(selected_product_names))
             product_window.destroy()  # Đóng cửa sổ chọn sản phẩm
 
+            # Tính tổng giá trị các sản phẩm
             total_value = sum(int(prod[2]) for prod in selected_products)
-            entries["Tổng Giá Trị Đơn Hàng"] = total_value  # Lưu tổng giá trị vào entries dictionary
+            entries["Tổng Giá Trị Đơn Hàng"].delete(0, 'end')  # Xóa giá trị cũ
+            entries["Tổng Giá Trị Đơn Hàng"].insert(0, str(total_value))  # Hiển thị tổng giá trị
+
             product_window.destroy()
         # Nút để xác nhận chọn các sản phẩm
         select_button = ttk.Button(product_window, text="Chọn Sản Phẩm", command=add_selected_products)
@@ -464,9 +467,12 @@ def add_order(app):
 
     def submit_order():
         # Lấy thông tin từ các trường và kiểm tra xem có trường nào bỏ trống không
-        new_order = tuple(entries[field].get().strip() for field in fields)
-        total_value = entries.get("Tổng Giá Trị Đơn Hàng", 0)
-        new_order_with_total = new_order + (total_value,)
+        try:
+            new_order = tuple(entries[field].get().strip() for field in fields)
+        except AttributeError as e:
+            print(f"Lỗi khi lấy giá trị từ trường: {e}")
+
+        
         
         if any(not value for value in new_order):
             messagebox.showerror("Lỗi", "Vui lòng không để trống các trường.")  # Hiển thị lỗi nếu bỏ trống
