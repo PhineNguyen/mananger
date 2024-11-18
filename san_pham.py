@@ -39,6 +39,8 @@ def save_to_csv(filename,data):
             
     except Exception as e:
         messagebox.showerror("Lỗi",f"Không thể ghi file: {e}")
+
+#new def
 def update_inventory(products, orders):
     product_dict = {str(p[0]): p for p in products}
     for order in orders:
