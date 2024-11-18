@@ -11,28 +11,54 @@ import tkinter as tk
 
 search_value = []
 sample_products = []
+import csv
+
+# Đọc dữ liệu sản phẩm từ file products.csv
 
 def read_csv(file_path):
     try:
         df = pd.read_csv(file_path)
-        return df.values.tolist()
+        data = df.values.tolist()
+        for row in data:
+            row[3] = int(row[3])
+            return data
     except Exception as e:
         messagebox.showerror("Lỗi", f"Không thể đọc file: {e}")
         return []
 
-def save_to_csv(filename):
+def save_to_csv(filename,data):
     # Mở file ở chế độ ghi (write mode)
-    with open(filename, mode='w', newline='', encoding='utf-8') as file:
-        writer = csv.writer(file)
-        
-        # Ghi tiêu đề cột nếu cần
-        header = ["ID Sản Phẩm", "Tên Sản Phẩm", "Giá VND", "Số Lượng Tồn Kho", "Mô Tả", "Nhóm Sản Phẩm"]  # Thay đổi theo các cột của bạn
-        writer.writerow(header)
-        
-        # Ghi từng dòng dữ liệu từ sample_products
-        for product in sample_products:
-            writer.writerow(product)
+    try:
+        with open(filename, mode='w', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            
+            # Ghi tiêu đề cột nếu cần
+            header = ["ID Sản Phẩm", "Tên Sản Phẩm", "Giá VND", "Số Lượng Tồn Kho", "Mô Tả", "Nhóm Sản Phẩm"]  # Thay đổi theo các cột của bạn
+            writer.writerow(header)
+            writer.writerows(data)
+            
+    except Exception as e:
+        messagebox.showerror("Lỗi",f"Không thể ghi file: {e}")
+def update_inventory(products, orders):
+    product_dict = {str(p[0]): p for p in products}
+    for order in orders:
+        product_id = str(order[3])
+        quantity = int(order[4])
+        if product_id in product_dict:
+            product_dict[product_id][3] -= quantity
+    return list(product_dict.values())
+products_file = 'products.csv'
+orders_file = 'orders.csv'
 
+# Đọc dữ liệu
+sample_products = read_csv(products_file)
+orders = read_csv(orders_file)
+
+# Cập nhật tồn kho
+updated_products = update_inventory(sample_products, orders)
+
+# Lưu lại file products.csv
+save_to_csv(products_file, updated_products)
 def button_click(button_name, app):
     if button_name == "Tìm kiếm":
         search_product()
