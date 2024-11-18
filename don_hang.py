@@ -391,6 +391,45 @@ def add_order(app):
     fields = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm","Số Lượng Sản Phẩm","Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
     entries = {}  # Tạo dictionary để lưu các entry widget
 
+    def calculate_total():
+        try:
+            # Lấy giá trị từ trường "Số Lượng Sản Phẩm"
+            quantity_str = entries["Số Lượng Sản Phẩm"].get().strip()
+
+            quantity_str = int(quantity_str)
+
+            # # Kiểm tra nếu ô trống hoặc không phải số nguyên dương
+            # if not quantity_str.isdigit() or int(quantity_str) <= 0:
+            #     raise ValueError("Số lượng phải là số nguyên dương lớn hơn 0.")
+
+            quantity = int(quantity_str)  # Chuyển thành số nguyên
+
+            # Lấy giá trị từ trường "Danh Sách Sản Phẩm"
+            product_id = entries["Danh Sách Sản Phẩm"].get().strip()
+
+            # Đọc danh sách sản phẩm từ file CSV
+            products = read_csv("products.csv")
+            price = 0
+
+            # Tìm giá sản phẩm dựa trên ID
+            for product in products:
+                if str(product[0]) == str(product_id):  # So khớp ID sản phẩm
+                    price = int(product[2])  # Giá sản phẩm
+                    break
+
+            # Tính tổng giá trị
+            total_value = price * quantity
+            
+
+            # Hiển thị vào ô "Tổng Giá Trị Đơn Hàng"
+            entries["Tổng Giá Trị Đơn Hàng"].delete(0, 'end')
+            entries["Tổng Giá Trị Đơn Hàng"].insert(0, str(total_value))
+
+        except ValueError as ve:
+            messagebox.showerror("Lỗi", f"Hãy nhập số lượng dcm")
+        except Exception as e:
+            messagebox.showerror("Lỗi", f"Đã xảy ra lỗi: {e}")
+
     # Tạo các nhãn và entry widget cho mỗi trường thông tin
     for i, field in enumerate(fields):
         label = ttk.Label(add_window, text=field)  # Tạo nhãn cho trường
@@ -399,8 +438,8 @@ def add_order(app):
         # entry.grid(row=i, column=1, padx=10, pady=5)  # Đặt entry vào lưới
         # entries[field] = entry  # Lưu entry vào dictionary với khóa là tên trường
 
-       
-         # Sử dụng Combobox cho "Phương Thức Thanh Toán" với ba tùy chọn
+
+        # Sử dụng Combobox cho "Phương Thức Thanh Toán" với ba tùy chọn
         if field == "Trạng Thái Đơn Hàng":
             payment_method = ttk.Combobox(add_window, values=["Đang Xử Lý", "Đã Giao", "Đã Hủy"], state="readonly",width=28)
             payment_method.grid(row=i, column=1, padx=10, pady=5)
@@ -409,6 +448,11 @@ def add_order(app):
             payment_method = ttk.Combobox(add_window, values=["Tiền mặt", "Thẻ tín dụng", "Chuyển khoản"], state="readonly",width=28)
             payment_method.grid(row=i, column=1, padx=10, pady=5)
             entries[field] = payment_method  # Lưu combobox vào dictionary với khóa là tên trường
+        elif field == "Số Lượng Sản Phẩm":
+            quantity_spinbox = ttk.Spinbox(add_window, from_=1, to=100, width=26, command=calculate_total, increment=1)  # Spinbox cho số lượng sản phẩm
+            quantity_spinbox.set(1)  # Thiết lập giá trị ban đầu là 1
+            quantity_spinbox.grid(row=i, column=1, padx=10, pady=5)
+            entries[field] = quantity_spinbox
         else:
             entry = ttk.Entry(add_window, bootstyle="superhero", width=30)  # Tạo entry cho các trường khác
             entry.grid(row=i, column=1, padx=10, pady=5)
@@ -422,40 +466,55 @@ def add_order(app):
     # Hàm để mở cửa sổ chọn sản phẩm
     def select_products():
         product_window = ttk.Toplevel(add_window)  # Tạo cửa sổ "Chọn Sản Phẩm" mới
-        product_window.title("Chọn")
+        product_window.title("Chọn Sản Phẩm")
 
         # Tải danh sách sản phẩm từ file CSV
         products = read_csv("products.csv")
 
         # Tạo bảng hiển thị danh sách sản phẩm với các cột ID, Tên và Giá
-        product_table = ttk.Treeview(product_window, columns=("ID", "Tên", "Giá"), show="headings", selectmode="extended")
+        product_table = ttk.Treeview(
+            product_window, columns=("ID", "Tên", "Giá", "Tồn Kho"), show="headings", selectmode="browse"
+        )
         product_table.heading("ID", text="ID")  # Cột ID
         product_table.heading("Tên", text="Tên Sản Phẩm")  # Cột tên sản phẩm
         product_table.heading("Giá", text="Giá VND")  # Cột giá sản phẩm
+        product_table.heading("Tồn Kho", text="Số Lượng Tồn Kho")  # Cột tồn kho
         product_table.pack(fill="both", expand=True)  # Đặt bảng vào cửa sổ, mở rộng đầy đủ
 
         # Thêm các sản phẩm vào bảng
         for product in products:
-            product_table.insert("", "end", values=(product[0], product[1], product[2]))
+            product_table.insert("", "end", values=(product[0], product[1], product[2], product[3]))
 
-        # Hàm để thêm các sản phẩm đã chọn vào đơn hàng
-        def add_selected_products():
-            selected_products = [product_table.item(item)["values"] for item in product_table.selection()]
-            entries["Danh Sách Sản Phẩm"].delete(0, 'end')  # Xóa nội dung cũ trong trường danh sách sản phẩm
-            selected_product_names = [f"{prod[0]}" for prod in selected_products]
-            # Ghép tên và giá của các sản phẩm được chọn thành chuỗi và thêm vào trường danh sách sản phẩm
-            entries["Danh Sách Sản Phẩm"].insert(0, ", ".join(selected_product_names))
+        # Hàm để thêm sản phẩm được chọn vào đơn hàng
+        def add_selected_product():
+            selected_item = product_table.selection()
+            if not selected_item:
+                messagebox.showwarning("Cảnh báo", "Vui lòng chọn một sản phẩm.")
+                return
+
+            selected_product = product_table.item(selected_item[0])["values"]
+
+            # Cập nhật trường "Danh Sách Sản Phẩm" với ID sản phẩm
+            entries["Danh Sách Sản Phẩm"].delete(0, 'end')
+            entries["Danh Sách Sản Phẩm"].insert(0, str(selected_product[0]))
+
+            # Cập nhật trường "Tổng Giá Trị Đơn Hàng" với giá sản phẩm
+            entries["Tổng Giá Trị Đơn Hàng"].delete(0, 'end')
+            entries["Tổng Giá Trị Đơn Hàng"].insert(0, str(selected_product[2]))
+
+            # Cập nhật giới hạn cho Spinbox
+            max_quantity = int(selected_product[3])  # Lấy số lượng tồn kho
+            entries["Số Lượng Sản Phẩm"].config(to=max_quantity)  # Cập nhật giới hạn Spinbox
+
+            # Tính tổng giá trị đơn hàng ngay sau khi chọn sản phẩm
+            calculate_total()
+
             product_window.destroy()  # Đóng cửa sổ chọn sản phẩm
 
-            # Tính tổng giá trị các sản phẩm
-            total_value = sum(int(prod[2]) for prod in selected_products)
-            entries["Tổng Giá Trị Đơn Hàng"].delete(0, 'end')  # Xóa giá trị cũ
-            entries["Tổng Giá Trị Đơn Hàng"].insert(0, str(total_value))  # Hiển thị tổng giá trị
-
-            product_window.destroy()
-        # Nút để xác nhận chọn các sản phẩm
-        select_button = ttk.Button(product_window, text="Chọn Sản Phẩm", command=add_selected_products)
+        # Nút để xác nhận chọn sản phẩm
+        select_button = ttk.Button(product_window, text="Chọn Sản Phẩm", command=add_selected_product)
         select_button.pack(pady=10)
+
 
         
 
@@ -526,6 +585,9 @@ def add_order(app):
             writer = csv.writer(file)
             writer.writerow(header)  # Ghi dòng tiêu đề
             writer.writerows(customers)  # Ghi dữ liệu khách hàng đã cập nhật
+    
+    
+
 
     # Nút "Thêm" để xác nhận thêm đơn hàng mới
     add_button = ttk.Button(add_window, text="Thêm", bootstyle="superhero", command=submit_order)
