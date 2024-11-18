@@ -530,40 +530,62 @@ def add_order(app):
             new_order = tuple(entries[field].get().strip() for field in fields)
         except AttributeError as e:
             print(f"Lỗi khi lấy giá trị từ trường: {e}")
+            return
 
-        
-        
         if any(not value for value in new_order):
             messagebox.showerror("Lỗi", "Vui lòng không để trống các trường.")  # Hiển thị lỗi nếu bỏ trống
             return
         
-        # Kiểm tra xem ID sản phẩm đã tồn tại chưa
-        new_product_id = new_order[0]  # ID sản phẩm là phần tử đầu tiên trong tuple
-        for product in sample_data:
-            product_id = str(product[0])  # ID Sản Phẩm nằm ở vị trí đầu tiên của mỗi danh sách con
-            if product_id == new_product_id:  # Nếu ID đã tồn tại
-                messagebox.showerror("Lỗi", "ID Đơn Hàng đã tồn tại. Vui lòng nhập lại ID khác.")
+        # Kiểm tra xem ID đơn hàng đã tồn tại chưa
+        new_order_id = new_order[0]  # ID đơn hàng là phần tử đầu tiên
+        for order in sample_data:
+            order_id = str(order[0])  # ID đơn hàng nằm ở vị trí đầu tiên của mỗi danh sách con
+            if order_id == new_order_id:  # Nếu ID đã tồn tại
+                messagebox.showerror("Lỗi", "ID Đơn Hàng đã tồn tại. Vui lòng nhập ID khác.")
                 entries["ID Đơn Hàng"].delete(0, 'end')
                 return
+
+        # Tải danh sách sản phẩm từ file
+        products = read_csv("products.csv")
+        product_id = new_order[3]  # ID sản phẩm
+        quantity_ordered = int(new_order[4])  # Số lượng sản phẩm đã đặt
+        updated_products = []  # Danh sách sản phẩm sau khi cập nhật tồn kho
+
+        # Cập nhật tồn kho
+        for product in products:
+            if str(product[0]) == product_id:  # Nếu đúng sản phẩm được đặt
+                current_stock = int(product[3])  # Số lượng tồn kho hiện tại
+                if quantity_ordered > current_stock:  # Nếu số lượng đặt lớn hơn tồn kho
+                    messagebox.showerror("Lỗi", f"Số lượng đặt ({quantity_ordered}) vượt quá số lượng tồn kho ({current_stock}).")
+                    return
+                product[3] = str(current_stock - quantity_ordered)  # Cập nhật số lượng tồn kho
+            updated_products.append(product)
+
+        # Lưu danh sách sản phẩm đã cập nhật vào file CSV
+        with open("products.csv", "w", newline="", encoding="utf-8") as file:
+            writer = csv.writer(file)
+            header = ["ID Sản Phẩm", "Tên Sản Phẩm", "Giá VND", "Số Lượng Tồn Kho", "Mô Tả", "Nhóm Sản Phẩm"]  # Thay đổi theo các cột của bạn
+            writer.writerow(header)
+            writer.writerows(updated_products)
 
         # Thêm đơn hàng vào danh sách tạm thời và lưu vào file CSV
         sample_data.append(new_order)
         save_to_csv("orders.csv")  # Lưu đơn hàng vào file CSV
 
-        #cập nhật biến tạm
+        # Cập nhật biến tạm
         sample_data.clear()
         sample_data.extend(read_csv("orders.csv"))
 
         refresh_order_table()  # Cập nhật bảng đơn hàng
 
-        # Lấy ID đơn hàng và ID khách hàng
+        # Cập nhật lịch sử mua hàng cho khách hàng
         order_id = new_order[0]
         customer_id = new_order[1]
         update_customer_purchase_history(customer_id, order_id)
-        # Cập nhật lịch sử mua hàng cho khách hàng trong file customers.csv
 
         # Đóng cửa sổ thêm đơn hàng
         add_window.destroy()
+
 
     def update_customer_purchase_history(customer_id, order_id):
         # Đọc dữ liệu từ file customers.csv
