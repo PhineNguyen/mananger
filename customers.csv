@@ -1,51 +1,51 @@
 ﻿ID Khách Hàng,Tên Khách Hàng,Địa Chỉ,Số Điện Thoại,Email,Lịch Sử Mua Hàng
-1,Daniel Solis,"USNV Mcintosh, FPO AE 92895",998-758-8544,hamiltonpatrick@example.net,"Đơn hàng 4, Đơn hàng 20, Đơn hàng 15"
-2,Victoria Joseph,"PSC 8514, Box 0379, APO AE 61645",001-470-537-2729x7536,fmcgee@example.net,Đơn hàng 26
-3,Michael Wagner,"985 Lawrence Creek Apt. 461, Mariatown, ME 15895",+1-921-361-2391x523,tpearson@example.org,Đơn hàng 25
-4,Pamela Baxter,"PSC 6984, Box 8173, APO AA 65412",+1-983-547-6756x16198,baileyethan@example.com,"Đơn hàng 16, Đơn hàng 12, Đơn hàng 44"
-5,Anthony Mills,"15292 Crawford Brooks Suite 224, New Eric, WA 90038",001-257-232-7517,valerie70@example.org,"Đơn hàng 24, Đơn hàng 14, Đơn hàng 19"
-6,Ashley Lopez,"581 John Club Suite 139, South Donna, IL 28852",906-323-7694x28443,eoconnor@example.com,"Đơn hàng 2, Đơn hàng 48"
-7,Stephen Sanford,"813 Kyle Locks, South Amber, MA 29058",+1-817-905-1316,keithsanders@example.com,"Đơn hàng 21, Đơn hàng 1, Đơn hàng 46"
-8,Tonya Knight,"946 Gallagher Trafficway, West Timothyville, AL 00659",+1-252-203-9587x5435,qmoore@example.net,"Đơn hàng 3, Đơn hàng 27, Đơn hàng 12"
-9,Larry Mcdonald,"2953 Mcgrath Trace Apt. 786, Sierrashire, MH 04448",(440)576-2633x74194,samuel68@example.net,"Đơn hàng 1, Đơn hàng 28, Đơn hàng 12"
-10,David Torres,"Unit 5371 Box 9329, DPO AA 93870",(756)750-4997x9358,snowlisa@example.org,"Đơn hàng 38, Đơn hàng 47, 2342"
-11,Crystal Taylor,"3137 Sean Trace, West Michael, AZ 53245",(616)774-0788,fshort@example.org,Đơn hàng 14
-12,Michelle Walker,"94063 Martinez Roads Apt. 028, Lake Monica, WV 48557",243.667.9248,morrismichelle@example.org,"Đơn hàng 30, Đơn hàng 20"
-13,Christian Jones,"00970 Hardy Lake, South Samuelton, VA 31649",+1-612-963-1124,imendoza@example.com,"Đơn hàng 28, Đơn hàng 21, Đơn hàng 13"
-14,Sarah Howe,"84074 Michael Village Apt. 121, Cooperport, IN 58687",617-717-4602,yhampton@example.com,Đơn hàng 18
-15,Curtis Taylor,"5373 Barton Via, Lake Jodi, SC 83194",774-495-9249,ujones@example.net,Đơn hàng 40
-16,Jeffrey Ayers,"431 Christine Tunnel Suite 667, North Susan, NH 87587",914-856-0744,kgonzales@example.net,"Đơn hàng 15, Đơn hàng 41"
-17,James Jackson,"259 Burns Underpass, Dianeland, NH 04684",737.267.6247x7042,hdavis@example.net,"Đơn hàng 37, Đơn hàng 33"
-18,Gabrielle Erickson,"46678 Rodgers Estates Suite 180, South Caleb, MP 16481",(983)611-5108x37226,fgriffin@example.com,"Đơn hàng 25, Đơn hàng 2, Đơn hàng 41"
-19,Thomas Evans,"36240 Barajas Turnpike, West Victoriaport, OH 48261",976-933-3714,christopher55@example.com,Đơn hàng 46
-20,Eric Graham,"665 Audrey Prairie Apt. 601, Navarroton, MN 47839",279-504-7988x1393,floydnancy@example.com,"Đơn hàng 4, Đơn hàng 23, Đơn hàng 46"
-21,Maria Rivera,"PSC 0228, Box 4483, APO AP 67297",(394)818-2423,chadcharles@example.org,"Đơn hàng 27, Đơn hàng 27"
-22,Elizabeth Baxter,"95103 Zoe Route Suite 369, Lake Jacqueline, KY 70921",(431)695-2709x534,susangreen@example.net,Đơn hàng 41
-23,John Tanner,"0318 Miller Land Suite 748, Clarenceland, AZ 62355",634.244.6601x26905,pratterica@example.com,"Đơn hàng 34, Đơn hàng 27, Đơn hàng 23"
-24,Nancy Roberts,"1153 Maxwell Plain, Dennisside, NM 16545",001-964-420-5952x90047,michellelynch@example.com,"Đơn hàng 31, Đơn hàng 23"
-25,Jose Dean,"1168 Joel Ferry Suite 580, South Leslie, MA 14665",5679219202,whenderson@example.net,"Đơn hàng 43, Đơn hàng 25"
-26,Jamie Lopez,"4108 Patrick Loaf Suite 488, East Marilynland, NE 77215",679-479-9686,debra52@example.org,"Đơn hàng 17, Đơn hàng 24, Đơn hàng 33"
-27,Dale Smith,"741 Tammy Passage, Lake Angela, AR 26084",+1-614-578-7753,michelleduncan@example.net,"Đơn hàng 12, Đơn hàng 25, Đơn hàng 33"
-28,Karen Brown,"417 King Stream Apt. 157, Walterborough, NV 65015",780.398.9879,amygarcia@example.org,"Đơn hàng 22, Đơn hàng 28, Đơn hàng 43"
-29,James Hernandez,"05375 Laura Springs Apt. 356, East Kimberly, AS 46512",(819)829-6033x14238,qgibson@example.com,"Đơn hàng 4, Đơn hàng 1"
-30,Greg Douglas,"240 Ortega Streets Suite 968, Terryport, PR 16515",912.587.6767x08322,joannemaddox@example.org,Đơn hàng 17
-31,Jonathan Gonzalez,"6511 Brian Garden, New Carolyn, OH 21348",+1-349-909-7214,jeremy09@example.org,Đơn hàng 24
-32,Daniel Wallace,"63565 Cole Causeway Apt. 639, Port Russelltown, WY 53226",239.238.0982x3704,jesse21@example.org,"Đơn hàng 16, Đơn hàng 45, Đơn hàng 33"
-33,Gina Callahan,"801 Williamson Corner Suite 211, Joeland, NV 88232",(501)226-5364x257,egarrison@example.org,"Đơn hàng 23, Đơn hàng 13, Đơn hàng 14"
-34,Brandon Henry,"160 Eddie Plaza Apt. 771, Edwardborough, CO 56724",457.699.5668,hkent@example.net,"Đơn hàng 41, Đơn hàng 23, Đơn hàng 31"
-35,Richard Wilson,"091 John Views, West Kellyview, LA 17831",+1-787-765-4095x3928,michael95@example.net,"Đơn hàng 38, Đơn hàng 18"
-36,Nicholas Smith,"17593 Dustin Corners, East Tammyland, VT 63592",4894184858,andrea22@example.org,"Đơn hàng 11, Đơn hàng 4"
-37,Craig Fuentes,"28020 Christopher Trail, West Matthewshire, MH 88812",(709)688-1537x58573,keithkeller@example.org,Đơn hàng 49
-38,Joseph Smith,"13150 Peterson Plaza Suite 941, Craigborough, FM 63951",575.366.5524,taylorkimberly@example.net,"Đơn hàng 24, Đơn hàng 22"
-39,Kathryn Maxwell,"74901 Lori Common Apt. 392, Hansenshire, LA 41185",4773504461,wrightwendy@example.org,Đơn hàng 26
-40,Felicia Briggs,"329 Elizabeth Forks Apt. 433, North Micheal, IN 46456",+1-482-526-6672x94598,elizabethwhite@example.com,Đơn hàng 3
-41,Amanda Cisneros,"887 Mark Flat Suite 148, West Paula, NH 32935",+1-924-228-7259x9556,charles75@example.net,"Đơn hàng 49, Đơn hàng 45, Đơn hàng 8"
-42,Jill Burnett,"7417 Brandi Haven Apt. 948, New Abigail, PW 43002",001-814-285-2936x24253,kimfrost@example.com,Đơn hàng 14
-43,Priscilla Anthony,"226 Jonathan Village Apt. 504, Harrisborough, ME 54910",001-804-229-4044x030,reynoldsbenjamin@example.net,"Đơn hàng 1, Đơn hàng 13"
-44,Richard Thomas,"74411 Benson Oval Apt. 517, South Meagan, MS 20560",789-379-4883x013,scott71@example.org,"Đơn hàng 39, Đơn hàng 16, Đơn hàng 18"
-45,Kyle Reese,"789 Luke Motorway, Garciachester, SD 98569",(861)412-5320x901,steven85@example.net,"Đơn hàng 30, Đơn hàng 4, Đơn hàng 5"
-46,Megan Hernandez,"483 Paige Mountain, New Marcus, WY 79778",887-646-6532x386,shawnstephens@example.org,"Đơn hàng 6, Đơn hàng 17"
-47,Shannon Blanchard,"691 Levine Vista Suite 846, Tuckerville, MD 21973",001-715-977-8459x4426,karenbell@example.com,"Đơn hàng 4, Đơn hàng 31"
-48,Paige Garcia,"893 Juan Lights Suite 374, North Karenberg, WA 11689",+1-316-269-0978x052,ygreer@example.org,Đơn hàng 49
-49,Michael Smith,"645 Hughes Mews Apt. 762, Port Alexiston, NC 97725",872-577-4077,daniellemurray@example.net,Đơn hàng 34
-50,Mrs. Nicole Gutierrez,"3656 Dickerson Squares Suite 678, North Zachary, SC 94616",3215291476,samantha14@example.net,Đơn hàng 20
+1,Stacy Smith,"1797 Todd Plaza, East Allison, WV 47318",526-752-9758x50356,ymcfarland@example.com,Đơn hàng 2
+2,Lisa Watson,"347 Baker Hollow, Port Thomas, AK 29780",(223)442-5407,campbelledward@example.com,Đơn hàng 33
+3,Bradley Wilson,"5189 Roberts Isle, Martineztown, VI 03120",(535)598-7860x090,heidi19@example.org,"Đơn hàng 39, Đơn hàng 3, Đơn hàng 15"
+4,Christopher Thompson,"Unit 5392 Box 6751, DPO AE 09987",9966478580,zgibson@example.org,"Đơn hàng 5, Đơn hàng 19, Đơn hàng 40"
+5,Pamela Gill,"2619 Sandra Drive Suite 746, East Johnland, FM 68222",300.641.0907,ejones@example.com,"Đơn hàng 24, Đơn hàng 30"
+6,Matthew Fernandez,"214 Fisher Cove Suite 770, Sandersbury, WA 68048",563.230.2786x90618,obrienjennifer@example.org,"Đơn hàng 45, Đơn hàng 48, Đơn hàng 27"
+7,Brandon Henry,"5706 Brandon Field, Sandrafurt, MS 39140",255.232.9042x012,harold03@example.net,Đơn hàng 22
+8,Annette Evans,"745 Alexander Meadows Apt. 672, South Ericaton, NY 95104",865.989.8438x921,amanda64@example.com,"Đơn hàng 6, Đơn hàng 11"
+9,Laura Griffin,"50353 Harvey Road, Ericaburgh, WI 73606",(742)453-2961x970,christopher41@example.com,"Đơn hàng 24, Đơn hàng 2, Đơn hàng 44"
+10,Mrs. Nancy Allen MD,"338 Alicia Keys, Port Marktown, WI 60578",001-225-269-8219,vincent68@example.net,Đơn hàng 16
+11,Todd Wilson,"16016 Helen Wells Apt. 381, East Kathleen, MN 26724",+1-418-446-1697x77381,istone@example.org,"Đơn hàng 8, Đơn hàng 38"
+12,Brenda Bush,"666 Warren Green, Kennedyport, SD 32206",+1-303-887-4331x3404,bakerjasmin@example.net,Đơn hàng 29
+13,Shannon Ramos,"5894 Henderson Squares Suite 742, East Ronaldshire, NJ 60883",001-371-667-7900,brooke87@example.net,"Đơn hàng 12, Đơn hàng 1"
+14,Jennifer Rodriguez,"USNS Davis, FPO AE 26924",761.289.4537x6040,tsalinas@example.net,"Đơn hàng 32, Đơn hàng 5"
+15,Richard White,"8535 Michael Throughway Apt. 409, West Jody, NM 54265",502-595-0584,ncarroll@example.com,"Đơn hàng 30, Đơn hàng 32"
+16,Danny Dominguez,"401 Rodriguez Groves, Elizabethhaven, AK 10666",998.624.9033x3599,christine01@example.org,"Đơn hàng 37, Đơn hàng 33, Đơn hàng 21"
+17,Tony Henderson,"4202 Cruz Islands, East Alexanderberg, DC 13943",6645822702,tiffanyyates@example.net,"Đơn hàng 3, Đơn hàng 19, Đơn hàng 28"
+18,Jerry Powell,"70947 Fuentes Shore Suite 607, East Troy, MH 98177",(838)923-3580,amanda38@example.org,"Đơn hàng 13, Đơn hàng 47, Đơn hàng 17"
+19,Sydney Bell,"178 Middleton Orchard Suite 326, Harrisonport, MA 78948",4003668371,ericwilliams@example.com,"Đơn hàng 35, Đơn hàng 35"
+20,Robyn Graves,"9313 Dennis Mountain, Jessicaview, MP 72177",676.233.4393x5265,marksimpson@example.com,"Đơn hàng 2, Đơn hàng 44, Đơn hàng 8"
+21,Brandon Dixon,"2615 Megan Knoll Suite 364, Richardview, WI 69773",+1-474-417-3202x65880,ltaylor@example.org,"Đơn hàng 31, Đơn hàng 4, Đơn hàng 25"
+22,Zachary Johnson,"503 Eric Way, Lake Timothyland, WI 17869",(951)790-0352x6143,smcguire@example.net,"Đơn hàng 3, Đơn hàng 16, Đơn hàng 9"
+23,Maria Duncan,"40469 Spencer Landing Suite 843, East Mariatown, MO 47473",001-517-349-3839,milleralexander@example.net,Đơn hàng 38
+24,John Clark,"53506 Ryan Rapids, South Jessicaville, FM 85960",624.586.0589x262,jeffreybarajas@example.net,"Đơn hàng 10, Đơn hàng 18"
+25,Andrea Bridges,"209 Joshua Lights Apt. 966, Robinhaven, NY 62600",679.285.2579x699,emmathornton@example.org,Đơn hàng 11
+26,Debra Cantrell DVM,"8351 Vasquez Rue Suite 314, Bryantstad, MO 41958",+1-793-547-0401x1323,alvarezreginald@example.org,"Đơn hàng 28, Đơn hàng 28, Đơn hàng 6"
+27,Glen Clarke,"0094 Keller Tunnel Apt. 543, Port Franklinhaven, WV 41090",+1-904-401-9662x69648,bscott@example.net,"Đơn hàng 22, Đơn hàng 23, Đơn hàng 31"
+28,Adam Wright,"20385 Murray Course Suite 039, Port Amandahaven, CA 68315",447-716-0222x879,tuckermary@example.com,"Đơn hàng 22, Đơn hàng 18"
+29,Michael Robles,"4206 Jimenez Loaf, Port Toniburgh, IL 42304",203.603.8951,jason34@example.com,"Đơn hàng 40, Đơn hàng 3"
+30,Debra Martin,"53326 Peters Track Apt. 765, Markside, ME 18461",448.564.5884,ufrye@example.net,"Đơn hàng 50, Đơn hàng 31, Đơn hàng 29"
+31,Michael Frye,"85327 Brittany Parkways, South Joseph, MP 09601",+1-590-262-0658x1474,brandonwashington@example.org,"Đơn hàng 49, Đơn hàng 26"
+32,Robert Ali,"400 Morales Viaduct Suite 391, Burnschester, UT 69203",+1-878-832-8937x157,cynthia02@example.net,"Đơn hàng 21, Đơn hàng 1, Đơn hàng 25"
+33,Johnny Harris,"95287 Leslie Drive, Deckershire, OK 85240",001-452-794-3250x3572,christinahardy@example.org,"Đơn hàng 19, Đơn hàng 27"
+34,Sandra Carpenter,"67248 Molly Locks Apt. 287, Jerryburgh, MA 05082",001-300-218-8208,cweaver@example.net,"Đơn hàng 44, Đơn hàng 17, Đơn hàng 18"
+35,Frances Smith,"4019 Barton Stream, Port Josemouth, GA 23510",+1-496-871-3527x40850,alexandermary@example.com,"Đơn hàng 39, Đơn hàng 35, Đơn hàng 5"
+36,Connie Webb,"PSC 8907, Box 3370, APO AP 39590",832-555-0092x769,courtneycummings@example.org,"Đơn hàng 15, Đơn hàng 32, Đơn hàng 45"
+37,Kelsey Vincent,"881 Christina Forges Apt. 163, Lauraberg, OK 68883",(275)231-8043x468,garciatimothy@example.net,"Đơn hàng 20, Đơn hàng 18, Đơn hàng 32"
+38,Jeffrey Barber,"8477 Jessica Ports Suite 574, Lake David, MS 16509",419-918-5146,zachary49@example.org,"Đơn hàng 4, Đơn hàng 44"
+39,Mary Jones,"8330 Mason Port Apt. 357, Port Travisville, CT 81513",(878)270-9389,lisaedwards@example.net,Đơn hàng 27
+40,Jennifer Gardner,"352 David Keys, Lake Lisa, MA 56818",935.372.7666x33065,mayscott@example.com,Đơn hàng 20
+41,Jason Benton,"506 Gordon Underpass, Lake Sonyaville, VA 31656",001-957-808-4438,angela75@example.org,"Đơn hàng 39, Đơn hàng 48, Đơn hàng 25"
+42,Dr. Travis Butler MD,"PSC 8481, Box 6533, APO AA 70660",397-691-1600x81870,jasonhicks@example.com,"Đơn hàng 37, Đơn hàng 33, Đơn hàng 41"
+43,Paul Davidson,"102 Donna Expressway, Port Erinview, NE 47165",+1-766-555-4581,btaylor@example.net,"Đơn hàng 20, Đơn hàng 43, Đơn hàng 11"
+44,Terrance Williams,"04376 Gibson Run Suite 065, South Katherineland, TN 83520",544-866-7661,randolphomar@example.org,Đơn hàng 4
+45,Mark Callahan,"0192 Jeffery Rapids, Karenborough, NV 19694",001-296-552-6859x0462,hollandjerry@example.org,Đơn hàng 33
+46,Jacqueline Cunningham,"959 Edward Inlet, North Dominiquemouth, UT 13443",9824333513,saraclark@example.org,Đơn hàng 13
+47,Alexa Lopez,"3989 Kimberly Turnpike, Toddchester, WA 42848",(617)429-5815x150,keithquinn@example.org,"Đơn hàng 30, Đơn hàng 35, Đơn hàng 22"
+48,David Rogers,"1781 Christopher Way Apt. 336, New Richardbury, KS 59748",(969)747-5736x32063,hmoore@example.com,"Đơn hàng 17, Đơn hàng 2"
+49,Rebekah Moran,"Unit 9879 Box 0565, DPO AE 23562",+1-611-301-5159,zboyd@example.com,"Đơn hàng 50, Đơn hàng 9, Đơn hàng 5"
+50,Maurice Gates,"6746 Diane Island, Port Brianland, AK 21620",590-849-9706x288,alan57@example.com,"Đơn hàng 46, Đơn hàng 19"
