@@ -8,6 +8,8 @@ import csv
 from setting import load_settings  # Import thêm load_settings
 import tkinter as tk
 from tkinter import messagebox
+from san_pham import create_san_pham_tab
+from khach_hang import create_khach_hang_tab
 
 
 
