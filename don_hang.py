@@ -341,7 +341,7 @@ def create_filter_controls_order(frame_order, file_path="orders.csv"):
     order_status_label.grid(row=0, column=2, padx=5, pady=5, sticky="w")
     order_status_var = StringVar()
     order_status_filter = ttk.Combobox(filter_frame, textvariable=order_status_var, state="readonly", width=15)
-    order_status_filter["values"] = ["Tất cả", "Chờ xử lý", "Đang giao", "Đã hoàn thành", "Đã hủy"]
+    order_status_filter["values"] = ["Tất cả", "Đang xử lý", "Đã giao", "Đã hủy"]
     order_status_filter.current(0)
     order_status_filter.grid(row=0, column=3, padx=5, pady=5, sticky="w")
 
@@ -350,7 +350,7 @@ def create_filter_controls_order(frame_order, file_path="orders.csv"):
     payment_method_label.grid(row=0, column=4, padx=5, pady=5, sticky="w")
     payment_method_var = StringVar()
     payment_method_filter = ttk.Combobox(filter_frame, textvariable=payment_method_var, state="readonly", width=15)
-    payment_method_filter["values"] = ["Tất cả", "Thanh toán khi nhận hàng", "Chuyển khoản", "Thanh toán qua ví điện tử"]
+    payment_method_filter["values"] = ["Tất cả", "Chuyển khoản", "Tiền mặt", "Thẻ tín dụng"]
     payment_method_filter.current(0)
     payment_method_filter.grid(row=0, column=5, padx=5, pady=5, sticky="w")
 

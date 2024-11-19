@@ -119,12 +119,12 @@ def create_customer_filter_controls(frame_khach_hang, file_path="customers.csv")
     filter_frame = ttk.Frame(frame_khach_hang)
     filter_frame.grid(row=1, column=0, columnspan=5, padx=5, pady=5, sticky="w")
 
-    # Bộ lọc theo tên khách hàng
-    name_label = ttk.Label(filter_frame, text="Tên khách hàng:")
-    name_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-    name_var = StringVar()
-    name_filter = ttk.Entry(filter_frame, textvariable=name_var, width=30)
-    name_filter.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+    # # Bộ lọc theo tên khách hàng
+    # name_label = ttk.Label(filter_frame, text="Tên khách hàng:")
+    # name_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+    # name_var = StringVar()
+    # name_filter = ttk.Entry(filter_frame, textvariable=name_var, width=30)
+    # name_filter.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
     # Bộ lọc theo số điện thoại
     phone_label = ttk.Label(filter_frame, text="Số điện thoại:")
@@ -145,7 +145,7 @@ def create_customer_filter_controls(frame_khach_hang, file_path="customers.csv")
         """
         Hàm áp dụng bộ lọc lên bảng khách hàng.
         """
-        name = name_var.get().lower()
+        #name = name_var.get().lower()
         phone = phone_var.get().lower()
         email = email_var.get().lower()
 
@@ -155,8 +155,8 @@ def create_customer_filter_controls(frame_khach_hang, file_path="customers.csv")
             customer_id, customer_name, address, phone_number, email_address, purchase_history = customer
 
             # Kiểm tra điều kiện lọc
-            if name and name not in customer_name.lower():
-                continue
+            # if name and name not in customer_name.lower():
+            #     continue
             if phone and phone not in phone_number.lower():
                 continue
             if email and email not in email_address.lower():
@@ -173,7 +173,7 @@ def create_customer_filter_controls(frame_khach_hang, file_path="customers.csv")
         Hàm xóa bộ lọc và trả bảng về trạng thái ban đầu (không lọc).
         """
         # Reset các giá trị của bộ lọc
-        name_var.set("")
+        #name_var.set("")
         phone_var.set("")
         email_var.set("")
 
