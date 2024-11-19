@@ -114,6 +114,7 @@ def choose_customer(entries):
             customer_window.destroy()
     
     customer_table.bind("<Double-1>", select_customer)  # Chọn khách hàng bằng double-click
+
 def read_csv(file_path):
     try:
         df = pd.read_csv(file_path)
@@ -214,10 +215,12 @@ def create_don_hang_tab(notebook, app):
     delete_order_button.grid(row=0, column=4, padx=5, pady=5, sticky=W)
     frame_order.trash_icon = trash_icon
 
+    create_filter_controls_order(frame_order)
+
     # Định nghĩa các cột cho bảng order_table
     columns = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm","Số Lượng Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
     order_table = ttk.Treeview(frame_order, columns=columns, show="headings", bootstyle="superhero")
-    order_table.grid(row=1, column=0, columnspan=5, padx=5, pady=5, sticky="ns")
+    order_table.grid(row=2, column=0, columnspan=5, padx=5, pady=5, sticky="ns")
 
     # Thiết lập tiêu đề và căn chỉnh cho các cột trong bảng
     for col in columns:
@@ -229,12 +232,12 @@ def create_don_hang_tab(notebook, app):
 
     # Thêm Scrollbar dọc
     y_scrollbar = ttk.Scrollbar(frame_order, orient=VERTICAL, command=order_table.yview)
-    y_scrollbar.grid(row=1, column=5, sticky="ns")
+    y_scrollbar.grid(row=2, column=5, sticky="ns")
     order_table.configure(yscrollcommand=y_scrollbar.set)
 
     # Thêm Scrollbar ngang
     x_scrollbar = ttk.Scrollbar(frame_order, orient=HORIZONTAL, command=order_table.xview)
-    x_scrollbar.grid(row=2, column=0, columnspan=5, sticky="ew")
+    x_scrollbar.grid(row=3, column=0, columnspan=5, sticky="ew")
     order_table.configure(xscrollcommand=x_scrollbar.set)
 
 
@@ -245,11 +248,11 @@ def create_don_hang_tab(notebook, app):
         
         if window_width >= 1000 and window_height >= 600:  # Kích thước tùy ý cho chế độ toàn màn hình
             order_table.grid(sticky="nsew")  # Mở rộng cả chiều dọc và chiều ngang
-            frame_order.grid_rowconfigure(1, weight=1)  # Mở rộng chiều dọc
+            frame_order.grid_rowconfigure(2, weight=1)  # Mở rộng chiều dọc
             frame_order.grid_columnconfigure(0, weight=1)  # Mở rộng chiều ngang
         else:
             order_table.grid(sticky="ns")  # Mở rộng chỉ theo chiều dọc
-            frame_order.grid_rowconfigure(1, weight=1)  # Mở rộng chiều dọc, không thay đổi chiều ngang
+            frame_order.grid_rowconfigure(2, weight=1)  # Mở rộng chiều dọc, không thay đổi chiều ngang
             frame_order.grid_columnconfigure(0, weight=1)  # Không mở rộng chiều ngang
 
 
@@ -295,7 +298,7 @@ def create_don_hang_tab(notebook, app):
     refresh_order_table()
     
     # Thiết lập khung chứa bảng để tự động thay đổi kích thước khi giao diện mở rộng
-    frame_order.grid_rowconfigure(1, weight=1)
+    frame_order.grid_rowconfigure(2, weight=1)
     frame_order.grid_columnconfigure(0, weight=1)
 
 
@@ -308,12 +311,168 @@ def load_image(image_path):
         messagebox.showerror("Lỗi", f"Không thể tải hình ảnh: {e}")
         return None
 
-def refresh_order_table():
+def get_customer_ids(file_path):
+    """
+    Đọc file CSV và trả về danh sách ID khách hàng từ file.
+    """
+    customer_ids = []
+    try:
+        with open(file_path, mode='r', encoding='utf-8') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                customer_ids.append(row['ID Khách Hàng'])  # Sử dụng tên cột trong file CSV
+    except FileNotFoundError:
+        print(f"Không tìm thấy file {file_path}")
+    except Exception as e:
+        print(f"Lỗi khi đọc file: {e}")
+    
+    return customer_ids
+
+def create_filter_controls_order(frame_order, file_path="orders.csv"):
+    """
+    Hàm tạo bộ lọc dữ liệu cho bảng Đơn Hàng.
+    """
+    # Tạo frame chứa các bộ lọc
+    filter_frame = ttk.Frame(frame_order)
+    filter_frame.grid(row=1, column=0, columnspan=5, padx=5, pady=5, sticky="w")
+
+    # Bộ lọc theo trạng thái đơn hàng
+    order_status_label = ttk.Label(filter_frame, text="Trạng Thái Đơn Hàng:")
+    order_status_label.grid(row=0, column=2, padx=5, pady=5, sticky="w")
+    order_status_var = StringVar()
+    order_status_filter = ttk.Combobox(filter_frame, textvariable=order_status_var, state="readonly", width=15)
+    order_status_filter["values"] = ["Tất cả", "Chờ xử lý", "Đang giao", "Đã hoàn thành", "Đã hủy"]
+    order_status_filter.current(0)
+    order_status_filter.grid(row=0, column=3, padx=5, pady=5, sticky="w")
+
+    # Bộ lọc theo phương thức thanh toán
+    payment_method_label = ttk.Label(filter_frame, text="Phương Thức Thanh Toán:")
+    payment_method_label.grid(row=0, column=4, padx=5, pady=5, sticky="w")
+    payment_method_var = StringVar()
+    payment_method_filter = ttk.Combobox(filter_frame, textvariable=payment_method_var, state="readonly", width=15)
+    payment_method_filter["values"] = ["Tất cả", "Thanh toán khi nhận hàng", "Chuyển khoản", "Thanh toán qua ví điện tử"]
+    payment_method_filter.current(0)
+    payment_method_filter.grid(row=0, column=5, padx=5, pady=5, sticky="w")
+
+    # Bộ lọc theo khoảng ngày
+    date_label = ttk.Label(filter_frame, text="Khoảng Ngày:")
+    date_label.grid(row=0, column=6, padx=5, pady=5, sticky="w")
+    
+    start_date_var = StringVar()
+    start_date_entry = ttk.Entry(filter_frame, textvariable=start_date_var, width=10)
+    start_date_entry.grid(row=0, column=7, padx=5, pady=5, sticky="w")
+
+    end_date_var = StringVar()
+    end_date_entry = ttk.Entry(filter_frame, textvariable=end_date_var, width=10)
+    end_date_entry.grid(row=0, column=8, padx=5, pady=5, sticky="w")
+
+    # Nút áp dụng bộ lọc
+    def apply_filters_order():
+        """
+        Hàm áp dụng bộ lọc lên bảng Đơn Hàng.
+        """
+        order_status = order_status_var.get()
+        payment_method = payment_method_var.get()
+        start_date = start_date_var.get()
+        end_date = end_date_var.get()
+
+        # Lọc dữ liệu từ `sample_orders`
+        filtered_orders = []
+        for order in sample_data:  # sample_orders là danh sách dữ liệu gốc
+            order_id, customer_id_order, order_date, product_list, quantity_list, total_price, status, payment_method_order = order
+            order_date = str(order_date)  # Chuyển ngày thành chuỗi để so sánh
+
+            # Kiểm tra điều kiện lọc
+            if order_status != "Tất cả" and order_status != status:
+                continue
+            if payment_method != "Tất cả" and payment_method != payment_method_order:
+                continue
+            if start_date and order_date < start_date:
+                continue
+            if end_date and order_date > end_date:
+                continue
+
+            filtered_orders.append(order)
+
+        # Cập nhật bảng với dữ liệu đã lọc
+        refresh_order_table(filtered_orders)
+
+    # Nút "Áp dụng" để áp dụng bộ lọc
+    apply_button_order = ttk.Button(filter_frame, text="Áp dụng", bootstyle="superhero", command=apply_filters_order, cursor="hand2")
+    apply_button_order.grid(row=0, column=9, padx=5, pady=5, sticky="w")
+
+    # Nút "Xóa Lọc"
+    def clear_filters_order():
+        """
+        Hàm xóa bộ lọc và trả bảng về trạng thái ban đầu (không lọc).
+        """
+        # Reset các giá trị của bộ lọc
+        order_status_var.set("Tất cả")
+        payment_method_var.set("Tất cả")
+        start_date_var.set("")
+        end_date_var.set("")
+
+        # Cập nhật bảng với dữ liệu gốc
+        refresh_order_table(sample_data)
+
+    clear_button_order = ttk.Button(filter_frame, text="Xóa Lọc", bootstyle="danger", command=clear_filters_order, cursor="hand2")
+    clear_button_order.grid(row=0, column=10, padx=5, pady=5, sticky="w")
+
+    # Tạo frame riêng để chứa nút thu gọn bộ lọc
+    toggle_frame = ttk.Frame(frame_order)
+    toggle_frame.grid(row=0, column=0, padx=5, pady=5, sticky="e")
+
+    # Biến trạng thái thu gọn bộ lọc
+    filter_expanded = True
+
+    # Hàm thu gọn và mở rộng bộ lọc
+    def toggle_filter():
+        nonlocal filter_expanded
+
+        if filter_expanded:
+            # Thu gọn bộ lọc: Ẩn toàn bộ dòng chứa bộ lọc
+            filter_frame.grid_forget()  # Ẩn toàn bộ frame chứa bộ lọc
+            toggle_button.config(text="Mở rộng bộ lọc")  # Đổi tên nút
+            filter_expanded = False
+        else:
+            # Mở rộng bộ lọc: Hiển thị lại toàn bộ frame chứa bộ lọc
+            filter_frame.grid(row=1, column=0, columnspan=5, padx=5, pady=5, sticky="w")
+            toggle_button.config(text="Thu gọn bộ lọc")  # Đổi tên nút
+            filter_expanded = True
+
+    # Nút thu gọn bộ lọc sẽ được thêm vào frame riêng biệt
+    toggle_button = ttk.Button(toggle_frame, text="Thu gọn bộ lọc", bootstyle="info", command=toggle_filter, cursor="hand2")
+    toggle_button.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+
+    filter_frame.grid_forget()  # Ẩn toàn bộ frame chứa bộ lọc
+    toggle_button.config(text="Mở rộng bộ lọc")  # Đổi tên nút
+    filter_expanded = False
+
+# Cập nhật hàm refresh_product_table để hỗ trợ dữ liệu lọc
+def refresh_order_table(filtered_products=None):
+    """
+    Hàm làm mới bảng sản phẩm với dữ liệu gốc hoặc đã lọc.
+    """
+    # Xóa dữ liệu cũ trong bảng
     for row in order_table.get_children():
         order_table.delete(row)
-    for order in sample_data:
-        order_table.insert("", "end", values=order)
+
+    # Dữ liệu để hiển thị
+    data = filtered_products if filtered_products is not None else sample_data
+
+    # Thêm dữ liệu vào bảng
+    for product in data:
+        order_table.insert("", "end", values=product)
     update_row_colors()
+
+
+
+# def refresh_order_table():
+#     for row in order_table.get_children():
+#         order_table.delete(row)
+#     for order in sample_data:
+#         order_table.insert("", "end", values=order)
+#     update_row_colors()
 
 def update_row_colors():
     # Tải cài đặt từ file

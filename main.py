@@ -13,14 +13,6 @@ from tkinter import PhotoImage
 from tkinter import messagebox
 
 def load_main_interface(app, notebook, role):
-    """
-    Tải giao diện chính của ứng dụng dựa trên vai trò người dùng.
-
-    Args:
-        app: Cửa sổ chính của ứng dụng.
-        notebook: Notebook chứa các tab.
-        role: Vai trò của người dùng ('owner' hoặc 'staff').
-    """
     # Thêm các tab cơ bản
     # create_san_pham_tab(notebook, app)
     # create_don_hang_tab(notebook, app)

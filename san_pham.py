@@ -40,15 +40,7 @@ def save_to_csv(filename,data):
     except Exception as e:
         messagebox.showerror("Lỗi",f"Không thể ghi file: {e}")
 
-#new def
-def update_inventory(products, orders):
-    product_dict = {str(p[0]): p for p in products}
-    for order in orders:
-        product_id = str(order[3])
-        quantity = int(order[4])
-        if product_id in product_dict:
-            product_dict[product_id][3] -= quantity
-    return list(product_dict.values())
+
 products_file = 'products.csv'
 orders_file = 'orders.csv'
 
@@ -56,11 +48,7 @@ orders_file = 'orders.csv'
 sample_products = read_csv(products_file)
 orders = read_csv(orders_file)
 
-# Cập nhật tồn kho
-#updated_products = update_inventory(sample_products, orders)
 
-# Lưu lại file products.csv
-#save_to_csv(products_file, updated_products)
 def button_click(button_name, app):
     if button_name == "Tìm kiếm":
         search_product()
@@ -138,6 +126,8 @@ def create_san_pham_tab(notebook, app):
     delete_product_button = ttk.Button(frame_product, text="Xóa", bootstyle="superhero", image=trash_icon, compound=LEFT, command=delete_product, cursor="hand2")
     delete_product_button.grid(row=0, column=4, padx=5, pady=5, sticky=W)
     frame_product.trash_icon = trash_icon
+
+    create_filter_controls(frame_product)
 
     columns = ["ID Sản Phẩm", "Tên Sản Phẩm", "Giá VND", "Số Lượng Tồn Kho", "Mô Tả", "Nhóm Sản Phẩm"]
     product_table = ttk.Treeview(frame_product, columns=columns, show="headings", bootstyle="superhero")
@@ -219,12 +209,165 @@ def create_san_pham_tab(notebook, app):
     frame_product.grid_rowconfigure(2, weight=1)
     frame_product.grid_columnconfigure(0, weight=1)
 
-def refresh_product_table():
+def get_product_groups(file_path):
+    """
+    Hàm lấy danh sách nhóm sản phẩm từ file CSV.
+    """
+    try:
+        with open(file_path, mode='r', encoding='utf-8') as file:
+            reader = csv.DictReader(file)
+            groups = set()  # Sử dụng set để loại bỏ giá trị trùng lặp
+            for row in reader:
+                group = row.get("Nhóm Sản Phẩm", "").strip()
+                if group:  # Bỏ qua các giá trị rỗng
+                    groups.add(group)
+            return ["Tất cả"] + sorted(groups)  # Thêm "Tất cả" vào đầu danh sách
+    except Exception as e:
+        messagebox.showerror("Lỗi", f"Không thể đọc file sản phẩm: {e}")
+        return ["Tất cả"]
+def create_filter_controls(frame_product, file_path="products.csv"):
+    """
+    Hàm tạo bộ lọc dữ liệu cho bảng sản phẩm.
+    """
+    # Tạo frame chứa các bộ lọc
+    filter_frame = ttk.Frame(frame_product)
+    filter_frame.grid(row=1, column=0, columnspan=5, padx=5, pady=5, sticky="w")
+
+    # Tạo biến trạng thái cho việc thu gọn bộ lọc
+    filter_expanded = True
+
+    # Bộ lọc theo nhóm sản phẩm
+    group_label = ttk.Label(filter_frame, text="Nhóm sản phẩm:")
+    group_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+    group_var = StringVar()
+    group_filter = ttk.Combobox(filter_frame, textvariable=group_var, state="readonly", width=15)
+    group_filter["values"] = get_product_groups(file_path)  # Lấy danh sách nhóm từ file CSV
+    group_filter.current(0)
+    group_filter.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+
+    # Bộ lọc theo khoảng giá
+    price_label = ttk.Label(filter_frame, text="Khoảng giá:")
+    price_label.grid(row=0, column=2, padx=5, pady=5, sticky="w")
+    price_min_var = StringVar()
+    price_min_entry = ttk.Entry(filter_frame, textvariable=price_min_var, width=10)
+    price_min_entry.grid(row=0, column=3, padx=5, pady=5, sticky="w")
+
+    price_max_var = StringVar()
+    price_max_entry = ttk.Entry(filter_frame, textvariable=price_max_var, width=10)
+    price_max_entry.grid(row=0, column=4, padx=5, pady=5, sticky="w")
+
+    # Bộ lọc theo số lượng tồn kho
+    stock_label = ttk.Label(filter_frame, text="Số lượng tồn >=:")
+    stock_label.grid(row=0, column=5, padx=5, pady=5, sticky="w")
+    stock_var = StringVar()
+    stock_entry = ttk.Entry(filter_frame, textvariable=stock_var, width=10)
+    stock_entry.grid(row=0, column=6, padx=5, pady=5, sticky="w")
+
+    # Nút áp dụng bộ lọc
+    def apply_filters():
+        """
+        Hàm áp dụng bộ lọc lên bảng sản phẩm.
+        """
+        group = group_var.get()
+        price_min = price_min_var.get()
+        price_max = price_max_var.get()
+        stock = stock_var.get()
+
+        # Lọc dữ liệu từ `sample_products`
+        filtered_products = []
+        for product in sample_products:  # sample_products là danh sách dữ liệu gốc
+            product_id, name, price, stock_qty, description, group_name = product
+            price = float(price)  # Chuyển giá thành số thực
+            stock_qty = int(stock_qty)  # Chuyển số lượng tồn thành số nguyên
+
+            # Kiểm tra điều kiện lọc
+            if group != "Tất cả" and group != group_name:
+                continue
+            if price_min and price < float(price_min):
+                continue
+            if price_max and price > float(price_max):
+                continue
+            if stock and stock_qty < int(stock):
+                continue
+
+            filtered_products.append(product)
+
+        # Cập nhật bảng với dữ liệu đã lọc
+        refresh_product_table(filtered_products)
+
+    # Nút "Xóa Lọc" để xóa các điều kiện lọc và hiển thị lại bảng đầy đủ
+    def clear_filters():
+        """
+        Hàm xóa bộ lọc và trả bảng về trạng thái ban đầu (không lọc).
+        """
+        # Reset các giá trị của bộ lọc
+        group_var.set("Tất cả")
+        price_min_var.set("")
+        price_max_var.set("")
+        stock_var.set("")
+
+        # Cập nhật bảng với dữ liệu gốc
+        refresh_product_table(sample_products)
+
+    apply_button = ttk.Button(filter_frame, text="Áp dụng", bootstyle="superhero", command=apply_filters, cursor="hand2")
+    apply_button.grid(row=0, column=7, padx=5, pady=5, sticky="w")
+
+    # Nút "Xóa Lọc"
+    clear_button = ttk.Button(filter_frame, text="Xóa Lọc", bootstyle="danger", command=clear_filters, cursor="hand2")
+    clear_button.grid(row=0, column=8, padx=5, pady=5, sticky="w")
+
+    # Tạo frame riêng để chứa nút thu gọn bộ lọc
+    toggle_frame = ttk.Frame(frame_product)
+    toggle_frame.grid(row=0, column=0, padx=5, pady=5, sticky="e")
+
+    # Hàm thu gọn và mở rộng bộ lọc
+    def toggle_filter():
+        nonlocal filter_expanded
+
+        if filter_expanded:
+            # Thu gọn bộ lọc: Ẩn toàn bộ dòng chứa bộ lọc
+            filter_frame.grid_forget()  # Ẩn toàn bộ frame chứa bộ lọc
+            toggle_button.config(text="Mở rộng bộ lọc")  # Đổi tên nút
+            filter_expanded = False
+        else:
+            # Mở rộng bộ lọc: Hiển thị lại toàn bộ frame chứa bộ lọc
+            filter_frame.grid(row=1, column=0, columnspan=5, padx=5, pady=5, sticky="w")
+            toggle_button.config(text="Thu gọn bộ lọc")  # Đổi tên nút
+            filter_expanded = True
+
+    # Nút thu gọn bộ lọc sẽ được thêm vào frame riêng biệt
+    toggle_button = ttk.Button(toggle_frame, text="Thu gọn bộ lọc", bootstyle="info", command=toggle_filter, cursor="hand2")
+    toggle_button.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+
+    filter_frame.grid_forget()  # Ẩn toàn bộ frame chứa bộ lọc
+    toggle_button.config(text="Mở rộng bộ lọc")  # Đổi tên nút
+    filter_expanded = False
+
+# Cập nhật hàm refresh_product_table để hỗ trợ dữ liệu lọc
+def refresh_product_table(filtered_products=None):
+    """
+    Hàm làm mới bảng sản phẩm với dữ liệu gốc hoặc đã lọc.
+    """
+    # Xóa dữ liệu cũ trong bảng
     for row in product_table.get_children():
-        product_table.delete(row)  # Xóa tất cả các hàng trước khi làm mới
-    for product in sample_products:
-        product_table.insert("", "end", values=product)  # Thêm sản phẩm vào bảng
-    update_row_colors()  # Cập nhật màu cho các hàng
+        product_table.delete(row)
+
+    # Dữ liệu để hiển thị
+    data = filtered_products if filtered_products is not None else sample_products
+
+    # Thêm dữ liệu vào bảng
+    for product in data:
+        product_table.insert("", "end", values=product)
+    update_row_colors()
+
+
+
+# def refresh_product_table():
+#     for row in product_table.get_children():
+#         product_table.delete(row)  # Xóa tất cả các hàng trước khi làm mới
+#     for product in sample_products:
+#         product_table.insert("", "end", values=product)  # Thêm sản phẩm vào bảng
+#     update_row_colors()  # Cập nhật màu cho các hàng
 
 
 def update_row_colors():
