@@ -275,18 +275,36 @@ def create_don_hang_tab(notebook, app):
         # Tạo cửa sổ Toplevel để hiển thị thông tin
         detail_window = ttk.Toplevel()
         detail_window.title("Thông tin chi tiết sản phẩm")
+        detail_window.resizable(False, False)  # Tắt thay đổi kích thước cửa sổ
+
         #detail_window.geometry("600x300")  # Kích thước cửa sổ tùy ý
 
         # Hiển thị thông tin chi tiết của sản phẩm
         labels = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm","Số Lượng Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
+        # Tạo frame chính cho bố cục
+        main_frame = ttk.Frame(detail_window, padding=15)
+        main_frame.grid(row=0, column=0, sticky="nsew")
+
+        # Hiển thị thông tin chi tiết của sản phẩm
         for i, label_text in enumerate(labels):
-            label = tk.Label(detail_window, text=f"{label_text}: {item_data[i]}", font=("Helvetica", 12))
-            label.pack(anchor="w", padx=10, pady=5)
+            label = ttk.Label(main_frame, text=label_text + ":", font=("Helvetica", 11))
+            label.grid(row=i, column=0, sticky="w", padx=5, pady=5)
+
+            value_label = ttk.Label(main_frame, text=item_data[i], font=("Helvetica", 11))
+            value_label.grid(row=i, column=1, sticky="w", padx=10, pady=5)
+
+        # Thêm khoảng trống giữa thông tin và nút
+        ttk.Separator(main_frame, orient="horizontal").grid(row=len(labels), column=0, columnspan=2, pady=10, sticky="ew")
 
         # Đặt button đóng cửa sổ
-        close_button = tk.Button(detail_window, text=" Xong ", command=detail_window.destroy)
-        close_button.pack(pady=10)
-        
+        close_button = ttk.Button(main_frame, text="Đóng", style="Accent.TButton", command=detail_window.destroy)
+        close_button.grid(row=len(labels) + 1, column=0, columnspan=2, pady=5)
+
+        # Tạo style cho nút đóng
+        style = ttk.Style()
+        style.configure("Accent.TButton", foreground="white", background="#007bff", font=("Helvetica", 10, "bold"))
+        style.map("Accent.TButton", background=[("active", "#0056b3")])  # Hiệu ứng khi hover
+
         # Cập nhật kích thước của cửa sổ theo nội dung
         detail_window.update_idletasks()
         detail_window.geometry(f"{detail_window.winfo_width()}x{detail_window.winfo_height()}")
