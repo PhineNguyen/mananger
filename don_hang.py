@@ -9,6 +9,8 @@ from setting import load_settings  # Import thêm load_settings
 import tkinter as tk
 from tkinter import messagebox
 
+
+
 sample_data = []
 
 # Lưu lại dữ liệu đơn hàng đã tính tổng giá trị vào file orders.csv
