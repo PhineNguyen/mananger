@@ -12,15 +12,30 @@ from setting import create_setting_tab, load_settings, apply_settings,refresh_ta
 from tkinter import PhotoImage
 from tkinter import messagebox
 
-def load_main_interface(app, notebook, role):
-    """
-    Tải giao diện chính của ứng dụng dựa trên vai trò người dùng.
+def on_tab_change(event, app, notebook, role):
+    # # Lấy đối tượng Notebook từ sự kiện
+    # notebook = event.widget
 
-    Args:
-        app: Cửa sổ chính của ứng dụng.
-        notebook: Notebook chứa các tab.
-        role: Vai trò của người dùng ('owner' hoặc 'staff').
-    """
+    # # Lấy tab hiện tại
+    # selected_tab = notebook.select()
+
+    # # Lấy tên hoặc id tab
+    # tab_index = notebook.index(selected_tab)
+    # tab_name = notebook.tab(selected_tab, "text")
+
+    # # In thông tin tab ra console hoặc xử lý theo logic
+    # print(f"Tab được chuyển sang: {tab_name} (Index: {tab_index})")
+
+    # # Có thể thêm logic khác, ví dụ:
+    # if tab_name == "Đơn hàng":
+    #     print("Tab Đơn hàng đã được chọn.")
+    # elif tab_name == "Sản phẩm":
+    #     print("Tab Sản phẩm đã được chọn.")
+
+    load_main_interface(app, notebook, "owner")
+
+
+def load_main_interface(app, notebook, role):
     # Thêm các tab cơ bản
     # create_san_pham_tab(notebook, app)
     # create_don_hang_tab(notebook, app)
@@ -92,19 +107,24 @@ def main():
 
     #Tạo notebook
     notebook = ttk.Notebook(app, style="TNotebook")
-    notebook.pack(fill="both", expand=True)
+    #notebook.pack(fill="both", expand=True)
 
     # Thêm các tab vào notebook
-    create_san_pham_tab(notebook, app)
-    create_don_hang_tab(notebook, app)
-    create_khach_hang_tab(notebook, app)
-    create_thong_ke_tab(notebook, app)
-    create_setting_tab(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)  # Thêm tab Setting
-    #login here
+    # create_san_pham_tab(notebook, app)
+    # create_don_hang_tab(notebook, app)
+    # create_khach_hang_tab(notebook, app)
+    # create_thong_ke_tab(notebook, app)
+    # create_setting_tab(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)  # Thêm tab Setting
+    # #login here
     #create_login_frame(app, notebook)
 
     # Hiển thị giao diện đăng nhập
-   # create_login_frame(app, notebook, load_main_interface)
+    create_login_frame(app, notebook, load_main_interface)
+
+   # Gắn sự kiện cho Notebook
+# Gắn sự kiện với lambda
+    #notebook.bind("<<NotebookTabChanged>>", lambda event: on_tab_change(event, app, notebook, "owner"))
+
 
     app.mainloop()
 

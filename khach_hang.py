@@ -32,7 +32,7 @@ def save_to_csv(filename):
 
 def button_click(button_name, app):
     if button_name == "Tìm kiếm":
-        search_customer()
+        search_customer(app)
     elif button_name == "Thêm khách hàng":
         add_customer(app)
     elif button_name == "Mới nhất":
@@ -47,6 +47,7 @@ def latest_customers():
     for row in sample_customers:
         customer_table.insert("", "end", values=row)
     update_row_colors()
+
 def search_customer(app):
     search_value = search_entry.get().lower()
     for row in customer_table.get_children():
@@ -110,12 +111,138 @@ def add_customer(app):
     add_button = ttk.Button(add_window, text="Thêm", bootstyle="superhero", command=submit_customer)
     add_button.grid(row=len(fields), column=0, columnspan=2, padx=10, pady=10)
 
-def refresh_customers_table():
+def create_customer_filter_controls(frame_khach_hang, file_path="customers.csv"):
+    """
+    Hàm tạo bộ lọc dữ liệu cho bảng khách hàng.
+    """
+    # Tạo frame chứa các bộ lọc
+    filter_frame = ttk.Frame(frame_khach_hang)
+    filter_frame.grid(row=1, column=0, columnspan=5, padx=5, pady=5, sticky="w")
+
+    # # Bộ lọc theo tên khách hàng
+    # name_label = ttk.Label(filter_frame, text="Tên khách hàng:")
+    # name_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+    # name_var = StringVar()
+    # name_filter = ttk.Entry(filter_frame, textvariable=name_var, width=30)
+    # name_filter.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+
+    # Bộ lọc theo số điện thoại
+    phone_label = ttk.Label(filter_frame, text="Số điện thoại:")
+    phone_label.grid(row=0, column=2, padx=5, pady=5, sticky="w")
+    phone_var = StringVar()
+    phone_filter = ttk.Entry(filter_frame, textvariable=phone_var, width=20)
+    phone_filter.grid(row=0, column=3, padx=5, pady=5, sticky="w")
+
+    # Bộ lọc theo email
+    email_label = ttk.Label(filter_frame, text="Email:")
+    email_label.grid(row=0, column=4, padx=5, pady=5, sticky="w")
+    email_var = StringVar()
+    email_filter = ttk.Entry(filter_frame, textvariable=email_var, width=25)
+    email_filter.grid(row=0, column=5, padx=5, pady=5, sticky="w")
+
+    # Nút áp dụng bộ lọc
+    def apply_filters():
+        """
+        Hàm áp dụng bộ lọc lên bảng khách hàng.
+        """
+        #name = name_var.get().lower()
+        phone = phone_var.get().lower()
+        email = email_var.get().lower()
+
+        # Lọc dữ liệu từ `sample_customers`
+        filtered_customers = []
+        for customer in sample_customers:  # sample_customers là danh sách dữ liệu gốc
+            customer_id, customer_name, address, phone_number, email_address, purchase_history = customer
+
+            # Kiểm tra điều kiện lọc
+            # if name and name not in customer_name.lower():
+            #     continue
+            if phone and phone not in phone_number.lower():
+                continue
+            if email and email not in email_address.lower():
+                continue
+
+            filtered_customers.append(customer)
+
+        # Cập nhật bảng với dữ liệu đã lọc
+        refresh_customers_table(filtered_customers)
+
+    # Nút "Xóa Lọc" để xóa các điều kiện lọc và hiển thị lại bảng đầy đủ
+    def clear_filters():
+        """
+        Hàm xóa bộ lọc và trả bảng về trạng thái ban đầu (không lọc).
+        """
+        # Reset các giá trị của bộ lọc
+        #name_var.set("")
+        phone_var.set("")
+        email_var.set("")
+
+        # Cập nhật bảng với dữ liệu gốc
+        refresh_customers_table(sample_customers)
+
+    apply_button = ttk.Button(filter_frame, text="Áp dụng", bootstyle="superhero", command=apply_filters, cursor="hand2")
+    apply_button.grid(row=0, column=6, padx=5, pady=5, sticky="w")
+
+    # Nút "Xóa Lọc"
+    clear_button = ttk.Button(filter_frame, text="Xóa Lọc", bootstyle="danger", command=clear_filters, cursor="hand2")
+    clear_button.grid(row=0, column=7, padx=5, pady=5, sticky="w")
+
+    # Tạo frame riêng để chứa nút thu gọn bộ lọc
+    toggle_frame = ttk.Frame(frame_khach_hang)
+    toggle_frame.grid(row=0, column=0, padx=5, pady=5, sticky="e")
+
+    # Biến trạng thái thu gọn bộ lọc
+    filter_expanded = True
+
+    # Hàm thu gọn và mở rộng bộ lọc
+    def toggle_filter():
+        nonlocal filter_expanded
+
+        if filter_expanded:
+            # Thu gọn bộ lọc: Ẩn toàn bộ dòng chứa bộ lọc
+            filter_frame.grid_forget()  # Ẩn toàn bộ frame chứa bộ lọc
+            toggle_button.config(text="Mở rộng bộ lọc")  # Đổi tên nút
+            filter_expanded = False
+        else:
+            # Mở rộng bộ lọc: Hiển thị lại toàn bộ frame chứa bộ lọc
+            filter_frame.grid(row=1, column=0, columnspan=5, padx=5, pady=5, sticky="w")
+            toggle_button.config(text="Thu gọn bộ lọc")  # Đổi tên nút
+            filter_expanded = True
+
+    # Nút thu gọn bộ lọc sẽ được thêm vào frame riêng biệt
+    toggle_button = ttk.Button(toggle_frame, text="Thu gọn bộ lọc", bootstyle="info", command=toggle_filter, cursor="hand2")
+    toggle_button.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+
+    filter_frame.grid_forget()  # Ẩn toàn bộ frame chứa bộ lọc
+    toggle_button.config(text="Mở rộng bộ lọc")  # Đổi tên nút
+    filter_expanded = False
+
+
+# Cập nhật hàm refresh_product_table để hỗ trợ dữ liệu lọc
+def refresh_customers_table(filtered_products=None):
+    """
+    Hàm làm mới bảng sản phẩm với dữ liệu gốc hoặc đã lọc.
+    """
+    # Xóa dữ liệu cũ trong bảng
     for row in customer_table.get_children():
         customer_table.delete(row)
-    for product in sample_customers:
+
+    # Dữ liệu để hiển thị
+    data = filtered_products if filtered_products is not None else sample_customers
+
+    # Thêm dữ liệu vào bảng
+    for product in data:
         customer_table.insert("", "end", values=product)
     update_row_colors()
+
+
+
+# def refresh_customers_table():
+#     for row in customer_table.get_children():
+#         customer_table.delete(row)
+#     for product in sample_customers:
+#         customer_table.insert("", "end", values=product)
+#     update_row_colors()
 
 def update_row_colors():
     # Tải cài đặt từ file
@@ -226,11 +353,14 @@ def delete_customer():
        
         refresh_customers_table()
         save_to_csv('customers.csv')
+
 def create_khach_hang_tab(notebook, app):
     global search_entry, customer_table
 
     frame_khach_hang = ttk.Frame(notebook)
     notebook.add(frame_khach_hang, text="KHÁCH HÀNG", padding=(10,10))
+
+    create_customer_filter_controls(frame_khach_hang)
     
     image = Image.open("icon/search.png")
     image = image.resize((20, 20), Image.LANCZOS)
@@ -351,6 +481,8 @@ def create_khach_hang_tab(notebook, app):
 
     #dbclick để xem chi tiết
     def show_product_details(event):
+        labels = ["ID Khách Hàng", "Tên Khách Hàng", "Địa Chỉ", "Số Điện Thoại", "Email", "Lịch Sử Mua Hàng"]
+
         """
         Hàm hiển thị cửa sổ chi tiết sản phẩm khi người dùng nhấp đúp vào một hàng trong bảng.
         """
@@ -365,17 +497,34 @@ def create_khach_hang_tab(notebook, app):
         # Tạo cửa sổ Toplevel để hiển thị thông tin
         detail_window = ttk.Toplevel()
         detail_window.title("Thông tin chi tiết sản phẩm")
+        detail_window.resizable(False, False)  # Tắt thay đổi kích thước cửa sổ
+
         #detail_window.geometry("600x300")  # Kích thước cửa sổ tùy ý
 
         # Hiển thị thông tin chi tiết của sản phẩm
-        labels = ["ID Khách Hàng", "Tên Khách Hàng", "Địa Chỉ", "Số Điện Thoại", "Email", "Lịch Sử Mua Hàng"]
+        # Tạo frame chính cho bố cục
+        main_frame = ttk.Frame(detail_window, padding=15)
+        main_frame.grid(row=0, column=0, sticky="nsew")
+
+        # Hiển thị thông tin chi tiết của sản phẩm
         for i, label_text in enumerate(labels):
-            label = tk.Label(detail_window, text=f"{label_text}: {item_data[i]}", font=("Helvetica", 12))
-            label.pack(anchor="w", padx=10, pady=5)
+            label = ttk.Label(main_frame, text=label_text + ":", font=("Helvetica", 11))
+            label.grid(row=i, column=0, sticky="w", padx=5, pady=5)
+
+            value_label = ttk.Label(main_frame, text=item_data[i], font=("Helvetica", 11))
+            value_label.grid(row=i, column=1, sticky="w", padx=10, pady=5)
+
+        # Thêm khoảng trống giữa thông tin và nút
+        ttk.Separator(main_frame, orient="horizontal").grid(row=len(labels), column=0, columnspan=2, pady=10, sticky="ew")
 
         # Đặt button đóng cửa sổ
-        close_button = tk.Button(detail_window, text=" Xong ", command=detail_window.destroy)
-        close_button.pack(pady=10)
+        close_button = ttk.Button(main_frame, text="Đóng", style="Accent.TButton", command=detail_window.destroy)
+        close_button.grid(row=len(labels) + 1, column=0, columnspan=2, pady=5)
+
+        # Tạo style cho nút đóng
+        style = ttk.Style()
+        style.configure("Accent.TButton", foreground="white", background="#007bff", font=("Helvetica", 10, "bold"))
+        style.map("Accent.TButton", background=[("active", "#0056b3")])  # Hiệu ứng khi hover
 
         # Cập nhật kích thước của cửa sổ theo nội dung
         detail_window.update_idletasks()
