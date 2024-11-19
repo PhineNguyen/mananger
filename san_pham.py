@@ -60,6 +60,8 @@ def button_click(button_name, app):
         delete_product()
 
 def create_san_pham_tab(notebook, app):
+    sample_products.clear()
+    sample_products.extend(read_csv("products.csv"))
     global product_table, product_search_entry
 
     frame_product = ttk.Frame(notebook)
@@ -215,6 +217,30 @@ def create_san_pham_tab(notebook, app):
         # Cập nhật kích thước của cửa sổ theo nội dung
         detail_window.update_idletasks()
         detail_window.geometry(f"{detail_window.winfo_width()}x{detail_window.winfo_height()}")
+
+    def on_click_cell(event):
+        # Lấy vị trí cột được bấm
+        column_id = product_table.identify_column(event.x)
+
+        # Kiểm tra xem cột có phải là cột "Mô Tả" (thường là cột thứ 5)
+        if column_id == "#5":  # Cột "Mô Tả" (ID cột bắt đầu từ 1, nên "#5" là cột thứ 5)
+            # Lấy hàng được chọn
+            row_id = product_table.identify_row(event.y)
+            if row_id:
+                # Lấy thông tin của hàng
+                item_data = product_table.item(row_id, "values")
+                description = item_data[4]  # Cột "Mô Tả" tương ứng với chỉ mục 4 trong danh sách giá trị
+
+                # Hiển thị thông tin hoặc xử lý theo ý muốn
+                print(f"Bạn đã bấm vào cột 'Mô Tả' của hàng với nội dung: {description}")
+            else:
+                print("Không có hàng nào được bấm vào.")
+        else:
+            print("Không phải cột 'Mô Tả'.")
+
+    # Gán sự kiện click vào bảng
+    product_table.bind("<Button-1>", on_click_cell)
+
 
     # Gán sự kiện double-click vào bảng
     product_table.bind("<Double-1>", show_product_details)

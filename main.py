@@ -119,11 +119,11 @@ def main():
     #create_login_frame(app, notebook)
 
     # Hiển thị giao diện đăng nhập
-   # create_login_frame(app, notebook, load_main_interface)
+    #create_login_frame(app, notebook, load_main_interface)
 
    # Gắn sự kiện cho Notebook
 # Gắn sự kiện với lambda
-    notebook.bind("<<NotebookTabChanged>>", lambda event: on_tab_change(event, app, notebook, "owner"))
+    #notebook.bind("<<NotebookTabChanged>>", lambda event: on_tab_change(event, app, notebook, "owner"))
 
 
     app.mainloop()
