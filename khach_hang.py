@@ -35,7 +35,7 @@ def save_to_csv(filename):
         
         # Ghi từng dòng dữ liệu từ sample_products
         for customer in sample_customers:
-            writer.writerow(customer)
+            writer.writerow(map(str,customer))
 
 def button_click(button_name, app):
     if button_name == "Tìm kiếm":
