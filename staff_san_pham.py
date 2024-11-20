@@ -26,16 +26,22 @@ def read_csv(file_path):
         messagebox.showerror("Lỗi", f"Không thể đọc file: {e}")
         return []
 
-def save_to_csv(filename,data):
+def save_to_csv(filename):
     # Mở file ở chế độ ghi (write mode)
     try:
+        # Kiểm tra nếu orders trống
+        if not sample_products:
+            # Thêm một hàng dữ liệu trống
+            empty_row = ["0"] * 6  # Số lượng phần tử phải khớp với số cột trong header
+            sample_products.append(empty_row)
+
         with open(filename, mode='w', newline='', encoding='utf-8') as file:
             writer = csv.writer(file)
             
             # Ghi tiêu đề cột nếu cần
             header = ["ID Sản Phẩm", "Tên Sản Phẩm", "Giá VND", "Số Lượng Tồn Kho", "Mô Tả", "Nhóm Sản Phẩm"]  # Thay đổi theo các cột của bạn
             writer.writerow(header)
-            writer.writerows(data)
+            writer.writerows(sample_products)
             
     except Exception as e:
         messagebox.showerror("Lỗi",f"Không thể ghi file: {e}")
