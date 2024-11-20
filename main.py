@@ -119,7 +119,7 @@ def main():
     #create_login_frame(app, notebook)
 
     # Hiển thị giao diện đăng nhập
-    create_login_frame(app, notebook, load_main_interface)
+   # create_login_frame(app, notebook, load_main_interface)
 
    # Gắn sự kiện cho Notebook
 # Gắn sự kiện với lambda

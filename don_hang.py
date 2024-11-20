@@ -5,13 +5,111 @@ import pandas as pd
 from PIL import Image, ImageTk
 from tkinter import StringVar
 import csv
-from setting import load_settings  # Import thêm load_settings
+from setting import load_settings,refresh_tabs, create_setting_tab  # Import thêm load_settings
 import tkinter as tk
 from tkinter import messagebox
 from san_pham import create_san_pham_tab
 from khach_hang import create_khach_hang_tab
+from thong_ke import create_thong_ke_tab
 
 
+def show_products_details2(customer_id):
+        """
+        Hiển thị thông tin chi tiết của khách hàng từ file customers.csv dựa vào ID Khách Hàng.
+        """
+        # Đọc dữ liệu từ file customers.csv
+        customer_data = []
+        with open('products.csv', mode='r', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            headers = next(reader)  # Lấy dòng tiêu đề
+            for row in reader:
+                customer_data.append(row)
+
+        # Tìm khách hàng dựa vào ID
+        customer_info = None
+        for customer in customer_data:
+            if str(customer[0]) == str(customer_id):  # Giả sử cột đầu tiên là ID Khách Hàng
+                customer_info = customer
+                break
+
+        if not customer_info:
+            # Nếu không tìm thấy khách hàng, hiển thị thông báo
+            tk.messagebox.showwarning("Thông báo", "Không tìm thấy thông tin!")
+            return
+
+        # Tạo cửa sổ Toplevel để hiển thị thông tin khách hàng
+        detail_window = ttk.Toplevel()
+        detail_window.title(f"Thông tin {customer_id}")
+        detail_window.resizable(False, False)
+
+        # Hiển thị thông tin khách hàng
+        main_frame = ttk.Frame(detail_window, padding=15)
+        main_frame.grid(row=0, column=0, sticky="nsew")
+
+        for i, header in enumerate(headers):
+            label = ttk.Label(main_frame, text=header + ":", font=("Helvetica", 11))
+            label.grid(row=i, column=0, sticky="w", padx=5, pady=5)
+
+            value_label = ttk.Label(main_frame, text=customer_info[i], font=("Helvetica", 11))
+            value_label.grid(row=i, column=1, sticky="w", padx=10, pady=5)
+
+        # Thêm nút Đóng
+        ttk.Separator(main_frame, orient="horizontal").grid(row=len(headers), column=0, columnspan=2, pady=10, sticky="ew")
+        close_button = ttk.Button(main_frame, text="Đóng", style="Accent.TButton", command=detail_window.destroy)
+        close_button.grid(row=len(headers) + 1, column=0, columnspan=2, pady=5)
+
+        # Cập nhật kích thước cửa sổ phù hợp với nội dung
+        detail_window.update_idletasks()
+        detail_window.geometry(f"{detail_window.winfo_width()}x{detail_window.winfo_height()}")
+
+def show_customer_details(customer_id):
+        """
+        Hiển thị thông tin chi tiết của khách hàng từ file customers.csv dựa vào ID Khách Hàng.
+        """
+        # Đọc dữ liệu từ file customers.csv
+        customer_data = []
+        with open('customers.csv', mode='r', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            headers = next(reader)  # Lấy dòng tiêu đề
+            for row in reader:
+                customer_data.append(row)
+
+        # Tìm khách hàng dựa vào ID
+        customer_info = None
+        for customer in customer_data:
+            if str(customer[0]) == str(customer_id):  # Giả sử cột đầu tiên là ID Khách Hàng
+                customer_info = customer
+                break
+
+        if not customer_info:
+            # Nếu không tìm thấy khách hàng, hiển thị thông báo
+            tk.messagebox.showwarning("Thông báo", "Không tìm thấy thông tin khách hàng!")
+            return
+
+        # Tạo cửa sổ Toplevel để hiển thị thông tin khách hàng
+        detail_window = ttk.Toplevel()
+        detail_window.title(f"Thông tin khách hàng {customer_id}")
+        detail_window.resizable(False, False)
+
+        # Hiển thị thông tin khách hàng
+        main_frame = ttk.Frame(detail_window, padding=15)
+        main_frame.grid(row=0, column=0, sticky="nsew")
+
+        for i, header in enumerate(headers):
+            label = ttk.Label(main_frame, text=header + ":", font=("Helvetica", 11))
+            label.grid(row=i, column=0, sticky="w", padx=5, pady=5)
+
+            value_label = ttk.Label(main_frame, text=customer_info[i], font=("Helvetica", 11))
+            value_label.grid(row=i, column=1, sticky="w", padx=10, pady=5)
+
+        # Thêm nút Đóng
+        ttk.Separator(main_frame, orient="horizontal").grid(row=len(headers), column=0, columnspan=2, pady=10, sticky="ew")
+        close_button = ttk.Button(main_frame, text="Đóng", style="Accent.TButton", command=detail_window.destroy)
+        close_button.grid(row=len(headers) + 1, column=0, columnspan=2, pady=5)
+
+        # Cập nhật kích thước cửa sổ phù hợp với nội dung
+        detail_window.update_idletasks()
+        detail_window.geometry(f"{detail_window.winfo_width()}x{detail_window.winfo_height()}")
 
 sample_data = []
 
@@ -205,12 +303,12 @@ def create_don_hang_tab(notebook, app):
     frame_order.search_icon = search_icon  # Để giữ tham chiếu đến icon, tránh bị thu hồi bộ nhớ
 
     # Tạo nút Thêm đơn với icon và liên kết hàm button_click khi nhấn
-    add_order_button = ttk.Button(frame_order, text="Thêm đơn", bootstyle="superhero", image=multiple_icon, compound=LEFT, command=lambda: button_click("Thêm đơn", app), cursor="hand2")
+    add_order_button = ttk.Button(frame_order, text="Thêm đơn", bootstyle="superhero", image=multiple_icon, compound=LEFT, command=lambda: add_order(app, notebook), cursor="hand2")
     add_order_button.grid(row=0, column=2, padx=5, pady=5, sticky=W)
     frame_order.multiple_icon = multiple_icon
 
     # Tạo nút Sửa với icon và liên kết hàm button_click khi nhấn
-    edit_order_button = ttk.Button(frame_order, text="Sửa", bootstyle="superhero", image=wrenchalt_icon, compound=LEFT, command=lambda: button_click("Sửa", app), cursor="hand2")
+    edit_order_button = ttk.Button(frame_order, text="Sửa", bootstyle="superhero", image=wrenchalt_icon, compound=LEFT, command=lambda: edit_order(app, notebook), cursor="hand2")
     edit_order_button.grid(row=0, column=3, padx=5, pady=5, sticky=W)
     frame_order.wrenchalt_icon = wrenchalt_icon
 
@@ -278,7 +376,7 @@ def create_don_hang_tab(notebook, app):
 
         # Tạo cửa sổ Toplevel để hiển thị thông tin
         detail_window = ttk.Toplevel()
-        detail_window.title("Thông tin chi tiết sản phẩm")
+        detail_window.title("Thông tin chi tiết")
         detail_window.resizable(False, False)  # Tắt thay đổi kích thước cửa sổ
 
         #detail_window.geometry("600x300")  # Kích thước cửa sổ tùy ý
@@ -312,6 +410,59 @@ def create_don_hang_tab(notebook, app):
         # Cập nhật kích thước của cửa sổ theo nội dung
         detail_window.update_idletasks()
         detail_window.geometry(f"{detail_window.winfo_width()}x{detail_window.winfo_height()}")
+
+
+    
+
+    
+
+    def on_click_cell(event):
+        # Lấy vị trí cột được bấm
+        column_id = order_table.identify_column(event.x)
+
+        # Kiểm tra xem cột có phải là cột "Mô Tả" (thường là cột thứ 5)
+        if column_id == "#2":  # Cột "Mô Tả" (ID cột bắt đầu từ 1, nên "#5" là cột thứ 5)
+            # Lấy hàng được chọn
+            row_id = order_table.identify_row(event.y)
+            if row_id:
+                # Lấy thông tin của hàng
+                item_data = order_table.item(row_id, "values")
+                description = item_data[1]  # Cột "Mô Tả" tương ứng với chỉ mục 4 trong danh sách giá trị
+
+                # Hiển thị thông tin khách hàng
+                show_customer_details(description)
+
+
+                # Hiển thị thông tin hoặc xử lý theo ý muốn
+                print(f"Bạn đã bấm vào cột 'Mô Tả' của hàng với nội dung: {description}")
+            else:
+                print("Không có hàng nào được bấm vào.")
+        else:
+            print("Không phải cột 'Mô Tả'.")
+
+        if column_id == "#4":  # Cột "Mô Tả" (ID cột bắt đầu từ 1, nên "#5" là cột thứ 5)
+            # Lấy hàng được chọn
+            row_id = order_table.identify_row(event.y)
+            if row_id:
+                # Lấy thông tin của hàng
+                item_data = order_table.item(row_id, "values")
+                description = item_data[3]  # Cột "Mô Tả" tương ứng với chỉ mục 4 trong danh sách giá trị
+
+                # Hiển thị thông tin khách hàng
+                show_products_details2(description)
+
+
+                # Hiển thị thông tin hoặc xử lý theo ý muốn
+                print(f"Bạn đã bấm vào cột 'Mô Tả' của hàng với nội dung: {description}")
+            else:
+                print("Không có hàng nào được bấm vào.")
+        else:
+            print("Không phải cột 'Mô Tả'.")
+
+        
+    # Gắn sự kiện click vào cột ID Khách Hàng trong bảng
+    order_table.bind("<Button-3>", on_click_cell)
+
 
     # Gán sự kiện double-click vào bảng
     order_table.bind("<Double-1>", show_product_details)
@@ -563,7 +714,7 @@ def search_order():
 
 
 ####################################################################################
-def add_order(app):
+def add_order(app, notebook):
     # Tạo cửa sổ "Thêm Đơn Hàng" mới
     add_window = ttk.Toplevel(app)
     add_window.title("Thêm Đơn Hàng")
@@ -766,6 +917,8 @@ def add_order(app):
 
         # Đóng cửa sổ thêm đơn hàng
         add_window.destroy()
+        refresh_tabs(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)
+        notebook.select(1)
 
 
     def update_customer_purchase_history(customer_id, order_id):
@@ -796,7 +949,7 @@ def add_order(app):
     add_button = ttk.Button(add_window, text="Thêm", bootstyle="superhero", command=submit_order)
     add_button.grid(row=len(fields), column=0, columnspan=2, padx=10, pady=10)
 
-def edit_order(app):
+def edit_order(app, notebook):
     selected_item = order_table.selection()
     if not selected_item:
         messagebox.showwarning("Cảnh báo", "Vui lòng chọn một đơn hàng để sửa.")
@@ -828,6 +981,8 @@ def edit_order(app):
         save_to_csv('orders.csv')
         refresh_order_table()
         edit_window.destroy()
+        refresh_tabs(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)
+        notebook.select(1)
 
     edit_button = ttk.Button(edit_window, text="Sửa", bootstyle="superhero", command=submit_edit)
     edit_button.grid(row=len(fields), column=0, columnspan=2, padx=10, pady=10)

@@ -355,6 +355,9 @@ def delete_customer():
         save_to_csv('customers.csv')
 
 def create_khach_hang_tab(notebook, app):
+    sample_customers.clear()
+    sample_customers.extend(read_csv('customers.csv'))
+
     global search_entry, customer_table
 
     frame_khach_hang = ttk.Frame(notebook)
@@ -496,7 +499,7 @@ def create_khach_hang_tab(notebook, app):
 
         # Tạo cửa sổ Toplevel để hiển thị thông tin
         detail_window = ttk.Toplevel()
-        detail_window.title("Thông tin chi tiết sản phẩm")
+        detail_window.title("Thông tin chi tiết")
         detail_window.resizable(False, False)  # Tắt thay đổi kích thước cửa sổ
 
         #detail_window.geometry("600x300")  # Kích thước cửa sổ tùy ý
