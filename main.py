@@ -12,30 +12,12 @@ from setting import create_setting_tab, load_settings, apply_settings,refresh_ta
 from tkinter import PhotoImage
 from tkinter import messagebox
 
-def on_tab_change(event, app, notebook, role):
-    # # Lấy đối tượng Notebook từ sự kiện
-    # notebook = event.widget
 
-    # # Lấy tab hiện tại
-    # selected_tab = notebook.select()
-
-    # # Lấy tên hoặc id tab
-    # tab_index = notebook.index(selected_tab)
-    # tab_name = notebook.tab(selected_tab, "text")
-
-    # # In thông tin tab ra console hoặc xử lý theo logic
-    # print(f"Tab được chuyển sang: {tab_name} (Index: {tab_index})")
-
-    # # Có thể thêm logic khác, ví dụ:
-    # if tab_name == "Đơn hàng":
-    #     print("Tab Đơn hàng đã được chọn.")
-    # elif tab_name == "Sản phẩm":
-    #     print("Tab Sản phẩm đã được chọn.")
-
-    load_main_interface(app, notebook, "owner")
 
 
 def load_main_interface(app, notebook, role):
+    app.resizable(True, True)
+
     # Thêm các tab cơ bản
     # create_san_pham_tab(notebook, app)
     # create_don_hang_tab(notebook, app)
@@ -93,6 +75,8 @@ def main():
     app = ttk.Window(themename=current_settings["theme"])
     app.geometry("1000x600")
     app.title("Store Manager")
+    app.resizable(False, False)
+
 
     # Áp dụng icon cho cửa sổ
     change_window_icon(app)
@@ -119,11 +103,7 @@ def main():
     #create_login_frame(app, notebook)
 
     # Hiển thị giao diện đăng nhập
-   # create_login_frame(app, notebook, load_main_interface)
-
-   # Gắn sự kiện cho Notebook
-# Gắn sự kiện với lambda
-    #notebook.bind("<<NotebookTabChanged>>", lambda event: on_tab_change(event, app, notebook, "owner"))
+    create_login_frame(app, notebook, load_main_interface)
 
 
     app.mainloop()

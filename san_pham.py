@@ -239,7 +239,7 @@ def create_san_pham_tab(notebook, app):
             print("Không phải cột 'Mô Tả'.")
 
     # Gán sự kiện click vào bảng
-    product_table.bind("<Button-1>", on_click_cell)
+    #product_table.bind("<Button-1>", on_click_cell)
 
 
     # Gán sự kiện double-click vào bảng

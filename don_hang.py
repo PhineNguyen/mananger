@@ -433,12 +433,12 @@ def create_don_hang_tab(notebook, app):
                 show_customer_details(description)
 
 
-                # Hiển thị thông tin hoặc xử lý theo ý muốn
-                print(f"Bạn đã bấm vào cột 'Mô Tả' của hàng với nội dung: {description}")
-            else:
-                print("Không có hàng nào được bấm vào.")
-        else:
-            print("Không phải cột 'Mô Tả'.")
+        #         # Hiển thị thông tin hoặc xử lý theo ý muốn
+        #         print(f"Bạn đã bấm vào cột 'Mô Tả' của hàng với nội dung: {description}")
+        #     else:
+        #         print("Không có hàng nào được bấm vào.")
+        # else:
+        #     print("Không phải cột 'Mô Tả'.")
 
         if column_id == "#4":  # Cột "Mô Tả" (ID cột bắt đầu từ 1, nên "#5" là cột thứ 5)
             # Lấy hàng được chọn
@@ -452,12 +452,12 @@ def create_don_hang_tab(notebook, app):
                 show_products_details2(description)
 
 
-                # Hiển thị thông tin hoặc xử lý theo ý muốn
-                print(f"Bạn đã bấm vào cột 'Mô Tả' của hàng với nội dung: {description}")
-            else:
-                print("Không có hàng nào được bấm vào.")
-        else:
-            print("Không phải cột 'Mô Tả'.")
+        #         # Hiển thị thông tin hoặc xử lý theo ý muốn
+        #         print(f"Bạn đã bấm vào cột 'Mô Tả' của hàng với nội dung: {description}")
+        #     else:
+        #         print("Không có hàng nào được bấm vào.")
+        # else:
+        #     print("Không phải cột 'Mô Tả'.")
 
         
     # Gắn sự kiện click vào cột ID Khách Hàng trong bảng
@@ -917,6 +917,7 @@ def add_order(app, notebook):
 
         # Đóng cửa sổ thêm đơn hàng
         add_window.destroy()
+        
         refresh_tabs(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)
         notebook.select(1)
 

@@ -5,10 +5,152 @@ import pandas as pd
 from PIL import Image, ImageTk
 from tkinter import StringVar
 import csv
-from setting import load_settings  # Import thêm load_settings
+from setting import load_settings,refresh_tabs, create_setting_tab  # Import thêm load_settings
 import tkinter as tk
 from tkinter import messagebox
+from staff_san_pham import staff_create_san_pham_tab
+from staff_khach_hang import staff_create_khach_hang_tab
+
+
+def staff_refresh_tabs(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab):
+    # Xóa tất cả các tab hiện tại
+    for tab in notebook.tabs():
+        notebook.forget(tab)
+
+    current_settings = load_settings()
+
+    style = ttk.Style()
+    style.configure("TNotebook.Tab", padding=[10, 5], font=(current_settings["font"], current_settings["font_size"]), background="#5bc0de")
+    style.map("TNotebook.Tab",
+              background=[('selected', '#ADD8E6'), ('!selected', '#B1C6B4')],
+              foreground=[('selected', 'white'), ('!selected', 'black')])
+    style.configure("TNotebook", tabposition='n')  # 'n' cho trên, 's' cho dưới, 'e' cho phải, 'w' cho trái
+
+
+    # Tạo notebook
+    #notebook = ttk.Notebook(app, style="TNotebook")
+    notebook.configure(style="CustomNotebook.TNotebook")
+
+    notebook.pack(fill=BOTH, expand=TRUE)
+
+    # Thêm lại các tab sau khi cập nhật theme và font
+    create_san_pham_tab(notebook, app)
+    create_don_hang_tab(notebook, app)
+    create_khach_hang_tab(notebook, app)
+    
+
+
+def show_products_details2(customer_id):
+        """
+        Hiển thị thông tin chi tiết của khách hàng từ file customers.csv dựa vào ID Khách Hàng.
+        """
+        # Đọc dữ liệu từ file customers.csv
+        customer_data = []
+        with open('products.csv', mode='r', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            headers = next(reader)  # Lấy dòng tiêu đề
+            for row in reader:
+                customer_data.append(row)
+
+        # Tìm khách hàng dựa vào ID
+        customer_info = None
+        for customer in customer_data:
+            if str(customer[0]) == str(customer_id):  # Giả sử cột đầu tiên là ID Khách Hàng
+                customer_info = customer
+                break
+
+        if not customer_info:
+            # Nếu không tìm thấy khách hàng, hiển thị thông báo
+            tk.messagebox.showwarning("Thông báo", "Không tìm thấy thông tin!")
+            return
+
+        # Tạo cửa sổ Toplevel để hiển thị thông tin khách hàng
+        detail_window = ttk.Toplevel()
+        detail_window.title(f"Thông tin {customer_id}")
+        detail_window.resizable(False, False)
+
+        # Hiển thị thông tin khách hàng
+        main_frame = ttk.Frame(detail_window, padding=15)
+        main_frame.grid(row=0, column=0, sticky="nsew")
+
+        for i, header in enumerate(headers):
+            label = ttk.Label(main_frame, text=header + ":", font=("Helvetica", 11))
+            label.grid(row=i, column=0, sticky="w", padx=5, pady=5)
+
+            value_label = ttk.Label(main_frame, text=customer_info[i], font=("Helvetica", 11))
+            value_label.grid(row=i, column=1, sticky="w", padx=10, pady=5)
+
+        # Thêm nút Đóng
+        ttk.Separator(main_frame, orient="horizontal").grid(row=len(headers), column=0, columnspan=2, pady=10, sticky="ew")
+        close_button = ttk.Button(main_frame, text="Đóng", style="Accent.TButton", command=detail_window.destroy)
+        close_button.grid(row=len(headers) + 1, column=0, columnspan=2, pady=5)
+
+        # Cập nhật kích thước cửa sổ phù hợp với nội dung
+        detail_window.update_idletasks()
+        detail_window.geometry(f"{detail_window.winfo_width()}x{detail_window.winfo_height()}")
+
+def show_customer_details(customer_id):
+        """
+        Hiển thị thông tin chi tiết của khách hàng từ file customers.csv dựa vào ID Khách Hàng.
+        """
+        # Đọc dữ liệu từ file customers.csv
+        customer_data = []
+        with open('customers.csv', mode='r', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            headers = next(reader)  # Lấy dòng tiêu đề
+            for row in reader:
+                customer_data.append(row)
+
+        # Tìm khách hàng dựa vào ID
+        customer_info = None
+        for customer in customer_data:
+            if str(customer[0]) == str(customer_id):  # Giả sử cột đầu tiên là ID Khách Hàng
+                customer_info = customer
+                break
+
+        if not customer_info:
+            # Nếu không tìm thấy khách hàng, hiển thị thông báo
+            tk.messagebox.showwarning("Thông báo", "Không tìm thấy thông tin khách hàng!")
+            return
+
+        # Tạo cửa sổ Toplevel để hiển thị thông tin khách hàng
+        detail_window = ttk.Toplevel()
+        detail_window.title(f"Thông tin khách hàng {customer_id}")
+        detail_window.resizable(False, False)
+
+        # Hiển thị thông tin khách hàng
+        main_frame = ttk.Frame(detail_window, padding=15)
+        main_frame.grid(row=0, column=0, sticky="nsew")
+
+        for i, header in enumerate(headers):
+            label = ttk.Label(main_frame, text=header + ":", font=("Helvetica", 11))
+            label.grid(row=i, column=0, sticky="w", padx=5, pady=5)
+
+            value_label = ttk.Label(main_frame, text=customer_info[i], font=("Helvetica", 11))
+            value_label.grid(row=i, column=1, sticky="w", padx=10, pady=5)
+
+        # Thêm nút Đóng
+        ttk.Separator(main_frame, orient="horizontal").grid(row=len(headers), column=0, columnspan=2, pady=10, sticky="ew")
+        close_button = ttk.Button(main_frame, text="Đóng", style="Accent.TButton", command=detail_window.destroy)
+        close_button.grid(row=len(headers) + 1, column=0, columnspan=2, pady=5)
+
+        # Cập nhật kích thước cửa sổ phù hợp với nội dung
+        detail_window.update_idletasks()
+        detail_window.geometry(f"{detail_window.winfo_width()}x{detail_window.winfo_height()}")
+
 sample_data = []
+
+# Lưu lại dữ liệu đơn hàng đã tính tổng giá trị vào file orders.csv
+def save_orders_to_csv(filename, orders):
+    try:
+        with open(filename, mode='w', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            header = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm","Số Lượng Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
+            writer.writerow(header)
+            for order in orders:
+                writer.writerow(order)
+    except Exception as e:
+        print(f"Lỗi khi lưu file đơn hàng: {e}")
 def read_customers_csv(file_path):
     try:
         with open(file_path, mode='r', encoding='utf-8') as file:
@@ -18,7 +160,61 @@ def read_customers_csv(file_path):
     except Exception as e:
         messagebox.showerror("Lỗi", f"Không thể đọc file customers.csv: {e}")
         return []
-    
+def load_product_data(filename):
+    product_data = {}
+    try:
+        with open(filename, newline='', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            next(reader)  # Bỏ qua header
+            for row in reader:
+                product_id = row[0]  # ID Sản Phẩm
+                price = int(row[2])  # Giá
+                product_data[product_id] = price  # Lưu vào dictionary
+        return product_data
+    except Exception as e:
+        print(f"Lỗi khi đọc file sản phẩm: {e}")
+        return {}
+
+# Tính tổng giá trị đơn hàng từ dữ liệu đơn hàng, có tính đến số lượng sản phẩm
+def calculate_order_total(order, product_data):
+    total = 0
+    product_ids = order[3].split(',')  # Danh sách ID Sản Phẩm trong đơn hàng (giả sử là chuỗi ngăn cách bằng dấu phẩy)
+    quantities = order[4].split(',')  # Danh sách Số Lượng sản phẩm trong đơn hàng
+    for product_id, quantity in zip(product_ids, quantities):
+        quantity = int(quantity)  # Chuyển số lượng thành kiểu số nguyên
+        if product_id in product_data:
+            total += product_data[product_id] * quantity  # Nhân giá với số lượng
+    return total
+
+# Đọc dữ liệu từ file orders.csv và tính tổng giá trị đơn hàng
+def process_orders(order_filename, product_data_filename):
+    product_data = load_product_data(product_data_filename)  # Lấy dữ liệu sản phẩm
+    orders = []
+    try:
+        with open(order_filename, newline='', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            header = next(reader)  # Bỏ qua header
+            for row in reader:
+                order_id = row[0]  # ID Đơn Hàng
+                customer_id = row[1]  # ID Khách Hàng
+                order_date = row[2]  # Ngày Đặt Hàng
+                product_list = row[3]  # Danh sách sản phẩm (ID sản phẩm)
+                quantity_list = row[4]  # Danh sách số lượng sản phẩm
+                total_value = calculate_order_total(row, product_data)  # Tính tổng giá trị đơn hàng
+                status = row[7]  # Trạng thái đơn hàng
+                payment_method = row[6]  # Phương thức thanh toán
+                orders.append([order_id, customer_id, order_date, product_list,quantity_list ,total_value, status, payment_method])
+    except Exception as e:
+        print(f"Lỗi khi đọc file đơn hàng: {e}")
+    return orders
+order_filename = 'orders.csv'  # Đường dẫn tới file orders.csv
+product_filename = 'products.csv'  # Đường dẫn tới file products.csv
+
+# Xử lý các đơn hàng và tính tổng giá trị
+orders = process_orders(order_filename, product_filename)
+
+
+save_orders_to_csv(order_filename, orders)
 # Hàm để chọn khách hàng
 def choose_customer(entries):
     customers = read_customers_csv('customers.csv')
@@ -47,6 +243,7 @@ def choose_customer(entries):
             customer_window.destroy()
     
     customer_table.bind("<Double-1>", select_customer)  # Chọn khách hàng bằng double-click
+
 def read_csv(file_path):
     try:
         df = pd.read_csv(file_path)
@@ -60,7 +257,7 @@ def save_to_csv(filename):
         with open(filename, mode='w', newline='', encoding='utf-8') as file:
             writer = csv.writer(file)
             # Define header
-            header = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
+            header = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", "Số Lượng Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
             writer.writerow(header)
             
             # Write the order data
@@ -133,41 +330,43 @@ def staff_create_don_hang_tab(notebook, app):
     frame_order.search_icon = search_icon  # Để giữ tham chiếu đến icon, tránh bị thu hồi bộ nhớ
 
     # Tạo nút Thêm đơn với icon và liên kết hàm button_click khi nhấn
-    add_order_button = ttk.Button(frame_order, text="Thêm đơn", bootstyle="superhero", image=multiple_icon, compound=LEFT, command=lambda: button_click("Thêm đơn", app), cursor="hand2")
+    add_order_button = ttk.Button(frame_order, text="Thêm đơn", bootstyle="superhero", image=multiple_icon, compound=LEFT, command=lambda: add_order(app, notebook), cursor="hand2")
     add_order_button.grid(row=0, column=2, padx=5, pady=5, sticky=W)
     frame_order.multiple_icon = multiple_icon
 
     # Tạo nút Sửa với icon và liên kết hàm button_click khi nhấn
-    edit_order_button = ttk.Button(frame_order, text="Sửa", bootstyle="superhero", image=wrenchalt_icon, compound=LEFT, command=lambda: button_click("Sửa", app), cursor="hand2")
+    edit_order_button = ttk.Button(frame_order, text="Sửa", bootstyle="superhero", image=wrenchalt_icon, compound=LEFT, command=lambda: edit_order(app, notebook), cursor="hand2")
     edit_order_button.grid(row=0, column=3, padx=5, pady=5, sticky=W)
     frame_order.wrenchalt_icon = wrenchalt_icon
 
-    # Tạo nút Xóa với icon và liên kết hàm delete_order khi nhấn
+    # # Tạo nút Xóa với icon và liên kết hàm delete_order khi nhấn
     # delete_order_button = ttk.Button(frame_order, text="Xóa", bootstyle="superhero", image=trash_icon, compound=LEFT, command=delete_order, cursor="hand2")
     # delete_order_button.grid(row=0, column=4, padx=5, pady=5, sticky=W)
     # frame_order.trash_icon = trash_icon
 
+    create_filter_controls_order(frame_order)
+
     # Định nghĩa các cột cho bảng order_table
-    columns = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
+    columns = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm","Số Lượng Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
     order_table = ttk.Treeview(frame_order, columns=columns, show="headings", bootstyle="superhero")
-    order_table.grid(row=1, column=0, columnspan=5, padx=5, pady=5, sticky="ns")
+    order_table.grid(row=2, column=0, columnspan=5, padx=5, pady=5, sticky="ns")
 
     # Thiết lập tiêu đề và căn chỉnh cho các cột trong bảng
     for col in columns:
         order_table.heading(col, text=col)
         if col in ["Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán", "Danh Sách Sản Phẩm"]:
-            order_table.column(col, anchor='w')  # Căn trái cho các cột này
+            order_table.column(col, anchor='w')  # Căn trái cho các cột này 
         else:
             order_table.column(col, anchor='center')  # Căn giữa cho các cột còn lại
 
     # Thêm Scrollbar dọc
     y_scrollbar = ttk.Scrollbar(frame_order, orient=VERTICAL, command=order_table.yview)
-    y_scrollbar.grid(row=1, column=5, sticky="ns")
+    y_scrollbar.grid(row=2, column=5, sticky="ns")
     order_table.configure(yscrollcommand=y_scrollbar.set)
 
     # Thêm Scrollbar ngang
     x_scrollbar = ttk.Scrollbar(frame_order, orient=HORIZONTAL, command=order_table.xview)
-    x_scrollbar.grid(row=2, column=0, columnspan=5, sticky="ew")
+    x_scrollbar.grid(row=3, column=0, columnspan=5, sticky="ew")
     order_table.configure(xscrollcommand=x_scrollbar.set)
 
 
@@ -178,11 +377,11 @@ def staff_create_don_hang_tab(notebook, app):
         
         if window_width >= 1000 and window_height >= 600:  # Kích thước tùy ý cho chế độ toàn màn hình
             order_table.grid(sticky="nsew")  # Mở rộng cả chiều dọc và chiều ngang
-            frame_order.grid_rowconfigure(1, weight=1)  # Mở rộng chiều dọc
+            frame_order.grid_rowconfigure(2, weight=1)  # Mở rộng chiều dọc
             frame_order.grid_columnconfigure(0, weight=1)  # Mở rộng chiều ngang
         else:
             order_table.grid(sticky="ns")  # Mở rộng chỉ theo chiều dọc
-            frame_order.grid_rowconfigure(1, weight=1)  # Mở rộng chiều dọc, không thay đổi chiều ngang
+            frame_order.grid_rowconfigure(2, weight=1)  # Mở rộng chiều dọc, không thay đổi chiều ngang
             frame_order.grid_columnconfigure(0, weight=1)  # Không mở rộng chiều ngang
 
 
@@ -204,22 +403,93 @@ def staff_create_don_hang_tab(notebook, app):
 
         # Tạo cửa sổ Toplevel để hiển thị thông tin
         detail_window = ttk.Toplevel()
-        detail_window.title("Thông tin chi tiết sản phẩm")
+        detail_window.title("Thông tin chi tiết")
+        detail_window.resizable(False, False)  # Tắt thay đổi kích thước cửa sổ
+
         #detail_window.geometry("600x300")  # Kích thước cửa sổ tùy ý
 
         # Hiển thị thông tin chi tiết của sản phẩm
-        labels = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
+        labels = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm","Số Lượng Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
+        # Tạo frame chính cho bố cục
+        main_frame = ttk.Frame(detail_window, padding=15)
+        main_frame.grid(row=0, column=0, sticky="nsew")
+
+        # Hiển thị thông tin chi tiết của sản phẩm
         for i, label_text in enumerate(labels):
-            label = tk.Label(detail_window, text=f"{label_text}: {item_data[i]}", font=("Helvetica", 12))
-            label.pack(anchor="w", padx=10, pady=5)
+            label = ttk.Label(main_frame, text=label_text + ":", font=("Helvetica", 11))
+            label.grid(row=i, column=0, sticky="w", padx=5, pady=5)
+
+            value_label = ttk.Label(main_frame, text=item_data[i], font=("Helvetica", 11))
+            value_label.grid(row=i, column=1, sticky="w", padx=10, pady=5)
+
+        # Thêm khoảng trống giữa thông tin và nút
+        ttk.Separator(main_frame, orient="horizontal").grid(row=len(labels), column=0, columnspan=2, pady=10, sticky="ew")
 
         # Đặt button đóng cửa sổ
-        close_button = tk.Button(detail_window, text=" Xong ", command=detail_window.destroy)
-        close_button.pack(pady=10)
-        
+        close_button = ttk.Button(main_frame, text="Đóng", style="Accent.TButton", command=detail_window.destroy)
+        close_button.grid(row=len(labels) + 1, column=0, columnspan=2, pady=5)
+
+        # Tạo style cho nút đóng
+        style = ttk.Style()
+        style.configure("Accent.TButton", foreground="white", background="#007bff", font=("Helvetica", 10, "bold"))
+        style.map("Accent.TButton", background=[("active", "#0056b3")])  # Hiệu ứng khi hover
+
         # Cập nhật kích thước của cửa sổ theo nội dung
         detail_window.update_idletasks()
         detail_window.geometry(f"{detail_window.winfo_width()}x{detail_window.winfo_height()}")
+
+
+    
+
+    
+
+    def on_click_cell(event):
+        # Lấy vị trí cột được bấm
+        column_id = order_table.identify_column(event.x)
+
+        # Kiểm tra xem cột có phải là cột "Mô Tả" (thường là cột thứ 5)
+        if column_id == "#2":  # Cột "Mô Tả" (ID cột bắt đầu từ 1, nên "#5" là cột thứ 5)
+            # Lấy hàng được chọn
+            row_id = order_table.identify_row(event.y)
+            if row_id:
+                # Lấy thông tin của hàng
+                item_data = order_table.item(row_id, "values")
+                description = item_data[1]  # Cột "Mô Tả" tương ứng với chỉ mục 4 trong danh sách giá trị
+
+                # Hiển thị thông tin khách hàng
+                show_customer_details(description)
+
+
+        #         # Hiển thị thông tin hoặc xử lý theo ý muốn
+        #         print(f"Bạn đã bấm vào cột 'Mô Tả' của hàng với nội dung: {description}")
+        #     else:
+        #         print("Không có hàng nào được bấm vào.")
+        # else:
+        #     print("Không phải cột 'Mô Tả'.")
+
+        if column_id == "#4":  # Cột "Mô Tả" (ID cột bắt đầu từ 1, nên "#5" là cột thứ 5)
+            # Lấy hàng được chọn
+            row_id = order_table.identify_row(event.y)
+            if row_id:
+                # Lấy thông tin của hàng
+                item_data = order_table.item(row_id, "values")
+                description = item_data[3]  # Cột "Mô Tả" tương ứng với chỉ mục 4 trong danh sách giá trị
+
+                # Hiển thị thông tin khách hàng
+                show_products_details2(description)
+
+
+        #         # Hiển thị thông tin hoặc xử lý theo ý muốn
+        #         print(f"Bạn đã bấm vào cột 'Mô Tả' của hàng với nội dung: {description}")
+        #     else:
+        #         print("Không có hàng nào được bấm vào.")
+        # else:
+        #     print("Không phải cột 'Mô Tả'.")
+
+        
+    # Gắn sự kiện click vào cột ID Khách Hàng trong bảng
+    order_table.bind("<Button-3>", on_click_cell)
+
 
     # Gán sự kiện double-click vào bảng
     order_table.bind("<Double-1>", show_product_details)
@@ -228,7 +498,7 @@ def staff_create_don_hang_tab(notebook, app):
     refresh_order_table()
     
     # Thiết lập khung chứa bảng để tự động thay đổi kích thước khi giao diện mở rộng
-    frame_order.grid_rowconfigure(1, weight=1)
+    frame_order.grid_rowconfigure(2, weight=1)
     frame_order.grid_columnconfigure(0, weight=1)
 
 
@@ -241,12 +511,168 @@ def load_image(image_path):
         messagebox.showerror("Lỗi", f"Không thể tải hình ảnh: {e}")
         return None
 
-def refresh_order_table():
+def get_customer_ids(file_path):
+    """
+    Đọc file CSV và trả về danh sách ID khách hàng từ file.
+    """
+    customer_ids = []
+    try:
+        with open(file_path, mode='r', encoding='utf-8') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                customer_ids.append(row['ID Khách Hàng'])  # Sử dụng tên cột trong file CSV
+    except FileNotFoundError:
+        print(f"Không tìm thấy file {file_path}")
+    except Exception as e:
+        print(f"Lỗi khi đọc file: {e}")
+    
+    return customer_ids
+
+def create_filter_controls_order(frame_order, file_path="orders.csv"):
+    """
+    Hàm tạo bộ lọc dữ liệu cho bảng Đơn Hàng.
+    """
+    # Tạo frame chứa các bộ lọc
+    filter_frame = ttk.Frame(frame_order)
+    filter_frame.grid(row=1, column=0, columnspan=5, padx=5, pady=5, sticky="w")
+
+    # Bộ lọc theo trạng thái đơn hàng
+    order_status_label = ttk.Label(filter_frame, text="Trạng Thái Đơn Hàng:")
+    order_status_label.grid(row=0, column=2, padx=5, pady=5, sticky="w")
+    order_status_var = StringVar()
+    order_status_filter = ttk.Combobox(filter_frame, textvariable=order_status_var, state="readonly", width=15)
+    order_status_filter["values"] = ["Tất cả", "Đang xử lý", "Đã giao", "Đã hủy"]
+    order_status_filter.current(0)
+    order_status_filter.grid(row=0, column=3, padx=5, pady=5, sticky="w")
+
+    # Bộ lọc theo phương thức thanh toán
+    payment_method_label = ttk.Label(filter_frame, text="Phương Thức Thanh Toán:")
+    payment_method_label.grid(row=0, column=4, padx=5, pady=5, sticky="w")
+    payment_method_var = StringVar()
+    payment_method_filter = ttk.Combobox(filter_frame, textvariable=payment_method_var, state="readonly", width=15)
+    payment_method_filter["values"] = ["Tất cả", "Chuyển khoản", "Tiền mặt", "Thẻ tín dụng"]
+    payment_method_filter.current(0)
+    payment_method_filter.grid(row=0, column=5, padx=5, pady=5, sticky="w")
+
+    # Bộ lọc theo khoảng ngày
+    date_label = ttk.Label(filter_frame, text="Khoảng Ngày:")
+    date_label.grid(row=0, column=6, padx=5, pady=5, sticky="w")
+    
+    start_date_var = StringVar()
+    start_date_entry = ttk.Entry(filter_frame, textvariable=start_date_var, width=10)
+    start_date_entry.grid(row=0, column=7, padx=5, pady=5, sticky="w")
+
+    end_date_var = StringVar()
+    end_date_entry = ttk.Entry(filter_frame, textvariable=end_date_var, width=10)
+    end_date_entry.grid(row=0, column=8, padx=5, pady=5, sticky="w")
+
+    # Nút áp dụng bộ lọc
+    def apply_filters_order():
+        """
+        Hàm áp dụng bộ lọc lên bảng Đơn Hàng.
+        """
+        order_status = order_status_var.get()
+        payment_method = payment_method_var.get()
+        start_date = start_date_var.get()
+        end_date = end_date_var.get()
+
+        # Lọc dữ liệu từ `sample_orders`
+        filtered_orders = []
+        for order in sample_data:  # sample_orders là danh sách dữ liệu gốc
+            order_id, customer_id_order, order_date, product_list, quantity_list, total_price, status, payment_method_order = order
+            order_date = str(order_date)  # Chuyển ngày thành chuỗi để so sánh
+
+            # Kiểm tra điều kiện lọc
+            if order_status != "Tất cả" and order_status != status:
+                continue
+            if payment_method != "Tất cả" and payment_method != payment_method_order:
+                continue
+            if start_date and order_date < start_date:
+                continue
+            if end_date and order_date > end_date:
+                continue
+
+            filtered_orders.append(order)
+
+        # Cập nhật bảng với dữ liệu đã lọc
+        refresh_order_table(filtered_orders)
+
+    # Nút "Áp dụng" để áp dụng bộ lọc
+    apply_button_order = ttk.Button(filter_frame, text="Áp dụng", bootstyle="superhero", command=apply_filters_order, cursor="hand2")
+    apply_button_order.grid(row=0, column=9, padx=5, pady=5, sticky="w")
+
+    # Nút "Xóa Lọc"
+    def clear_filters_order():
+        """
+        Hàm xóa bộ lọc và trả bảng về trạng thái ban đầu (không lọc).
+        """
+        # Reset các giá trị của bộ lọc
+        order_status_var.set("Tất cả")
+        payment_method_var.set("Tất cả")
+        start_date_var.set("")
+        end_date_var.set("")
+
+        # Cập nhật bảng với dữ liệu gốc
+        refresh_order_table(sample_data)
+
+    clear_button_order = ttk.Button(filter_frame, text="Xóa Lọc", bootstyle="danger", command=clear_filters_order, cursor="hand2")
+    clear_button_order.grid(row=0, column=10, padx=5, pady=5, sticky="w")
+
+    # Tạo frame riêng để chứa nút thu gọn bộ lọc
+    toggle_frame = ttk.Frame(frame_order)
+    toggle_frame.grid(row=0, column=0, padx=5, pady=5, sticky="e")
+
+    # Biến trạng thái thu gọn bộ lọc
+    filter_expanded = True
+
+    # Hàm thu gọn và mở rộng bộ lọc
+    def toggle_filter():
+        nonlocal filter_expanded
+
+        if filter_expanded:
+            # Thu gọn bộ lọc: Ẩn toàn bộ dòng chứa bộ lọc
+            filter_frame.grid_forget()  # Ẩn toàn bộ frame chứa bộ lọc
+            toggle_button.config(text="Mở rộng bộ lọc")  # Đổi tên nút
+            filter_expanded = False
+        else:
+            # Mở rộng bộ lọc: Hiển thị lại toàn bộ frame chứa bộ lọc
+            filter_frame.grid(row=1, column=0, columnspan=5, padx=5, pady=5, sticky="w")
+            toggle_button.config(text="Thu gọn bộ lọc")  # Đổi tên nút
+            filter_expanded = True
+
+    # Nút thu gọn bộ lọc sẽ được thêm vào frame riêng biệt
+    toggle_button = ttk.Button(toggle_frame, text="Thu gọn bộ lọc", bootstyle="info", command=toggle_filter, cursor="hand2")
+    toggle_button.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+
+    filter_frame.grid_forget()  # Ẩn toàn bộ frame chứa bộ lọc
+    toggle_button.config(text="Mở rộng bộ lọc")  # Đổi tên nút
+    filter_expanded = False
+
+# Cập nhật hàm refresh_product_table để hỗ trợ dữ liệu lọc
+def refresh_order_table(filtered_products=None):
+    """
+    Hàm làm mới bảng sản phẩm với dữ liệu gốc hoặc đã lọc.
+    """
+    # Xóa dữ liệu cũ trong bảng
     for row in order_table.get_children():
         order_table.delete(row)
-    for order in sample_data:
-        order_table.insert("", "end", values=order)
+
+    # Dữ liệu để hiển thị
+    data = filtered_products if filtered_products is not None else sample_data
+
+    # Thêm dữ liệu vào bảng
+    for product in data:
+        order_table.insert("", "end", values=product)
     update_row_colors()
+
+
+
+# def refresh_order_table():
+#     for row in order_table.get_children():
+#         order_table.delete(row)
+#     for order in sample_data:
+#         order_table.insert("", "end", values=order)
+#     update_row_colors()
 
 def update_row_colors():
     # Tải cài đặt từ file
@@ -315,15 +741,53 @@ def search_order():
 
 
 ####################################################################################
-def add_order(app):
+def add_order(app, notebook):
     # Tạo cửa sổ "Thêm Đơn Hàng" mới
     add_window = ttk.Toplevel(app)
     add_window.title("Thêm Đơn Hàng")
 
     # Danh sách các trường thông tin cần nhập cho đơn hàng
-    fields = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", 
-              "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
+    fields = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm","Số Lượng Sản Phẩm","Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
     entries = {}  # Tạo dictionary để lưu các entry widget
+
+    def calculate_total():
+        try:
+            # Lấy giá trị từ trường "Số Lượng Sản Phẩm"
+            quantity_str = entries["Số Lượng Sản Phẩm"].get().strip()
+
+            quantity_str = int(quantity_str)
+
+            # # Kiểm tra nếu ô trống hoặc không phải số nguyên dương
+            # if not quantity_str.isdigit() or int(quantity_str) <= 0:
+            #     raise ValueError("Số lượng phải là số nguyên dương lớn hơn 0.")
+
+            quantity = int(quantity_str)  # Chuyển thành số nguyên
+
+            # Lấy giá trị từ trường "Danh Sách Sản Phẩm"
+            product_id = entries["Danh Sách Sản Phẩm"].get().strip()
+
+            # Đọc danh sách sản phẩm từ file CSV
+            products = read_csv("products.csv")
+            price = 0
+
+            # Tìm giá sản phẩm dựa trên ID
+            for product in products:
+                if str(product[0]) == str(product_id):  # So khớp ID sản phẩm
+                    price = int(product[2])  # Giá sản phẩm
+                    break
+
+            # Tính tổng giá trị
+            total_value = price * quantity
+            
+
+            # Hiển thị vào ô "Tổng Giá Trị Đơn Hàng"
+            entries["Tổng Giá Trị Đơn Hàng"].delete(0, 'end')
+            entries["Tổng Giá Trị Đơn Hàng"].insert(0, str(total_value))
+
+        except ValueError as ve:
+            messagebox.showerror("Lỗi", f"Hãy nhập số lượng dcm")
+        except Exception as e:
+            messagebox.showerror("Lỗi", f"Đã xảy ra lỗi: {e}")
 
     # Tạo các nhãn và entry widget cho mỗi trường thông tin
     for i, field in enumerate(fields):
@@ -333,8 +797,8 @@ def add_order(app):
         # entry.grid(row=i, column=1, padx=10, pady=5)  # Đặt entry vào lưới
         # entries[field] = entry  # Lưu entry vào dictionary với khóa là tên trường
 
-       
-         # Sử dụng Combobox cho "Phương Thức Thanh Toán" với ba tùy chọn
+
+        # Sử dụng Combobox cho "Phương Thức Thanh Toán" với ba tùy chọn
         if field == "Trạng Thái Đơn Hàng":
             payment_method = ttk.Combobox(add_window, values=["Đang Xử Lý", "Đã Giao", "Đã Hủy"], state="readonly",width=28)
             payment_method.grid(row=i, column=1, padx=10, pady=5)
@@ -343,6 +807,11 @@ def add_order(app):
             payment_method = ttk.Combobox(add_window, values=["Tiền mặt", "Thẻ tín dụng", "Chuyển khoản"], state="readonly",width=28)
             payment_method.grid(row=i, column=1, padx=10, pady=5)
             entries[field] = payment_method  # Lưu combobox vào dictionary với khóa là tên trường
+        elif field == "Số Lượng Sản Phẩm":
+            quantity_spinbox = ttk.Spinbox(add_window, from_=1, to=100, width=26, command=calculate_total, increment=1)  # Spinbox cho số lượng sản phẩm
+            quantity_spinbox.set(1)  # Thiết lập giá trị ban đầu là 1
+            quantity_spinbox.grid(row=i, column=1, padx=10, pady=5)
+            entries[field] = quantity_spinbox
         else:
             entry = ttk.Entry(add_window, bootstyle="superhero", width=30)  # Tạo entry cho các trường khác
             entry.grid(row=i, column=1, padx=10, pady=5)
@@ -356,35 +825,55 @@ def add_order(app):
     # Hàm để mở cửa sổ chọn sản phẩm
     def select_products():
         product_window = ttk.Toplevel(add_window)  # Tạo cửa sổ "Chọn Sản Phẩm" mới
-        product_window.title("Chọn")
+        product_window.title("Chọn Sản Phẩm")
 
         # Tải danh sách sản phẩm từ file CSV
         products = read_csv("products.csv")
 
         # Tạo bảng hiển thị danh sách sản phẩm với các cột ID, Tên và Giá
-        product_table = ttk.Treeview(product_window, columns=("ID", "Tên", "Giá"), 
-                                     show="headings", selectmode="extended")
+        product_table = ttk.Treeview(
+            product_window, columns=("ID", "Tên", "Giá", "Tồn Kho"), show="headings", selectmode="browse"
+        )
         product_table.heading("ID", text="ID")  # Cột ID
         product_table.heading("Tên", text="Tên Sản Phẩm")  # Cột tên sản phẩm
         product_table.heading("Giá", text="Giá VND")  # Cột giá sản phẩm
+        product_table.heading("Tồn Kho", text="Số Lượng Tồn Kho")  # Cột tồn kho
         product_table.pack(fill="both", expand=True)  # Đặt bảng vào cửa sổ, mở rộng đầy đủ
 
         # Thêm các sản phẩm vào bảng
         for product in products:
-            product_table.insert("", "end", values=(product[0], product[1], product[2]))
+            product_table.insert("", "end", values=(product[0], product[1], product[2], product[3]))
 
-        # Hàm để thêm các sản phẩm đã chọn vào đơn hàng
-        def add_selected_products():
-            selected_products = [product_table.item(item)["values"] for item in product_table.selection()]
-            entries["Danh Sách Sản Phẩm"].delete(0, 'end')  # Xóa nội dung cũ trong trường danh sách sản phẩm
-            selected_product_names = [f"{prod[1]} ({prod[2]} VND)" for prod in selected_products]
-            # Ghép tên và giá của các sản phẩm được chọn thành chuỗi và thêm vào trường danh sách sản phẩm
-            entries["Danh Sách Sản Phẩm"].insert(0, ", ".join(selected_product_names))
+        # Hàm để thêm sản phẩm được chọn vào đơn hàng
+        def add_selected_product():
+            selected_item = product_table.selection()
+            if not selected_item:
+                messagebox.showwarning("Cảnh báo", "Vui lòng chọn một sản phẩm.")
+                return
+
+            selected_product = product_table.item(selected_item[0])["values"]
+
+            # Cập nhật trường "Danh Sách Sản Phẩm" với ID sản phẩm
+            entries["Danh Sách Sản Phẩm"].delete(0, 'end')
+            entries["Danh Sách Sản Phẩm"].insert(0, str(selected_product[0]))
+
+            # Cập nhật trường "Tổng Giá Trị Đơn Hàng" với giá sản phẩm
+            entries["Tổng Giá Trị Đơn Hàng"].delete(0, 'end')
+            entries["Tổng Giá Trị Đơn Hàng"].insert(0, str(selected_product[2]))
+
+            # Cập nhật giới hạn cho Spinbox
+            max_quantity = int(selected_product[3])  # Lấy số lượng tồn kho
+            entries["Số Lượng Sản Phẩm"].config(to=max_quantity)  # Cập nhật giới hạn Spinbox
+
+            # Tính tổng giá trị đơn hàng ngay sau khi chọn sản phẩm
+            calculate_total()
+
             product_window.destroy()  # Đóng cửa sổ chọn sản phẩm
 
-        # Nút để xác nhận chọn các sản phẩm
-        select_button = ttk.Button(product_window, text="Chọn Sản Phẩm", command=add_selected_products)
+        # Nút để xác nhận chọn sản phẩm
+        select_button = ttk.Button(product_window, text="Chọn Sản Phẩm", command=add_selected_product)
         select_button.pack(pady=10)
+
 
         
 
@@ -396,40 +885,69 @@ def add_order(app):
 
     def submit_order():
         # Lấy thông tin từ các trường và kiểm tra xem có trường nào bỏ trống không
-        new_order = tuple(entries[field].get().strip() for field in fields)
+        try:
+            new_order = tuple(entries[field].get().strip() for field in fields)
+        except AttributeError as e:
+            print(f"Lỗi khi lấy giá trị từ trường: {e}")
+            return
+
         if any(not value for value in new_order):
             messagebox.showerror("Lỗi", "Vui lòng không để trống các trường.")  # Hiển thị lỗi nếu bỏ trống
             return
         
-        # Kiểm tra xem ID sản phẩm đã tồn tại chưa
-        new_product_id = new_order[0]  # ID sản phẩm là phần tử đầu tiên trong tuple
-        for product in sample_data:
-            product_id = str(product[0])  # ID Sản Phẩm nằm ở vị trí đầu tiên của mỗi danh sách con
-            if product_id == new_product_id:  # Nếu ID đã tồn tại
-                messagebox.showerror("Lỗi", "ID Đơn Hàng đã tồn tại. Vui lòng nhập lại ID khác.")
+        # Kiểm tra xem ID đơn hàng đã tồn tại chưa
+        new_order_id = new_order[0]  # ID đơn hàng là phần tử đầu tiên
+        for order in sample_data:
+            order_id = str(order[0])  # ID đơn hàng nằm ở vị trí đầu tiên của mỗi danh sách con
+            if order_id == new_order_id:  # Nếu ID đã tồn tại
+                messagebox.showerror("Lỗi", "ID Đơn Hàng đã tồn tại. Vui lòng nhập ID khác.")
                 entries["ID Đơn Hàng"].delete(0, 'end')
                 return
 
+        # Tải danh sách sản phẩm từ file
+        products = read_csv("products.csv")
+        product_id = new_order[3]  # ID sản phẩm
+        quantity_ordered = int(new_order[4])  # Số lượng sản phẩm đã đặt
+        updated_products = []  # Danh sách sản phẩm sau khi cập nhật tồn kho
+
+        # Cập nhật tồn kho
+        for product in products:
+            if str(product[0]) == product_id:  # Nếu đúng sản phẩm được đặt
+                current_stock = int(product[3])  # Số lượng tồn kho hiện tại
+                if quantity_ordered > current_stock:  # Nếu số lượng đặt lớn hơn tồn kho
+                    messagebox.showerror("Lỗi", f"Số lượng đặt ({quantity_ordered}) vượt quá số lượng tồn kho ({current_stock}).")
+                    return
+                product[3] = str(current_stock - quantity_ordered)  # Cập nhật số lượng tồn kho
+            updated_products.append(product)
+
+        # Lưu danh sách sản phẩm đã cập nhật vào file CSV
+        with open("products.csv", "w", newline="", encoding="utf-8") as file:
+            writer = csv.writer(file)
+            header = ["ID Sản Phẩm", "Tên Sản Phẩm", "Giá VND", "Số Lượng Tồn Kho", "Mô Tả", "Nhóm Sản Phẩm"]  # Thay đổi theo các cột của bạn
+            writer.writerow(header)
+            writer.writerows(updated_products)
 
         # Thêm đơn hàng vào danh sách tạm thời và lưu vào file CSV
         sample_data.append(new_order)
         save_to_csv("orders.csv")  # Lưu đơn hàng vào file CSV
 
-        #cập nhật biến tạm
+        # Cập nhật biến tạm
         sample_data.clear()
         sample_data.extend(read_csv("orders.csv"))
 
         refresh_order_table()  # Cập nhật bảng đơn hàng
 
-        # Lấy ID đơn hàng và ID khách hàng
+        # Cập nhật lịch sử mua hàng cho khách hàng
         order_id = new_order[0]
         customer_id = new_order[1]
-
-        # Cập nhật lịch sử mua hàng cho khách hàng trong file customers.csv
         update_customer_purchase_history(customer_id, order_id)
 
         # Đóng cửa sổ thêm đơn hàng
         add_window.destroy()
+        
+        staff_refresh_tabs(notebook, app,staff_create_san_pham_tab, staff_create_don_hang_tab, staff_create_khach_hang_tab)
+        notebook.select(1)
+
 
     def update_customer_purchase_history(customer_id, order_id):
         # Đọc dữ liệu từ file customers.csv
@@ -451,12 +969,15 @@ def add_order(app):
             writer = csv.writer(file)
             writer.writerow(header)  # Ghi dòng tiêu đề
             writer.writerows(customers)  # Ghi dữ liệu khách hàng đã cập nhật
+    
+    
+
 
     # Nút "Thêm" để xác nhận thêm đơn hàng mới
     add_button = ttk.Button(add_window, text="Thêm", bootstyle="superhero", command=submit_order)
     add_button.grid(row=len(fields), column=0, columnspan=2, padx=10, pady=10)
 
-def edit_order(app):
+def edit_order(app, notebook):
     selected_item = order_table.selection()
     if not selected_item:
         messagebox.showwarning("Cảnh báo", "Vui lòng chọn một đơn hàng để sửa.")
@@ -466,7 +987,7 @@ def edit_order(app):
     edit_window = ttk.Toplevel(app)
     edit_window.title("Sửa Đơn Hàng")
 
-    fields = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
+    fields = ["ID Đơn Hàng", "ID Khách Hàng", "Ngày Đặt Hàng", "Danh Sách Sản Phẩm","Số Lượng Sản Phẩm", "Tổng Giá Trị Đơn Hàng", "Trạng Thái Đơn Hàng", "Phương Thức Thanh Toán"]
     entries = {}
 
     for i, field in enumerate(fields):
@@ -488,6 +1009,8 @@ def edit_order(app):
         save_to_csv('orders.csv')
         refresh_order_table()
         edit_window.destroy()
+        staff_refresh_tabs(notebook, app,staff_create_san_pham_tab, staff_create_don_hang_tab, staff_create_khach_hang_tab)
+        notebook.select(1)
 
     edit_button = ttk.Button(edit_window, text="Sửa", bootstyle="superhero", command=submit_edit)
     edit_button.grid(row=len(fields), column=0, columnspan=2, padx=10, pady=10)
@@ -500,8 +1023,12 @@ def delete_order():
 
     confirm = messagebox.askyesno("Xác nhận", "Bạn có chắc chắn muốn xóa đơn hàng này?")
     if confirm:
-        selected_index = order_table.index(selected_item)
-        del sample_data[selected_index]
+        selected_indices = sorted([order_table.index(item)for item in selected_item], reverse=True)
+        for index in selected_indices:
+            del sample_data[index]
+        
+        for item in selected_item:
+            order_table.delete(item)
 
         refresh_order_table()
         save_to_csv('orders.csv')

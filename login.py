@@ -115,7 +115,7 @@ def generate_captcha_text(length=4):
     """
     Sinh chuỗi ngẫu nhiên gồm chữ cái cho Captcha (dễ đoán hơn).
     """
-    return ''.join(random.choices(string.ascii_lowercase, k=length))  # Chỉ dùng chữ cái
+    return ''.join(random.choices(string.digits, k=length))  # Chỉ dùng chữ cái
 
 def create_captcha_image(captcha_text):
     """
