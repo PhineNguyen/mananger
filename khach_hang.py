@@ -18,6 +18,13 @@ def read_csv(file_path):
         messagebox.showerror("Lỗi", f"Không thể đọc file: {e}")
         return []
 def save_to_csv(filename):
+
+    # Kiểm tra nếu orders trống
+    if not sample_customers:
+        # Thêm một hàng dữ liệu trống
+        empty_row = ["0"] * 6  # Số lượng phần tử phải khớp với số cột trong header
+        sample_customers.append(empty_row)
+        
     # Mở file ở chế độ ghi (write mode)
     with open(filename, mode='w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)

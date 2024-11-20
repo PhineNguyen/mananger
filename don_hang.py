@@ -227,6 +227,11 @@ def read_csv(file_path):
 
 def save_to_csv(filename):
     try:
+        # Kiểm tra nếu orders trống
+        if not sample_data:
+            # Thêm một hàng dữ liệu trống
+            empty_row = ["0"] * 8  # Số lượng phần tử phải khớp với số cột trong header
+            sample_data.append(empty_row)
         with open(filename, mode='w', newline='', encoding='utf-8') as file:
             writer = csv.writer(file)
             # Define header
