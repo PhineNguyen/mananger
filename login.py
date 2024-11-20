@@ -119,9 +119,10 @@ def generate_captcha_text(length=4):
 
 def create_captcha_image(captcha_text):
     """
-    Tạo hình ảnh Captcha từ chuỗi văn bản với font mặc định.
+    Tạo hình ảnh Captcha từ chuỗi văn bản với font cụ thể.
     """
-    image = ImageCaptcha()  # Sử dụng font mặc định của PIL
+    font_path = "arial.ttf"  # Thay đường dẫn tới font của bạn
+    image = ImageCaptcha(fonts=[font_path])
     data = image.generate(captcha_text)
     captcha_image = Image.open(data)
     return captcha_image
