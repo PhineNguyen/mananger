@@ -112,26 +112,26 @@ def create_san_pham_tab(notebook, app):
 # Đặt focus vào entry tìm kiếm sau một khoảng thời gian ngắn
     notebook.after(100, lambda: product_search_entry.focus_set())
 
-    search_button = ttk.Button(frame_product, text="Tìm kiếm", bootstyle="superhero",image=search_icon,compound= LEFT ,command=search_product, cursor="hand2")
+    search_button = ttk.Button(frame_product, text="Tìm kiếm", bootstyle="success-outline",image=search_icon,compound= LEFT ,command=search_product, cursor="hand2")
     search_button.grid(row=0, column=1, padx=5, pady=5, sticky=W)
     frame_product.search_icon = search_icon
-    
+    #superhero
 
     # Gán chức năng cho phím Enter
     product_search_entry.bind("<Return>", lambda event: button_click("Tìm kiếm", app))
 
     # Nút thêm sản phẩm
-    add_product_button = ttk.Button(frame_product, text="Thêm sản phẩm", bootstyle="superhero", image=multiple_icon, compound=LEFT, command=lambda: add_product(app), cursor="hand2")
+    add_product_button = ttk.Button(frame_product, text="Thêm sản phẩm", bootstyle="success-outline", image=multiple_icon, compound=LEFT, command=lambda: add_product(app), cursor="hand2")
     add_product_button.grid(row=0, column=2, padx=5, pady=5, sticky=W)
     frame_product.multiple_icon = multiple_icon
 
     # Nút sửa sản phẩm
-    edit_product_button = ttk.Button(frame_product, text="Sửa", bootstyle="superhero", image=wrenchalt_icon, compound=LEFT, command=lambda: edit_product(app), cursor="hand2")
+    edit_product_button = ttk.Button(frame_product, text="Sửa", bootstyle="info-outline", image=wrenchalt_icon, compound=LEFT, command=lambda: edit_product(app), cursor="hand2")
     edit_product_button.grid(row=0, column=3, padx=5, pady=5, sticky=W)
     frame_product.wrenchalt_icon = wrenchalt_icon
 
     # Nút xóa sản phẩm
-    delete_product_button = ttk.Button(frame_product, text="Xóa", bootstyle="superhero", image=trash_icon, compound=LEFT, command=delete_product, cursor="hand2")
+    delete_product_button = ttk.Button(frame_product, text="Xóa", bootstyle="danger-outline", image=trash_icon, compound=LEFT, command=delete_product, cursor="hand2")
     delete_product_button.grid(row=0, column=4, padx=5, pady=5, sticky=W)
     frame_product.trash_icon = trash_icon
 
@@ -358,11 +358,11 @@ def create_filter_controls(frame_product, file_path="products.csv"):
         # Cập nhật bảng với dữ liệu gốc
         refresh_product_table(sample_products)
 
-    apply_button = ttk.Button(filter_frame, text="Áp dụng", bootstyle="superhero", command=apply_filters, cursor="hand2")
+    apply_button = ttk.Button(filter_frame, text="Áp dụng", bootstyle="success-outline", command=apply_filters, cursor="hand2")
     apply_button.grid(row=0, column=7, padx=5, pady=5, sticky="w")
 
     # Nút "Xóa Lọc"
-    clear_button = ttk.Button(filter_frame, text="Xóa Lọc", bootstyle="danger", command=clear_filters, cursor="hand2")
+    clear_button = ttk.Button(filter_frame, text="Xóa Lọc", bootstyle="danger-outline", command=clear_filters, cursor="hand2")
     clear_button.grid(row=0, column=8, padx=5, pady=5, sticky="w")
 
     # Tạo frame riêng để chứa nút thu gọn bộ lọc

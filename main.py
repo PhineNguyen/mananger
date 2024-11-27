@@ -10,12 +10,14 @@ from staff_khach_hang import staff_create_khach_hang_tab
 from login import create_login_frame
 from setting import create_setting_tab, load_settings, apply_settings,refresh_tabs  # Import thêm load_settings
 from tkinter import PhotoImage
+from tkinter import messagebox
 
 
 
 
 def load_main_interface(app, notebook, role):
     app.resizable(True, True)
+    app.geometry("1200x800")
 
     # Thêm các tab cơ bản
     # create_san_pham_tab(notebook, app)
@@ -34,6 +36,8 @@ def load_main_interface(app, notebook, role):
         create_khach_hang_tab(notebook, app)
         create_thong_ke_tab(notebook, app)
         create_setting_tab(notebook, app,create_san_pham_tab, create_don_hang_tab, create_khach_hang_tab, create_thong_ke_tab,create_setting_tab)  # Thêm tab Setting
+        create_bao_cao_tab(notebook, app)  # Thêm tab Báo Cáo vào đây
+
 
     notebook.pack(fill="both", expand=True)
 
@@ -72,7 +76,7 @@ def main():
 
     # Khởi tạo cửa sổ chính với theme từ cài đặt
     app = ttk.Window(themename=current_settings["theme"])
-    app.geometry("1000x600")
+    app.geometry("600x400")
     app.title("Store Manager")
     app.resizable(False, False)
 
@@ -81,12 +85,12 @@ def main():
     change_window_icon(app)
 
     # Tạo style cho tab với font từ cài đặt
-    style = ttk.Style()
-    style.configure("TNotebook.Tab", padding=[10, 5], font=(current_settings["font"], current_settings["font_size"]), background="#5bc0de")
-    style.map("TNotebook.Tab",
-              background=[('selected', '#ADD8E6'), ('!selected', '#B1C6B4')],
-              foreground=[('selected', 'white'), ('!selected', 'black')])
-    style.configure("TNotebook", tabposition='n')  # 'n' cho trên, 's' cho dưới, 'e' cho phải, 'w' cho trái
+    # style = ttk.Style()
+    # style.configure("TNotebook.Tab", padding=[10, 5], font=(current_settings["font"], current_settings["font_size"]), background="#5bc0de")
+    # style.map("TNotebook.Tab",
+    #           background=[('selected', '#ADD8E6'), ('!selected', '#B1C6B4')],
+    #           foreground=[('selected', 'white'), ('!selected', 'black')])
+    # style.configure("TNotebook", tabposition='n')  # 'n' cho trên, 's' cho dưới, 'e' cho phải, 'w' cho trái
 
     #Tạo notebook
     notebook = ttk.Notebook(app, style="TNotebook")
