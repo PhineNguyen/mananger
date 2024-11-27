@@ -10,7 +10,6 @@ from staff_khach_hang import staff_create_khach_hang_tab
 from login import create_login_frame
 from setting import create_setting_tab, load_settings, apply_settings,refresh_tabs  # Import thêm load_settings
 from tkinter import PhotoImage
-from tkinter import messagebox
 
 
 
