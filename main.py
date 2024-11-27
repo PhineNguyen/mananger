@@ -11,6 +11,7 @@ from login import create_login_frame
 from setting import create_setting_tab, load_settings, apply_settings,refresh_tabs  # Import thêm load_settings
 from tkinter import PhotoImage
 from tkinter import messagebox
+from bao_cao import create_bao_cao_tab
 
 
 
